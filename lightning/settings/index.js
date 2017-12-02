@@ -10,7 +10,7 @@ nconf.file('localOverrides', __dirname + '/' + process.env.NODE_ENV + '.json');
 //common options
 nconf.defaults({
   server: {
-    runPort: 3800,
+    runPort: process.env.PORT,
   },
 
   lightning: {
