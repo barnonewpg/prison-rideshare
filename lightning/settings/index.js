@@ -14,7 +14,7 @@ nconf.defaults({
   },
 
   lightning: {
-    appName: 'lightning-app',
+    appName: 'prison-rideshare-ui-production',
   },
 
   redis: {
