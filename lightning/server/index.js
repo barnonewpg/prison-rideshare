@@ -29,6 +29,7 @@ module.exports = function(app) {
     const host = req.headers.host;
     const parts = host.split('.');
     const branch = parts[0];
+    console.log(`branch? ${branch}`);
 
     Promise.resolve().then(function() {
       if (req.query.revision) {
