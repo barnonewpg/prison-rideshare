@@ -26,17 +26,20 @@ module.exports = function(app) {
 
   //fall back to shipping the default index.html
   app.get('*', function(req, res) {
+    const host = req.headers.host;
+    const parts = host.split('.');
+    const branch = parts[0];
 
     Promise.resolve().then(function() {
       if (req.query.revision) {
         return req.query.revision;
       }
 
-      return client.getAsync(`${nconf.get('lightning:appName')}:index:current`);
+      return client.getAsync(`${branch}:index:current`);
     })
 
     .then(function(key) {
-      return client.getAsync(`${nconf.get('lightning:appName')}:index:${key}`);
+      return client.getAsync(`${branch}:index:${key}`);
     })
 
     .then(function(html) {
