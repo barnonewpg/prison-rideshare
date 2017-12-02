@@ -36,11 +36,11 @@ module.exports = function(app) {
         return req.query.revision;
       }
 
-      return client.getAsync(`${branch}:index:current`);
+      return client.getAsync(`${branch}:current`);
     })
 
     .then(function(key) {
-      return client.getAsync(`${branch}:index:${key}`);
+      return client.getAsync(`${branch}:${key}`);
     })
 
     .then(function(html) {
