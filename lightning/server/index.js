@@ -6,8 +6,6 @@ var redis = require('redis');
 var client = redis.createClient(nconf.get('redis'));
 var Promise = bluebird; //for style
 
-var exec = require('child-process-promise').exec;
-
 bluebird.promisifyAll(redis.RedisClient.prototype);
 bluebird.promisifyAll(redis.Multi.prototype);
 
@@ -33,7 +31,7 @@ module.exports = function(app) {
     const branch = parts[0];
     console.log(`branch? ${branch}`);
 
-    exec(`dokku domains:add rideshare-lightning ${host} && dokku letsencrypt rideshare-lightning`).then(function() {
+    Promise.resolve().then(function() {
       if (req.query.revision) {
         return req.query.revision;
       }
