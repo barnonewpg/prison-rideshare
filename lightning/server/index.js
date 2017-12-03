@@ -31,16 +31,24 @@ module.exports = function(app) {
     const branch = parts[0];
     console.log(`branch? ${branch}`);
 
+    let prefix;
+
+    if (branch === 'rideshare') {
+      prefix = 'production';
+    } else {
+      prefix = branch;
+    }
+
     Promise.resolve().then(function() {
       if (req.query.revision) {
         return req.query.revision;
       }
 
-      return client.getAsync(`${branch}:current`);
+      return client.getAsync(`${prefix}:current`);
     })
 
     .then(function(key) {
-      return client.getAsync(`${branch}:${key}`);
+      return client.getAsync(`${prefix}:${key}`);
     })
 
     .then(function(html) {
