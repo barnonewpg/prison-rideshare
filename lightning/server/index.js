@@ -33,7 +33,7 @@ module.exports = function(app) {
 
     let prefix;
 
-    if (branch === 'rideshare') {
+    if (branch === 'rideshare' || branch === 'rideshare-temp') {
       prefix = 'production';
     } else {
       prefix = branch;
