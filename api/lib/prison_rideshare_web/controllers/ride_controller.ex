@@ -1,7 +1,7 @@
 defmodule PrisonRideshareWeb.RideController do
   use PrisonRideshareWeb, :controller
 
-  alias PrisonRideshareWeb.{Commitment, Ride}
+  alias PrisonRideshareWeb.{Commitment, Person, Ride}
   alias JaSerializer.Params
 
   import Ecto.Query
@@ -26,8 +26,13 @@ defmodule PrisonRideshareWeb.RideController do
 
           Enum.uniq_by(rides ++ children, & &1.id)
 
-        %{"filter" => %{"name" => name}} ->
-          Repo.all(from(r in Ride, where: ilike(r.name, ^"#{name}%"), order_by: [desc: r.start]))
+        %{"filter" => %{"visitor" => name}} ->
+          Repo.all(
+            from r in Ride,
+            join: v in Person, on: v.id == r.visitor_id,
+            where: ilike(v.name, ^"#{name}%"),
+            order_by: [desc: r.start]
+          )
 
         %{"filter" => %{"requires_confirmation" => "true"}} ->
           now = NaiveDateTime.utc_now()
