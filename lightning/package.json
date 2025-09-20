@@ -25,5 +25,8 @@
     "start-watch": "npm start -- --watch",
     "test": "NODE_ENV=test mocha --recursive --reporter spec",
     "test-watch": "npm run test -- -w --reporter min"
+  },
+  "engines": {
+    "node": "6.x"
   }
 }
