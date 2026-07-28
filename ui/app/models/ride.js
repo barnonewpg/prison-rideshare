@@ -212,7 +212,7 @@ export default Model.extend({
     'institution.name',
     'driver.name',
     'carOwner.name',
-    'name',
+    'visitorName',
     'address',
     function () {
       return `${
@@ -223,7 +223,7 @@ export default Model.extend({
         this.get('driver.name') === undefined ? '' : this.get('driver.name')
       } ${
         this.get('carOwner.name') === undefined ? '' : this.get('carOwner.name')
-      } ${this.name === undefined ? '' : this.name} ${
+      } ${this.visitorName === undefined ? '' : this.visitorName} ${
         this.address
       }`.toLowerCase();
     },
