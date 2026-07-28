@@ -34,7 +34,9 @@ import Alert from 'prison-rideshare-ui/components/alert';
 
 const DATETIME_LOCAL_FORMAT = "yyyy-MM-dd'T'HH:mm";
 
-const SelectedRideVisitor = <template>{{@option.name}}</template>;
+const SelectedRideVisitor = <template>
+  {{if @option.visitorName @option.visitorName @option.name}}
+</template>;
 
 export default class RideForm extends Component {
   lastSearchTerm = null;
@@ -44,13 +46,14 @@ export default class RideForm extends Component {
   @tracked pendingUnmatchedVisitorName = '';
   @tracked visitorSelection = null;
 
-  @computed('ride.name', 'visitorSelection')
+  // Reads through the buffered proxy, so the model's visitorName cannot be used here
+  @computed('ride.{visitor.name,name}', 'visitorSelection')
   get nameOrVisitorSelection() {
     if (this.visitorSelection) {
       return this.visitorSelection;
     }
 
-    const name = this.get('ride.name');
+    const name = this.get('ride.visitor.name') || this.get('ride.name');
 
     return name ? { name } : null;
   }
@@ -316,7 +319,7 @@ export default class RideForm extends Component {
                       </div>
                     {{else}}
                       <div data-test-visitor-suggestion>
-                        <span class='name'>{{option.name}}</span>
+                        <span class='name'>{{option.visitorName}}</span>
                         <address>{{option.address}}</address>
                         <span class='contact'>{{option.contact}}</span>
                       </div>
@@ -616,7 +619,7 @@ export default class RideForm extends Component {
     }
 
     const promise = this.store
-      .query('ride', { 'filter[name]': term })
+      .query('ride', { 'filter[visitor]': term })
       .then((rides) => {
         const suggestions = deduplicateVisitorSuggestions(rides);
         return this.buildVisitorOptions(trimmedTerm, suggestions);
@@ -629,10 +632,11 @@ export default class RideForm extends Component {
   }
 
   @action
-  visitorSelected(ride) {
+  async visitorSelected(ride) {
     if (ride?.customVisitor) {
       this.visitorSelection = null;
       this.set('ride.name', ride.name);
+      this.set('ride.visitor', null);
       this.pendingUnmatchedVisitorName = '';
       return;
     }
@@ -641,10 +645,14 @@ export default class RideForm extends Component {
     this.pendingUnmatchedVisitorName = '';
 
     if (ride) {
-      this.set('ride.name', ride.get('name'));
+      // Legacy rides have no visitor record, so the name attribute remains the fallback
+      const visitor = await ride.get('visitor');
+      this.set('ride.visitor', visitor ?? null);
+      this.set('ride.name', ride.get('visitorName'));
       this.set('ride.address', ride.get('address'));
       this.set('ride.contact', ride.get('contact'));
     } else {
+      this.set('ride.visitor', null);
       this.set('ride.name', '');
       this.set('ride.address', '');
       this.set('ride.contact', '');
