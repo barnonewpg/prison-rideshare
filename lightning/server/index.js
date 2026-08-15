@@ -35,6 +35,9 @@ module.exports = function(app) {
 
     if (branch === 'rideshare' || branch === 'rideshare-temp') {
       prefix = 'production';
+    } else if (branch === 'sandbox' && parts[1] === 'visitors') {
+      // sandbox.visitors.… must not collide with the sandbox.… deployment
+      prefix = 'sandbox-visitors';
     } else {
       prefix = branch;
     }
