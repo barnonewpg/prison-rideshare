@@ -38,7 +38,7 @@
     "@faker-js/faker": "^8.1.0",
     "@glimmer/component": "^1.1.2",
     "@glimmer/tracking": "^1.1.2",
-    "@hashicorp/design-system-components": "^4.24.0",
+    "@hashicorp/design-system-components": "^7.0.0",
     "@hashicorp/design-system-tokens": "^3.0.0",
     "@lexical/code": "^0.49.0",
     "@lexical/history": "^0.49.0",
