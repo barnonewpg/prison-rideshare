@@ -62,6 +62,8 @@ jobs:
     steps:
       # The production job can be approved long after the PR has closed.
       - name: Check that the PR is still open
+        # This runs before checkout, so ui/ doesn't exist yet.
+        working-directory: .
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
