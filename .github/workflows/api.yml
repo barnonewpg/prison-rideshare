@@ -16,6 +16,10 @@ on:
     # Catches advisories published against code nobody touched
     - cron: "0 9 * * 1"
 
+permissions:
+  contents: read
+  checks: write
+
 concurrency:
   group: api-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
