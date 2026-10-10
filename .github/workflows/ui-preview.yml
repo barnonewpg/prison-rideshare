@@ -1,0 +1,206 @@
+name: UI preview
+
+# Deploys each PR's UI to Cloudflare Pages twice: against the sandbox API
+# (automatic) and against the production API (after approval through the
+# preview-production environment). Deployments use the branch alias pr-N,
+# derived from the PR number and never from the branch name.
+#
+# This must stay on pull_request, never pull_request_target, which would run
+# PR code with secrets for PRs from forks.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    paths:
+      - 'ui/**'
+      - '.github/workflows/ui-preview.yml'
+
+permissions:
+  contents: read
+
+env:
+  BRANCH_ALIAS: pr-${{ github.event.pull_request.number }}
+  SANDBOX_PROJECT: prison-rideshare-preview-sandbox
+  PRODUCTION_PROJECT: prison-rideshare-preview-production
+
+jobs:
+  deploy:
+    name: 'Deploy (${{ matrix.variant }})'
+    # Fork and Dependabot PRs don't get the secrets.
+    if: >-
+      github.event.action != 'closed' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - variant: sandbox
+            project: prison-rideshare-preview-sandbox
+          - variant: production
+            project: prison-rideshare-preview-production
+
+    environment:
+      name: preview-${{ matrix.variant }}
+      url: ${{ steps.deploy.outputs.pages-deployment-alias-url }}
+
+    concurrency:
+      group: ui-preview-${{ github.event.pull_request.number }}-${{ matrix.variant }}
+      cancel-in-progress: true
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    defaults:
+      run:
+        working-directory: ui
+
+    steps:
+      # The production job can be approved long after the PR has closed.
+      - name: Check that the PR is still open
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          state=$(gh pr view ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --json state --jq .state)
+          if [ "$state" != "OPEN" ]; then
+            echo "::error::PR is $state, not deploying"
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+      - uses: volta-cli/action@v4
+        with:
+          package-json-path: ui/package.json
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 10.30.1
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build
+        env:
+          API_HOST: ${{ vars.API_HOST }}
+          SOCKET_HOST: ${{ vars.SOCKET_HOST }}
+        # Without API_HOST the production build enables Mirage.
+        run: |
+          if [ -z "$API_HOST" ]; then
+            echo "::error::API_HOST is not set in the preview-${{ matrix.variant }} environment"
+            exit 1
+          fi
+          pnpm exec ember build --environment=production
+      # Wrangler 4 needs a newer Node than the app's Volta pin.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Deploy to Cloudflare Pages
+        id: deploy
+        uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0 # v4.1.3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy ui/dist --project-name=${{ matrix.project }} --branch=${{ env.BRANCH_ALIAS }} --commit-hash=${{ github.event.pull_request.head.sha }} --commit-dirty=true
+      - name: Update PR comment
+        uses: actions/github-script@v7
+        env:
+          VARIANT: ${{ matrix.variant }}
+          ALIAS_URL: ${{ steps.deploy.outputs.pages-deployment-alias-url }}
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment-url }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+        with:
+          script: |
+            const marker = '<!-- ui-preview -->';
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+            const alias = process.env.BRANCH_ALIAS;
+            const variants = {
+              sandbox: process.env.SANDBOX_PROJECT,
+              production: process.env.PRODUCTION_PROJECT,
+            };
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner, repo, issue_number,
+            });
+            const existing = comments.find((c) => c.body.includes(marker));
+
+            // Each variant's status line lives between its own markers so the
+            // two jobs can update the comment independently.
+            const status = {};
+            for (const variant of Object.keys(variants)) {
+              const match = existing?.body.match(
+                new RegExp(`<!-- ${variant} -->(.*?)<!-- /${variant} -->`, 's'),
+              );
+              status[variant] = match ? match[1] : 'not deployed yet';
+            }
+            status[process.env.VARIANT] =
+              `\`${process.env.SHA.slice(0, 7)}\` ([deployment](${process.env.DEPLOYMENT_URL}))`;
+
+            const rows = Object.entries(variants).map(([variant, project]) => {
+              const url = process.env.VARIANT === variant && process.env.ALIAS_URL
+                ? process.env.ALIAS_URL
+                : `https://${alias}.${project}.pages.dev`;
+              return `| ${variant} | ${url} | <!-- ${variant} -->${status[variant]}<!-- /${variant} --> |`;
+            });
+
+            const body = [
+              marker,
+              '### UI previews',
+              '',
+              '| API | URL | Latest |',
+              '| --- | --- | --- |',
+              ...rows,
+              '',
+              'The production preview runs this PR against real data and needs approval on every push.',
+            ].join('\n');
+
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
+
+  cleanup:
+    name: 'Delete previews'
+    if: >-
+      github.event.action == 'closed' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    concurrency:
+      group: ui-preview-${{ github.event.pull_request.number }}-cleanup
+
+    steps:
+      - name: Delete this PR's Pages deployments
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          api="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects"
+          auth="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+
+          for project in "$SANDBOX_PROJECT" "$PRODUCTION_PROJECT"; do
+            # Collect every matching ID before deleting so pagination doesn't shift.
+            ids=()
+            page=1
+            while :; do
+              response=$(curl -fsS -H "$auth" "$api/$project/deployments?env=preview&per_page=25&page=$page")
+              mapfile -t matches < <(echo "$response" | jq -r --arg branch "$BRANCH_ALIAS" \
+                '.result[] | select(.deployment_trigger.metadata.branch == $branch) | .id')
+              ids+=("${matches[@]}")
+              count=$(echo "$response" | jq '.result | length')
+              total=$(echo "$response" | jq '.result_info.total_count // 0')
+              if [ "$count" -eq 0 ] || [ $((page * 25)) -ge "$total" ]; then break; fi
+              page=$((page + 1))
+            done
+
+            echo "$project: deleting ${#ids[@]} deployment(s) for $BRANCH_ALIAS"
+            for id in "${ids[@]}"; do
+              [ -n "$id" ] || continue
+              # force is required to delete an aliased deployment.
+              curl -fsS -X DELETE -H "$auth" "$api/$project/deployments/$id?force=true" > /dev/null
+            done
+          done
