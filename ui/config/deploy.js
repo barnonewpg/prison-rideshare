@@ -1,9 +1,4 @@
-var VALID_DEPLOY_TARGETS = [
-  'production',
-  'sandbox',
-  'pull-request-production',
-  'pull-request-sandbox',
-];
+var VALID_DEPLOY_TARGETS = ['production', 'sandbox'];
 
 module.exports = function (deployTarget) {
   var ENV = {
@@ -27,11 +22,7 @@ module.exports = function (deployTarget) {
     throw new Error('Invalid deployTarget ' + deployTarget);
   }
 
-  if (deployTarget === 'production' || deployTarget === 'sandbox') {
-    ENV.redis.keyPrefix = deployTarget;
-  } else {
-    ENV.redis.keyPrefix = process.env.CLEANED_BRANCH_SUBDOMAIN;
-  }
+  ENV.redis.keyPrefix = deployTarget;
 
   return ENV;
 };
