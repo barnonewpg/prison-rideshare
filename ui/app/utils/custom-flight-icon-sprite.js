@@ -11,7 +11,7 @@ const CUSTOM_FLIGHT_ICON_SPRITE = `
   <defs>
     <!-- Lucide car icon - https://github.com/lucide-icons/lucide/blob/main/icons/car.svg -->
     <symbol
-      id="flight-car-16"
+      id="hds-icon-flight-car-16"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -26,7 +26,7 @@ const CUSTOM_FLIGHT_ICON_SPRITE = `
     </symbol>
 
     <symbol
-      id="flight-car-24"
+      id="hds-icon-flight-car-24"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -42,7 +42,7 @@ const CUSTOM_FLIGHT_ICON_SPRITE = `
 
     <!-- Lucide coffee icon - https://github.com/lucide-icons/lucide/blob/main/icons/coffee.svg -->
     <symbol
-      id="flight-coffee-16"
+      id="hds-icon-flight-coffee-16"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -57,7 +57,7 @@ const CUSTOM_FLIGHT_ICON_SPRITE = `
     </symbol>
 
     <symbol
-      id="flight-coffee-24"
+      id="hds-icon-flight-coffee-24"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -73,7 +73,7 @@ const CUSTOM_FLIGHT_ICON_SPRITE = `
 
     <!-- Lucide fuel icon - https://github.com/lucide-icons/lucide/blob/main/icons/fuel.svg -->
     <symbol
-      id="flight-fuel-16"
+      id="hds-icon-flight-fuel-16"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -88,7 +88,7 @@ const CUSTOM_FLIGHT_ICON_SPRITE = `
     </symbol>
 
     <symbol
-      id="flight-fuel-24"
+      id="hds-icon-flight-fuel-24"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -104,7 +104,7 @@ const CUSTOM_FLIGHT_ICON_SPRITE = `
 
     <!-- Lucide merge icon - https://github.com/lucide-icons/lucide/blob/main/icons/merge.svg -->
     <symbol
-      id="flight-merge-16"
+      id="hds-icon-flight-merge-16"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -118,7 +118,7 @@ const CUSTOM_FLIGHT_ICON_SPRITE = `
     </symbol>
 
     <symbol
-      id="flight-merge-24"
+      id="hds-icon-flight-merge-24"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -133,7 +133,7 @@ const CUSTOM_FLIGHT_ICON_SPRITE = `
 
     <!-- Lucide split icon - https://github.com/lucide-icons/lucide/blob/main/icons/split.svg -->
     <symbol
-      id="flight-split-16"
+      id="hds-icon-flight-split-16"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -148,7 +148,7 @@ const CUSTOM_FLIGHT_ICON_SPRITE = `
     </symbol>
 
     <symbol
-      id="flight-split-24"
+      id="hds-icon-flight-split-24"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -164,7 +164,7 @@ const CUSTOM_FLIGHT_ICON_SPRITE = `
 
     <!-- Lucide user-round-search icon - https://github.com/lucide-icons/lucide/blob/main/icons/user-round-search.svg -->
     <symbol
-      id="flight-user-round-search-16"
+      id="hds-icon-flight-user-round-search-16"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -179,7 +179,7 @@ const CUSTOM_FLIGHT_ICON_SPRITE = `
     </symbol>
 
     <symbol
-      id="flight-user-round-search-24"
+      id="hds-icon-flight-user-round-search-24"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"

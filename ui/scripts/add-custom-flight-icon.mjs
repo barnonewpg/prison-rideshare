@@ -15,10 +15,6 @@ const SPRITE_PATH = path.join(
   projectRoot,
   'app/utils/custom-flight-icon-sprite.js',
 );
-const PATCH_PATH = path.join(
-  projectRoot,
-  'patches/@hashicorp__flight-icons.patch',
-);
 
 const DEFAULT_ATTRIBUTES = {
   fill: 'none',
@@ -59,7 +55,7 @@ function renderSymbol(icon, size, strokeWidth, viewBox, attrs, innerContent) {
   const indent = '    ';
   const lines = [
     `${indent}<symbol`,
-    `${indent}  id="flight-${icon}-${size}"`,
+    `${indent}  id="hds-icon-flight-${icon}-${size}"`,
     `${indent}  viewBox="${viewBox}"`,
     `${indent}  fill="${attrs.fill}"`,
     `${indent}  stroke="${attrs.stroke}"`,
@@ -177,43 +173,6 @@ async function fetchLucideIcon(icon) {
   };
 }
 
-function updatePatchFile(patchContents, iconsToEnsure) {
-  const plusLineMatch = patchContents.match(
-    /^\+export const iconNames = \[ (.*) \];$/m,
-  );
-
-  if (!plusLineMatch) {
-    throw new Error(
-      'Unable to locate export line in @hashicorp__flight-icons patch',
-    );
-  }
-
-  const listString = plusLineMatch[1];
-  const existingIcons = listString
-    .split(', ')
-    .map((entry) => entry.slice(1, -1)); // remove surrounding quotes
-
-  let modified = false;
-
-  for (const icon of iconsToEnsure) {
-    if (existingIcons.includes(icon)) {
-      continue;
-    }
-    existingIcons.push(icon);
-    modified = true;
-  }
-
-  if (!modified) {
-    return patchContents;
-  }
-
-  const updatedLine = `+export const iconNames = [ ${existingIcons
-    .map((entry) => `'${entry}'`)
-    .join(', ')} ];`;
-
-  return patchContents.replace(plusLineMatch[0], updatedLine);
-}
-
 async function main() {
   const spriteContents = await readFile(SPRITE_PATH, 'utf8');
   const defsStart = spriteContents.indexOf('  <defs>\n');
@@ -259,18 +218,7 @@ async function main() {
       .map((block) => renderBlock(block))
       .join('\n\n')}\n${footer}`;
     await writeFile(SPRITE_PATH, nextSpriteContents, 'utf8');
-  }
-
-  const desiredIcons = sortedBlocks.map((block) => block.icon);
-  const patchContents = await readFile(PATCH_PATH, 'utf8');
-  const updatedPatch = updatePatchFile(patchContents, desiredIcons);
-
-  if (updatedPatch !== patchContents) {
-    await writeFile(PATCH_PATH, updatedPatch, 'utf8');
-    console.log('• Updated patch with custom icon names');
-  }
-
-  if (!spriteChanged && updatedPatch === patchContents) {
+  } else {
     console.log('No new icons were added.');
   }
 }

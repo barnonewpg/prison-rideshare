@@ -7,12 +7,12 @@
     text-align: center;
     padding: 3px;
     border-radius: 5rem;
-    background-color: var(--token-color-palette-blue-500);
+    background-color: var(--hds-core-color-blue-500);
     color: white;
     cursor: pointer;
 
     &.committed-to {
-      background-color: var(--token-color-palette-blue-200);
+      background-color: var(--hds-core-color-blue-200);
     }
   }
 
