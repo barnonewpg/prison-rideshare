@@ -1,15 +1,34 @@
+name: API
+
 on:
   push:
+    branches:
+      - main
+    paths:
+      - 'api/**'
+      - '.github/workflows/api.yml'
+  pull_request:
+    paths:
+      - 'api/**'
+      - '.github/workflows/api.yml'
   schedule:
     # Catches advisories published against code nobody touched
     - cron: "0 9 * * 1"
+
+concurrency:
+  group: api-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: api
 
 jobs:
   deps-audit:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Github repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Sets up an Erlang/OTP environment
         uses: erlef/setup-beam@v1
         with:
@@ -33,12 +52,8 @@ jobs:
           POSTGRES_PASSWORD: postgres
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
-      - name: Cancel previous runs
-        uses: styfle/cancel-workflow-action@0.11.0
-        with:
-          access_token: ${{ github.token }}
       - name: Checkout Github repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Sets up an Erlang/OTP environment
         id: beam
         uses: erlef/setup-beam@v1
@@ -50,9 +65,9 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            deps
-            _build
-          key: ${{ runner.os }}-mix-${{ steps.beam.outputs.elixir-version }}-${{ steps.beam.outputs.otp-version }}-${{ hashFiles('**/mix.lock') }}
+            api/deps
+            api/_build
+          key: ${{ runner.os }}-mix-${{ steps.beam.outputs.elixir-version }}-${{ steps.beam.outputs.otp-version }}-${{ hashFiles('api/mix.lock') }}
           restore-keys: |
             ${{ runner.os }}-mix-${{ steps.beam.outputs.elixir-version }}-${{ steps.beam.outputs.otp-version }}-
       - name: Install dependencies
@@ -71,8 +86,8 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
-          check_name: "test results"
-          files: _build/test/lib/prison_rideshare/test-junit-report.xml
+          check_name: "API test results"
+          files: api/_build/test/lib/prison_rideshare/test-junit-report.xml
       # The test env alone would not catch a dev-only dependency that fails to compile
       - name: Check the dev build compiles cleanly
         if: always()

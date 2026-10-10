@@ -1,19 +1,26 @@
 on:
   push:
     branches:
-      - primary
+      - main
+    paths:
+      - 'api/**'
 
 jobs:
   deploy-sandbox:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Github repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      # The Dokku app must be configured once with:
+      #   dokku builder:set <app> build-dir api
       - name: Push to dokku
         uses: dokku/github-action@v1.4.0
         with:
           branch: "primary"
           git_remote_url: "ssh://${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }}:22/${{ secrets.DEPLOYMENT_APP }}"
           ssh_private_key: ${{ secrets.DEPLOYMENT_KEY }}
+          # History was rewritten by the monorepo import, so the first push
+          # can't fast-forward. Remove this after the first successful deploy.
+          git_push_flags: "--force"

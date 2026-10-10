@@ -1,6 +1,6 @@
-# Prison Rideshare UI [![CI](https://github.com/backspace/prison-rideshare-ui/actions/workflows/ci.yml/badge.svg)](https://github.com/backspace/prison-rideshare-ui/actions/workflows/ci.yml) [![This project is using Percy.io for visual regression testing.](https://percy.io/static/images/percy-badge.svg)](https://percy.io/Bar-None/prison-rideshare-ui)
+# Prison Rideshare UI [![UI](https://github.com/barnonewpg/prison-rideshare/actions/workflows/ui.yml/badge.svg)](https://github.com/barnonewpg/prison-rideshare/actions/workflows/ui.yml) [![This project is using Percy.io for visual regression testing.](https://percy.io/static/images/percy-badge.svg)](https://percy.io/Bar-None/prison-rideshare-ui)
 
-This is an Ember front-end for the [prison rideshare API](https://github.com/backspace/prison-rideshare-api). Visit the [sandbox](https://sandbox.barnonewpg.org/login)!
+This is an Ember front-end for the [prison rideshare API](../api). Visit the [sandbox](https://sandbox.barnonewpg.org/login)!
 
 ## Prerequisites
 
@@ -14,7 +14,7 @@ You will need the following things properly installed on your computer.
 ## Installation
 
 * `git clone <repository-url>` this repository
-* `cd prison-rideshare-ui`
+* `cd prison-rideshare/ui`
 * `npm install`
 
 ## Running / Development

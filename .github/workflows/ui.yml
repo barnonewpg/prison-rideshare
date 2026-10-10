@@ -1,18 +1,27 @@
-name: CI
+name: UI
 
 on:
   push:
     branches:
       - main
-      - master
-  pull_request: {}
+    paths:
+      - 'ui/**'
+      - '.github/workflows/ui.yml'
+  pull_request:
+    paths:
+      - 'ui/**'
+      - '.github/workflows/ui.yml'
   schedule:
     # Catches advisories published against code nobody touched
     - cron: "0 9 * * 1"
 
 concurrency:
-  group: ci-${{ github.head_ref || github.ref }}
+  group: ui-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: ui
 
 jobs:
   audit:
@@ -21,8 +30,10 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: volta-cli/action@v4
+        with:
+          package-json-path: ui/package.json
       - uses: pnpm/action-setup@v2
         with:
           version: 10.30.1
@@ -39,8 +50,10 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: volta-cli/action@v4
+        with:
+          package-json-path: ui/package.json
       - uses: pnpm/action-setup@v2
         with:
           version: 10.30.1
@@ -55,8 +68,10 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: volta-cli/action@v4
+        with:
+          package-json-path: ui/package.json
       - uses: pnpm/action-setup@v2
         with:
           version: 10.30.1
@@ -71,5 +86,5 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@170bf24d20d201b842d7a52403b73ed297e6645b # 2.18.0
         if: always()
         with:
-          junit_files: junit.xml
-          check_name: Test Results
+          junit_files: ui/junit.xml
+          check_name: UI test results

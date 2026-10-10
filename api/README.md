@@ -1,6 +1,6 @@
-# Prison Rideshare [![pipeline status](https://github.com/backspace/prison-rideshare-api/actions/workflows/ci.yml/badge.svg)](https://github.com/backspace/prison-rideshare-api) [![Coverage Status](https://coveralls.io/repos/github/backspace/prison-rideshare-api/badge.svg?branch=primary)](https://coveralls.io/github/backspace/prison-rideshare-api?branch=primary)
+# Prison Rideshare [![API](https://github.com/barnonewpg/prison-rideshare/actions/workflows/api.yml/badge.svg)](https://github.com/barnonewpg/prison-rideshare/actions/workflows/api.yml) [![Coverage Status](https://coveralls.io/repos/github/backspace/prison-rideshare-api/badge.svg?branch=primary)](https://coveralls.io/github/backspace/prison-rideshare-api?branch=primary)
 
-This is a database to track reïmbursements and miscellania for a prison rideshare project. It serves the API for the [Ember UI](https://github.com/backspace/prison-rideshare-ui).
+This is a database to track reïmbursements and miscellania for a prison rideshare project. It serves the API for the [Ember UI](../ui).
 
 It’s intended to replace an increasingly unwieldy and brittle set of spreadsheets.
 
