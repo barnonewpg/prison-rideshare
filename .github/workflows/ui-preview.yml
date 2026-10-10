@@ -1,9 +1,8 @@
 name: UI preview
 
-# Deploys each PR's UI to Cloudflare Pages twice: against the sandbox API
-# (automatic) and against the production API (after approval through the
-# preview-production environment). Deployments use the branch alias pr-N,
-# derived from the PR number and never from the branch name.
+# Deploys each PR's UI to Cloudflare Pages twice: against the sandbox API and
+# against the production API. Deployments use the branch alias pr-N, derived
+# from the PR number and never from the branch name.
 #
 # This must stay on pull_request, never pull_request_target, which would run
 # PR code with secrets for PRs from forks.
@@ -60,7 +59,7 @@ jobs:
         working-directory: ui
 
     steps:
-      # The production job can be approved long after the PR has closed.
+      # A re-run or a delayed job can start after the PR has closed.
       - name: Check that the PR is still open
         # This runs before checkout, so ui/ doesn't exist yet.
         working-directory: .
@@ -153,7 +152,7 @@ jobs:
               '| --- | --- | --- |',
               ...rows,
               '',
-              'The production preview runs this PR against real data and needs approval on every push.',
+              'The production preview runs this PR against real data.',
             ].join('\n');
 
             if (existing) {
