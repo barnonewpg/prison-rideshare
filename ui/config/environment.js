@@ -93,6 +93,11 @@ module.exports = function (environment) {
     if (process.env.SOCKET_HOST) {
       ENV.DS.socketHost = process.env.SOCKET_HOST;
     }
+
+    // Set by the PR preview workflow.
+    if (process.env.PREVIEW_PR_NUMBER) {
+      ENV.APP.previewPullRequest = process.env.PREVIEW_PR_NUMBER;
+    }
   }
 
   return ENV;

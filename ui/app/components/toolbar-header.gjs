@@ -10,13 +10,21 @@ import {
 } from '@hashicorp/design-system-components/components';
 import { inject as controller } from '@ember/controller';
 import { runTask } from 'ember-lifeline';
+import {
+  isSandbox,
+  previewPullRequest,
+} from 'prison-rideshare-ui/utils/deployment';
 
 export default class ToolbarHeader extends Component {
   @controller application;
   @service sidebar;
 
   get isSandbox() {
-    return window.location.hostname.indexOf('sandbox') > -1;
+    return isSandbox();
+  }
+
+  get previewPullRequest() {
+    return previewPullRequest();
   }
 
   get toggleLabel() {
@@ -89,6 +97,21 @@ export default class ToolbarHeader extends Component {
                 @text='Sandbox'
                 title='All data on this instance is erased daily. If some type of example data would be useful for you, let Buck know.'
               />
+            {{/if}}
+            {{#if this.previewPullRequest}}
+              {{#if this.isSandbox}}
+                <HdsTag
+                  @text='PR #{{this.previewPullRequest}}'
+                  title='This is a preview of pull request #{{this.previewPullRequest}}.'
+                  data-test-preview-tag
+                />
+              {{else}}
+                <HdsTag
+                  @text='PR #{{this.previewPullRequest}} · production data'
+                  title='This is a preview of pull request #{{this.previewPullRequest}}, running against the production API. Changes here affect real data.'
+                  data-test-preview-tag
+                />
+              {{/if}}
             {{/if}}
             {{yield}}
           </div>
