@@ -1,0 +1,54 @@
+import { action } from '@ember/object';
+import { inject as service } from '@ember/service';
+import Component from '@glimmer/component';
+import PersonBadge from 'prison-rideshare-ui/components/person-badge';
+import { HdsFormSuperSelectSingleField } from '@hashicorp/design-system-components/components';
+
+export default class RidePerson extends Component {
+  @service('people') peopleService;
+
+  get person() {
+    return this.args.ride.get(this.args.property);
+  }
+
+  get placeholder() {
+    return this.args.property === 'driver' ? 'Driver' : 'Car Owner';
+  }
+
+  @action
+  clear() {
+    const ride = this.args.ride;
+    ride.set(this.args.property, null);
+    return ride.save();
+  }
+
+  <template>
+    {{#if this.person}}
+      <span class='ride-person' ...attributes>
+        <PersonBadge
+          @person={{this.person}}
+          @property={{@property}}
+          @clear={{this.clear}}
+        />
+      </span>
+    {{else}}
+      <HdsFormSuperSelectSingleField
+        data-test-ride-person-select={{@property}}
+        @placeholder={{this.placeholder}}
+        @options={{this.peopleService.active}}
+        @selected={{this.person}}
+        @searchField='name'
+        @allowClear={{true}}
+        @onChange={{@onChange}}
+        ...attributes
+        as |F|
+      >
+        <F.Options>
+          {{#let F.options as |option|}}
+            {{option.name}}
+          {{/let}}
+        </F.Options>
+      </HdsFormSuperSelectSingleField>
+    {{/if}}
+  </template>
+}

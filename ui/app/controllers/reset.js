@@ -1,0 +1,88 @@
+/* eslint-disable ember/classic-decorator-no-classic-methods, ember/no-get */
+import { inject as service } from '@ember/service';
+import Controller from '@ember/controller';
+import { get, action } from '@ember/object';
+
+import fetch from 'fetch';
+
+export default class ResetController extends Controller {
+  password = '';
+
+  passwordConfirmation = '';
+  error = undefined;
+
+  @service
+  session;
+
+  @service
+  store;
+
+  @service
+  toasts;
+
+  @action
+  updatePassword(event) {
+    const value = event?.target?.value ?? '';
+
+    this.set('password', value);
+  }
+
+  @action
+  updatePasswordConfirmation(event) {
+    const value = event?.target?.value ?? '';
+
+    this.set('passwordConfirmation', value);
+  }
+
+  @action
+  submitReset(event) {
+    event.preventDefault();
+
+    let userAdapter = this.store.adapterFor('user');
+    let resetUrl = `${userAdapter.buildURL('user')}/${this.token}`;
+
+    let query = fetch(resetUrl, {
+      method: 'PUT',
+      body: JSON.stringify({
+        data: {
+          type: 'users',
+          attributes: {
+            password: this.password,
+            'password-confirmation': this.passwordConfirmation,
+          },
+        },
+      }),
+      headers: {
+        'Content-Type': 'application/vnd.api+json',
+      },
+    });
+
+    this.set('error', undefined);
+
+    query
+      .then((response) => {
+        if (response.ok) {
+          this.toasts.show('Changed your password, will now log you in');
+
+          response.json().then((json) => {
+            let email = get(json, 'data.attributes.email');
+
+            this.session.authenticate(
+              'authenticator:application',
+              email,
+              this.password,
+            );
+          });
+        } else {
+          response.json().then((json) => {
+            let message = json?.errors?.[0]?.detail;
+
+            this.set('error', message || 'An unknown error occurred');
+          });
+        }
+      })
+      .catch(() => {
+        this.set('error', 'There was an error updating your password.');
+      });
+  }
+}
