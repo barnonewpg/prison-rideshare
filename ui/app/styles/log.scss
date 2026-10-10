@@ -1,3 +1,15 @@
+.log-content {
+  *:first-child {
+    margin-top: 0;
+  }
+
+  blockquote {
+    margin-left: 0;
+    padding-left: 0.75rem;
+    border-left: 3px solid rgb(0 0 0 / 15%);
+  }
+}
+
 .markdown-editor {
   position: relative;
   border: 1px solid rgb(0 0 0 / 20%);
@@ -19,6 +31,11 @@
     border-radius: 3px;
     cursor: pointer;
 
+    &:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
     &:hover:not(:disabled) {
       background: rgb(0 0 0 / 6%);
     }
@@ -26,11 +43,6 @@
     &.is-active {
       background: rgb(0 0 0 / 10%);
       border-color: rgb(0 0 0 / 20%);
-    }
-
-    &:disabled {
-      opacity: 0.4;
-      cursor: default;
     }
   }
 
@@ -73,17 +85,5 @@
     position: absolute;
     inset-block-start: 2.5rem;
     inset-inline-start: 0;
-  }
-}
-
-.log-content {
-  *:first-child {
-    margin-top: 0;
-  }
-
-  blockquote {
-    margin-left: 0;
-    padding-left: 0.75rem;
-    border-left: 3px solid rgb(0 0 0 / 15%);
   }
 }
