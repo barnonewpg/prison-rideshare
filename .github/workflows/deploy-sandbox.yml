@@ -22,6 +22,3 @@ jobs:
           branch: "primary"
           git_remote_url: "ssh://${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }}:22/${{ secrets.DEPLOYMENT_APP }}"
           ssh_private_key: ${{ secrets.DEPLOYMENT_KEY }}
-          # History was rewritten by the monorepo import, so the first push
-          # can't fast-forward. Remove this after the first successful deploy.
-          git_push_flags: "--force"
