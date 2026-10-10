@@ -1,0 +1,236 @@
+/* eslint-disable ember/no-classic-classes, ember/no-get*/
+import Model, { attr, belongsTo, hasMany } from '@ember-data/model';
+import { gt } from '@ember/object/computed';
+import { computed } from '@ember/object';
+import { inject as service } from '@ember/service';
+import { tracked } from '@glimmer/tracking';
+
+import dollars from 'prison-rideshare-ui/utils/dollars';
+import formatTimespan from 'prison-rideshare-ui/utils/format-timespan';
+
+import anonymiseAddress from 'prison-rideshare-ui/utils/anonymise-address';
+
+export default Model.extend({
+  moment: service(),
+
+  enabled: attr('boolean', { defaultValue: true }),
+  complete: attr('boolean', { defaultValue: false }),
+
+  cancellationReason: attr(),
+
+  combinedWith: belongsTo('ride', { async: true, inverse: 'children' }),
+  children: hasMany('ride', { async: false, inverse: 'combinedWith' }),
+
+  isCombined: computed('combinedWith.id', function () {
+    return this.belongsTo('combinedWith').id();
+  }),
+
+  medium: attr(),
+  requestConfirmed: attr(),
+
+  name: attr(),
+
+  institution: belongsTo('institution', { async: true, inverse: null }),
+  rate: attr('number'),
+
+  address: attr(),
+  contact: attr(),
+  passengers: attr({ defaultValue: 1 }),
+  firstTime: attr('boolean'),
+
+  validationErrors: computed(
+    'constructor.attributes',
+    'errors.[]',
+    function () {
+      const attributes = this.constructor.attributes;
+      const attributeKeys = Array.from(attributes.keys());
+      attributeKeys.push('institution');
+
+      return Array.from(attributeKeys).reduce((response, key) => {
+        const errors = this.get(`errors.${key}`) || [];
+        response[key] = errors.map((e) => e.message);
+        return response;
+      }, {});
+    },
+  ),
+
+  start: attr('date'),
+  end: attr('date'),
+  insertedAt: attr('date'),
+
+  rideTimes: computed('start', 'end', function () {
+    const start = this.start;
+    const end = this.end;
+
+    return formatTimespan(this.moment, start, end);
+  }),
+
+  driver: belongsTo('person', { async: true, inverse: 'drivings' }),
+  carOwner: belongsTo('person', { async: true, inverse: 'carOwnings' }),
+  initials: attr('string'),
+
+  requestNotes: attr(),
+
+  distance: attr(),
+
+  reportNotes: attr(),
+
+  overridable: attr('boolean'),
+
+  reimbursements: hasMany('reimbursement', { async: true, inverse: 'ride' }),
+
+  foodExpenses: attr({ defaultValue: 0 }),
+  foodExpensesDollars: dollars('foodExpenses'),
+
+  carExpenses: attr({ defaultValue: 0 }),
+  carExpensesDollars: dollars('carExpenses'),
+
+  totalExpenses: computed('foodExpenses', 'carExpenses', function () {
+    return this.foodExpenses + this.carExpenses;
+  }),
+  totalExpensesDollars: dollars('totalExpenses'),
+
+  donation: attr('boolean'),
+  donatable: attr('boolean'),
+
+  isDivider: tracked(),
+
+  reimbursementFoodExpensesSum: computed(
+    'reimbursements.@each.foodExpenses',
+    function () {
+      return this.hasMany('reimbursements')
+        .value()
+        .reduce((sum, reimbursement) => sum + reimbursement.foodExpenses, 0);
+    },
+  ),
+  outstandingFoodExpenses: computed(
+    'foodExpenses',
+    'reimbursementFoodExpensesSum',
+    function () {
+      return this.foodExpenses - this.reimbursementFoodExpensesSum;
+    },
+  ),
+
+  reimbursementCarExpensesSum: computed(
+    'reimbursements.@each.carExpenses',
+    function () {
+      return this.hasMany('reimbursements')
+        .value()
+        .reduce((sum, reimbursement) => sum + reimbursement.carExpenses, 0);
+    },
+  ),
+  outstandingCarExpenses: computed(
+    'carExpenses',
+    'reimbursementCarExpensesSum',
+    function () {
+      return this.carExpenses - this.reimbursementCarExpensesSum;
+    },
+  ),
+
+  reimbursementExpensesSum: computed(
+    'reimbursementFoodExpensesSum',
+    'reimbursementCarExpensesSum',
+    function () {
+      return (
+        this.reimbursementFoodExpensesSum + this.reimbursementCarExpensesSum
+      );
+    },
+  ),
+
+  outstandingTotalExpenses: computed(
+    'outstandingFoodExpenses',
+    'outstandingCarExpenses',
+    function () {
+      return this.outstandingFoodExpenses + this.outstandingCarExpenses;
+    },
+  ),
+
+  namePlusPassengers: computed('name', 'passengers', function () {
+    const name = this.name;
+    const passengers = this.passengers;
+
+    if (passengers > 1) {
+      return `${name} + ${passengers - 1}`;
+    } else {
+      return name;
+    }
+  }),
+
+  distanceExists: gt('distance', 0),
+  carExpensesExist: gt('carExpenses', 0),
+
+  cancelled: computed('enabled', {
+    get() {
+      return !this.enabled;
+    },
+
+    set(key, value) {
+      this.set('enabled', !value);
+      return value;
+    },
+  }),
+
+  requiresConfirmation: computed(
+    '{start,enabled,requestConfirmed}',
+    function () {
+      const now = new Date();
+
+      return this.start > now && this.enabled && !this.requestConfirmed;
+    },
+  ),
+
+  allAnonymisedAddresses: computed(
+    'address',
+    'children.@each.address',
+    function () {
+      const children = this.hasMany('children').value() || [];
+
+      return [this.address]
+        .concat(Array.from(children).map((child) => child.address))
+        .map((address) => anonymiseAddress(address))
+        .join(', ');
+    },
+  ),
+
+  allPassengers: computed(
+    'passengers',
+    'children.@each.passengers',
+    function () {
+      const children = this.hasMany('children').value() || [];
+
+      return Array.from(children)
+        .map((child) => child.passengers)
+        .reduce((sum, count) => count + sum, this.passengers);
+    },
+  ),
+
+  matchString: computed(
+    'institution.name',
+    'driver.name',
+    'carOwner.name',
+    'name',
+    'address',
+    function () {
+      return `${
+        this.get('institution.name') === undefined
+          ? ''
+          : this.get('institution.name')
+      } ${
+        this.get('driver.name') === undefined ? '' : this.get('driver.name')
+      } ${
+        this.get('carOwner.name') === undefined ? '' : this.get('carOwner.name')
+      } ${this.name === undefined ? '' : this.name} ${
+        this.address
+      }`.toLowerCase();
+    },
+  ),
+
+  matches(casedQuery) {
+    const query = casedQuery.toLowerCase();
+    const matchString = this.matchString;
+
+    return (query.match(/\S+/g) || []).every((queryTerm) =>
+      matchString.includes(queryTerm),
+    );
+  },
+});

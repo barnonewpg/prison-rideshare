@@ -1,0 +1,275 @@
+/* eslint-disable qunit/require-expect */
+import { currentURL } from '@ember/test-helpers';
+import { module, test } from 'qunit';
+import { setupApplicationTest } from '../helpers/application-tests';
+import percySnapshot from '@percy/ember';
+import { Response } from 'miragejs';
+
+import { authenticateSession } from 'ember-simple-auth/test-support';
+
+import page from 'prison-rideshare-ui/tests/pages/report';
+import shared from 'prison-rideshare-ui/tests/pages/shared';
+import { getPageTitle } from 'ember-page-title/test-support';
+import { overrideRoute } from '../helpers/override-route';
+
+module('Acceptance | reports', function (hooks) {
+  setupApplicationTest(hooks);
+
+  hooks.beforeEach(function () {
+    const leavenworth = this.server.create('institution', {
+      name: 'Fort Leavenworth',
+    });
+
+    const remand = this.server.create('institution', {
+      name: 'Remand Centre',
+    });
+
+    this.server.create('ride', {
+      name: 'Edward',
+      start: new Date(2016, 11, 27, 17, 0),
+      end: new Date(2016, 11, 27, 19, 0),
+      passengers: 1,
+      institution: leavenworth,
+      donatable: false,
+    });
+
+    this.server.create('ride', {
+      name: 'Chelsea',
+      start: new Date(2016, 11, 25, 10, 15),
+      end: new Date(2016, 11, 25, 12, 0),
+      passengers: 1,
+      institution: remand,
+      rate: 33,
+      initials: 'francine',
+      donatable: true,
+      overridable: true,
+    });
+
+    this.server.create('ride', {
+      name: 'Assata',
+      distance: 100,
+      complete: true,
+    });
+
+    this.server.patch('/rides/:id', function ({ rides }, { params: { id } }) {
+      let ride = rides.find(id);
+      let attrs = this.normalizedRequestAttrs('ride');
+
+      ride.update(attrs);
+      ride.complete = true;
+      ride.save();
+
+      return ride;
+    });
+  });
+
+  test('submit a report for a ride', async function (assert) {
+    await page.visit();
+
+    assert.strictEqual(getPageTitle(), 'Ride report · Prison Rideshare');
+    assert.strictEqual(
+      page.rides.length,
+      2,
+      'expected two rides to choose from',
+    );
+    assert.ok(page.noSession.isHidden);
+
+    assert.strictEqual(
+      page.rides[0].text,
+      'francine: Sun, Dec 25 at 10:15a to Remand Centre (33 ¢⁄km )',
+    );
+    assert.strictEqual(
+      page.rides[1].text,
+      'Tue, Dec 27 at 5:00p to Fort Leavenworth',
+    );
+
+    await page.rides[0].click();
+    await page.distance.fillIn(75);
+    await page.foodExpenses.fillIn(25.5);
+    await page.carExpenses.fillIn(52.05);
+    await page.notes.fillIn('These r the notes');
+    await page.donation.click();
+
+    await percySnapshot(assert);
+
+    await page.submitButton.click();
+
+    const changedRide = this.server.db.rides[1];
+
+    assert.strictEqual(changedRide.distance, 75);
+    assert.strictEqual(changedRide.foodExpenses, 2550);
+    assert.strictEqual(changedRide.carExpenses, 5205);
+    assert.strictEqual(changedRide.reportNotes, 'These r the notes');
+    assert.true(changedRide.donation);
+
+    assert.strictEqual(currentURL(), '/reports/new');
+
+    assert.strictEqual(shared.toast.text, 'Your report was saved');
+    assert.strictEqual(
+      page.rides.length,
+      1,
+      'expected the reported-on ride to have disappeared',
+    );
+    assert.strictEqual(
+      page.rides[0].text,
+      'Tue, Dec 27 at 5:00p to Fort Leavenworth',
+    );
+  });
+
+  test('submit a report with a decimal distance', async function (assert) {
+    await page.visit();
+
+    await page.rides[0].click();
+    await page.distance.fillIn(84.2);
+    await page.foodExpenses.fillIn(25.5);
+
+    await page.submitButton.click();
+
+    const changedRide = this.server.db.rides[1];
+
+    assert.strictEqual(changedRide.distance, 84.2);
+    assert.strictEqual(shared.toast.text, 'Your report was saved');
+  });
+
+  test('a fallback shows when no rides need a report', async function (assert) {
+    this.server.db.rides.remove();
+    await page.visit();
+
+    assert.ok(
+      page.noRides.isVisible,
+      'expected there to be no rides to report on',
+    );
+  });
+
+  test('the report interface is hidden when a user is logged in', async function (assert) {
+    await authenticateSession(this.application);
+
+    await page.visit();
+
+    assert.strictEqual(page.rides.length, 0);
+    assert.ok(page.noSession.isVisible);
+  });
+
+  test('a ride that is not donatable doesn’t show the donation checkbox, same for overridable and car expenses', async function (assert) {
+    await page.visit();
+    await page.rides[1].click();
+
+    assert.ok(
+      page.donation.isHidden,
+      'expected the donation checkbox to be hidden when a ride is not donatable',
+    );
+    assert.ok(
+      page.carExpenses.isHidden,
+      'expected the car expenses field to be hidden when a ride is not overridable',
+    );
+  });
+
+  test('unsaved changes are discarded when the selected ride changes', async function (assert) {
+    await page.visit();
+
+    await page.rides[0].click();
+    await page.distance.fillIn(75);
+
+    await page.rides[1].click();
+    await page.rides[0].click();
+
+    assert.strictEqual(page.distance.value, '');
+  });
+
+  test('a validation failure displays the error details', async function (assert) {
+    overrideRoute(
+      this.server,
+      'patch',
+      '/rides/:id',
+      () =>
+        new Response(
+          422,
+          {},
+          {
+            errors: [
+              {
+                detail: 'Distance is invalid',
+                source: { pointer: '/data/attributes/distance' },
+                title: 'is invalid',
+              },
+              {
+                detail: 'Food expenses must be greater than -1',
+                source: { pointer: '/data/attributes/food-expenses' },
+                title: 'must be greater than -1',
+              },
+              {
+                detail: 'Report notes are too long',
+                source: { pointer: '/data/attributes/report-notes' },
+                title: 'is too long',
+              },
+            ],
+          },
+        ),
+    );
+
+    await page.visit();
+
+    await page.rides[0].click();
+    await page.distance.fillIn(75);
+
+    await page.submitButton.click();
+
+    assert.strictEqual(
+      shared.inlineAlert.text,
+      'There was an error saving your report: Distance is invalid, Report notes are too long, Food expenses must be greater than -1',
+    );
+    assert.strictEqual(
+      page.distanceError.text,
+      'Distance is invalid',
+      'expected the distance field to show its error',
+    );
+    assert.strictEqual(
+      page.foodExpensesError.text,
+      'Food expenses must be greater than -1',
+      'expected the food expenses field to show its error',
+    );
+    assert.strictEqual(
+      page.notesError.text,
+      'Report notes are too long',
+      'expected the notes field to show its error',
+    );
+  });
+
+  test('a failure to save keeps the values and displays an error', async function (assert) {
+    const restoreReportSave = overrideRoute(
+      this.server,
+      'patch',
+      '/rides/:id',
+      () => new Response(422, {}, {}),
+    );
+
+    await page.visit();
+
+    await page.rides[0].click();
+    await page.distance.fillIn(75);
+
+    await page.submitButton.click();
+
+    assert.strictEqual(
+      shared.inlineAlert.text,
+      'There was an error saving your report!',
+    );
+
+    assert.strictEqual(currentURL(), '/reports/new');
+    assert.strictEqual(
+      page.distance.value,
+      '75',
+      'expected the distance field to have the same value',
+    );
+
+    restoreReportSave();
+
+    await page.submitButton.click();
+
+    assert.strictEqual(shared.toast.text, 'Your report was saved');
+    assert.notOk(
+      shared.inlineAlert.isPresent,
+      'expected the inline alert to clear after retrying the submission',
+    );
+  });
+});

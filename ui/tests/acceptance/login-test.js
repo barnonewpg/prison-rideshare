@@ -1,0 +1,113 @@
+/* eslint-disable qunit/require-expect */
+import { currentRouteName, currentURL } from '@ember/test-helpers';
+import { module, test } from 'qunit';
+import { setupApplicationTest } from '../helpers/application-tests';
+import percySnapshot from '@percy/ember';
+import { authenticateSession } from 'ember-simple-auth/test-support';
+import { Response } from 'miragejs';
+import { overrideRoute } from '../helpers/override-route';
+
+import page from 'prison-rideshare-ui/tests/pages/login';
+import shared from 'prison-rideshare-ui/tests/pages/shared';
+
+module('Acceptance | login', function (hooks) {
+  setupApplicationTest(hooks);
+
+  hooks.beforeEach(function () {
+    this.server.post('/token', (schema, { requestBody }) => {
+      authenticateSession({ access_token: 'abcdef' });
+
+      // FIXME yeah… weird to create the user here!
+
+      if (requestBody.includes('jorts')) {
+        schema.create('user', {
+          email: 'jorts@jants.ca',
+          password: 'aaaaaaaaa',
+          admin: true,
+        });
+      } else if (requestBody.includes('jj')) {
+        schema.create('user', {
+          email: 'jj@jj.ca',
+          password: 'aaaaaaaaa',
+        });
+      }
+
+      return {
+        access_token: 'abcdef',
+      };
+    });
+  });
+
+  test('successful admin login forwards to the rides list', async function (assert) {
+    await page.visit();
+
+    await page.fillEmail('jorts@jants.ca');
+    await page.fillPassword('aaaaaaaaa');
+
+    await page.submit();
+
+    assert.strictEqual(currentRouteName(), 'rides');
+    assert.strictEqual(shared.session.text, 'Log out jorts@jants.ca');
+  });
+
+  test('successful non-admin login forwards to the report route', async function (assert) {
+    await page.visit();
+
+    await page.fillEmail('jj@jj.ca');
+    await page.fillPassword('aaaaaaaaa');
+    await page.submit();
+
+    assert.strictEqual(currentURL(), '/reports/new');
+  });
+
+  test('a failure from the current endpoint logs the user out', async function (assert) {
+    this.server.get(
+      '/users/current',
+      () => {
+        return {};
+      },
+      401,
+    );
+
+    await page.visit();
+    await page.fillEmail('x@example.com');
+    await page.fillPassword('x');
+    await page.submit();
+
+    assert.strictEqual(currentURL(), '/reports/new');
+  });
+
+  test('a failed login shows an error that clears on retry', async function (assert) {
+    const restoreToken = overrideRoute(
+      this.server,
+      'post',
+      '/token',
+      () => new Response(401, {}, {}),
+    );
+
+    await page.visit();
+    await page.fillEmail('x@example.com');
+    await page.fillPassword('wrong-password');
+    await page.submit();
+
+    await percySnapshot(assert);
+
+    assert.strictEqual(currentURL(), '/login');
+    assert.strictEqual(
+      shared.inlineAlert.text,
+      'There was an error logging you in.',
+    );
+
+    restoreToken();
+    this.server.create('user', {
+      email: 'x@example.com',
+      password: 'correcthorsebatterystaple',
+    });
+
+    await page.fillPassword('correcthorsebatterystaple');
+    await page.submit();
+
+    assert.strictEqual(currentURL(), '/reports/new');
+    assert.notOk(shared.inlineAlert.isPresent);
+  });
+});

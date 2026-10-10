@@ -1,0 +1,20 @@
+import Service, { inject as service } from '@ember/service';
+import { tracked } from '@glimmer/tracking';
+
+export default class InstitutionsService extends Service {
+  @service
+  store;
+
+  @tracked institutions;
+
+  async load() {
+    this.institutions = await this.store.findAll('institution');
+  }
+
+  get all() {
+    let institutions = this.institutions || this.store.peekAll('institution');
+    return [...institutions].sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    });
+  }
+}
