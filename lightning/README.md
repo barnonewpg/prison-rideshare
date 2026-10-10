@@ -1,3 +1,11 @@
+# Prison Rideshare lightning server
+
+This serves the UI’s `index.html` from Redis, where [`ember-cli-deploy-lightning-pack`](../ui/config/deploy.js) puts each build. The first part of the request’s hostname chooses which deployment to serve: `rideshare.` is production, `sandbox.` is the sandbox, and other subdomains serve deployments with that prefix.
+
+It’s based on [express-lightning-deploy](https://github.com/stonecircle/express-lightning-deploy) by [Chris Manson](https://github.com/mansona), whose commits are preserved in this directory’s history. His original README follows.
+
+---
+
 # Express Lightning Deploy
 This repo contains a very simple NodeJS implementation of the "Ember Lightning Deploy Strategy" server made famous by [Luke Melia](https://twitter.com/lukemelia). The original talk discussing the strategy can be found here: https://www.youtube.com/watch?v=QZVYP3cPcWQ
 
