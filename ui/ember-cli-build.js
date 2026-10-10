@@ -38,10 +38,6 @@ module.exports = async function (defaults) {
     sourcemaps: {
       enabled: true,
     },
-    emberHighCharts: {
-      includeHighCharts: true,
-      includeModules: ['heatmap'],
-    },
     sassOptions: {
       precision: 4,
       includePaths: [
