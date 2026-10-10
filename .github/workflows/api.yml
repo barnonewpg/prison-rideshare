@@ -13,6 +13,10 @@ on:
       - 'api/**'
       - '.github/workflows/api.yml'
 
+permissions:
+  contents: read
+  checks: write
+
 concurrency:
   group: api-${{ github.head_ref || github.ref }}
   cancel-in-progress: true

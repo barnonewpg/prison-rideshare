@@ -13,6 +13,10 @@ on:
       - 'ui/**'
       - '.github/workflows/ui.yml'
 
+permissions:
+  contents: read
+  checks: write
+
 concurrency:
   group: ui-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
