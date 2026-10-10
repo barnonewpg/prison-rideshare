@@ -19,6 +19,7 @@ import momentFormat from 'ember-moment/helpers/moment-format';
 import now from 'ember-moment/helpers/now';
 import BasicDropdownWormhole from 'ember-basic-dropdown/components/basic-dropdown-wormhole';
 import { modifier } from 'ember-modifier';
+import { previewLabel } from 'prison-rideshare-ui/utils/deployment';
 
 class ApplicationComponent extends Component {
   @service toasts;
@@ -42,6 +43,10 @@ class ApplicationComponent extends Component {
     return this.sidebar.navIsMinimized;
   }
 
+  get previewLabel() {
+    return previewLabel();
+  }
+
   get activeToast() {
     return this.toasts.activeToast;
   }
@@ -57,6 +62,9 @@ class ApplicationComponent extends Component {
 
   <template>
     {{pageTitle 'Prison Rideshare' separator=' · '}}
+    {{#if this.previewLabel}}
+      {{pageTitle this.previewLabel front=true}}
+    {{/if}}
     <HeadLayout />
 
     {{#if this.activeToast}}
