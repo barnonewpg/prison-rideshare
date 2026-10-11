@@ -1,31 +1,18 @@
-import config from 'ember-get-config';
+import { IconRegistry } from '@hashicorp/flight-icons/symbol-js/registry';
 import customFlightIconSprite from 'prison-rideshare-ui/utils/custom-flight-icon-sprite';
 
-const SPRITE_SELECTOR = '#custom-flight-icons-sprite';
+const SYMBOL_REGEX =
+  /<symbol\s[^>]*?id="hds-icon-flight-([a-z0-9-]+)-(16|24)"[\s\S]*?<\/symbol>/g;
 
-function injectSprite(container, position) {
-  if (!container || container.querySelector(SPRITE_SELECTOR)) {
-    return;
-  }
-
-  container.insertAdjacentHTML(position, customFlightIconSprite);
-}
-
+// HDS looks icons up in the flight-icons registry and lazily loads each size’s
+// <symbol> markup into its own sprite, so custom icons are registered the same way.
 export function initialize() {
-  if (typeof window === 'undefined') {
-    return;
-  }
-
-  const document = window.document;
-  if (!document) {
-    return;
-  }
-
-  if (config.environment === 'test') {
-    const testingContainer = document.getElementById('ember-testing');
-    injectSprite(testingContainer, 'afterbegin');
-  } else {
-    injectSprite(document.body, 'beforeend');
+  for (const [markup, name, size] of customFlightIconSprite.matchAll(
+    SYMBOL_REGEX,
+  )) {
+    IconRegistry[name] ??= { flight: {}, carbon: null };
+    IconRegistry[name].flight[size] = () =>
+      Promise.resolve({ default: markup });
   }
 }
 

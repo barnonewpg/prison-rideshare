@@ -8,13 +8,13 @@
 @import 'toast';
 
 body {
-  --token-app-header-height: 20px;
+  --hds-app-header-height: 20px;
 
   max-width: 100%;
   max-height: 100%;
-  font-family: var(--token-typography-body-200-font-family);
-  font-size: var(--token-typography-body-200-font-size);
-  line-height: var(--token-typography-body-200-line-height);
+  font-family: var(--hds-typography-body-200-font-family);
+  font-size: var(--hds-typography-body-200-font-size);
+  line-height: var(--hds-typography-body-200-line-height);
   margin: 0;
 }
 
@@ -27,7 +27,7 @@ body.ember-application {
 :root {
   --app-header-height: 64px;
   --app-sidebar-width: 13rem;
-  --app-header-bg: var(--token-color-palette-blue-500);
+  --app-header-bg: var(--hds-core-color-blue-500);
 }
 
 html {

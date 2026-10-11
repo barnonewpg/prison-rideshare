@@ -35,11 +35,13 @@
     "@ember/string": "^3.1.1",
     "@ember/test-helpers": "^3.2.0",
     "@ember/test-waiters": "^4.1.2",
+    "@embroider/macros": "^1.21.3",
     "@faker-js/faker": "^8.1.0",
     "@glimmer/component": "^1.1.2",
     "@glimmer/tracking": "^1.1.2",
-    "@hashicorp/design-system-components": "^4.24.0",
-    "@hashicorp/design-system-tokens": "^3.0.0",
+    "@hashicorp/design-system-components": "^7.0.0",
+    "@hashicorp/design-system-tokens": "^6.0.0",
+    "@hashicorp/flight-icons": "^5.3.0",
     "@lexical/code": "^0.49.0",
     "@lexical/history": "^0.49.0",
     "@lexical/link": "^0.49.0",
@@ -60,7 +62,7 @@
     "coveralls": "^3.1.1",
     "decorator-transforms": "^2.3.0",
     "ember-auto-import": "^2.12.0",
-    "ember-basic-dropdown": "^8.7.0",
+    "ember-basic-dropdown": "^8.9.0",
     "ember-buffered-proxy": "^2.1.1",
     "ember-cli": "~5.12.0",
     "ember-cli-app-version": "^6.0.1",
@@ -125,6 +127,7 @@
     "qunit": "^2.20.0",
     "qunit-dom": "^2.0.0",
     "sanitize-html": "^2.7.0",
+    "sass": "^1.93.2",
     "stylelint": "^15.11.0",
     "stylelint-config-standard": "^34.0.0",
     "stylelint-config-standard-scss": "^11.0.0",
@@ -147,12 +150,7 @@
   },
   "pnpm": {
     "overrides": {
-      "ember-focus-trap": "0.8.0"
-    },
-    "patchedDependencies": {
-      "@hashicorp/design-system-components": "patches/@hashicorp__design-system-components.patch",
-      "decorator-transforms": "patches/decorator-transforms.patch",
-      "@hashicorp/flight-icons": "patches/@hashicorp__flight-icons.patch"
+      "@ember/test-waiters": "^4.1.1"
     }
   }
 }

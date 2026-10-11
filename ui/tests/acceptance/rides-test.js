@@ -944,6 +944,8 @@ module('Acceptance | rides', function (hooks) {
       'Cancelling a ride with rides combined into it will cause the combined rides to also disappear. Uncombine them if this is undesirable.',
     );
 
+    await page.cancellationForm.cancel();
+
     await page.rides[0].combineButton.click();
 
     assert.ok(
