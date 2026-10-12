@@ -2,7 +2,7 @@ import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
 import { isEmpty } from '@ember/utils';
 import { isTesting } from '@ember/debug';
-import fetch from 'fetch';
+import fetch from 'prison-rideshare-ui/utils/fetch';
 import config from '../config/environment';
 import { pollTask, runTask } from 'ember-lifeline';
 import CalendarState from 'prison-rideshare-ui/utils/calendar-state';

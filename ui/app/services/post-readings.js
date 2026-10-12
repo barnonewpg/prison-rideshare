@@ -1,5 +1,5 @@
 import Service, { inject as service } from '@ember/service';
-import fetch from 'fetch';
+import fetch from 'prison-rideshare-ui/utils/fetch';
 
 export default class PostReadingsService extends Service {
   @service store;

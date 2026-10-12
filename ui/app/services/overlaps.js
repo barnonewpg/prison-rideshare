@@ -3,7 +3,7 @@ import { set } from '@ember/object';
 import Service, { inject as service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
-import fetch from 'fetch';
+import fetch from 'prison-rideshare-ui/utils/fetch';
 import { task } from 'ember-concurrency';
 import formatBriefTimespan from 'prison-rideshare-ui/utils/format-brief-timespan';
 
