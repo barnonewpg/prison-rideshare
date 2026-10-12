@@ -14,7 +14,7 @@ defmodule Mix.Tasks.ArchiveGasPrice do
 
     response = HTTPoison.get!(Application.get_env(:prison_rideshare, :gas_price_endpoint))
 
-    with {:ok, parsed} <- Poison.decode(response.body),
+    with {:ok, parsed} <- Jason.decode(response.body),
          result <- ExtractGasPrice.extract_gas_price(parsed) do
       case result do
         {:ok, %{price: price}} ->

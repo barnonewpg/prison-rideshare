@@ -3,7 +3,7 @@ defmodule PrisonRideshare.ExtractGasPriceTest do
   alias PrisonRideshare.ExtractGasPrice
 
   test "it extracts the price" do
-    example = ~s([{
+    example = ~S([{
       "loadedUrl": "http://www.winnipeggasprices.com/",
       "loadingStartedAt": "2018-06-13T08:00:01.711Z",
       "loadingFinishedAt": "2018-06-13T08:00:11.531Z",
@@ -50,7 +50,7 @@ defmodule PrisonRideshare.ExtractGasPriceTest do
       "storageBytes": 1082
     }])
 
-    parsed = Poison.decode!(example)
+    parsed = Jason.decode!(example)
 
     assert ExtractGasPrice.extract_gas_price(parsed) ==
              {:ok,
