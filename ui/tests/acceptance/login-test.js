@@ -8,6 +8,7 @@ import { Response } from 'miragejs';
 import { overrideRoute } from '../helpers/override-route';
 
 import page from 'prison-rideshare-ui/tests/pages/login';
+import reportPage from 'prison-rideshare-ui/tests/pages/report';
 import shared from 'prison-rideshare-ui/tests/pages/shared';
 
 module('Acceptance | login', function (hooks) {
@@ -48,6 +49,35 @@ module('Acceptance | login', function (hooks) {
 
     assert.strictEqual(currentRouteName(), 'rides');
     assert.strictEqual(shared.session.text, 'Log out jorts@jants.ca');
+  });
+
+  test('rides loaded for reporting are discarded on admin login', async function (assert) {
+    this.server.create('ride', { complete: false });
+    this.server.create('ride', { complete: true });
+
+    await reportPage.visit();
+    assert.strictEqual(reportPage.rides.length, 1);
+
+    const store = this.owner.lookup('service:store');
+    let ridesInStoreWhenFetchingAll;
+
+    overrideRoute(this.server, 'get', '/rides', function ({ rides }) {
+      ridesInStoreWhenFetchingAll = store.peekAll('ride').length;
+      return rides.all();
+    });
+
+    await page.visit();
+    await page.fillEmail('jorts@jants.ca');
+    await page.fillPassword('aaaaaaaaa');
+    await page.submit();
+
+    assert.strictEqual(currentRouteName(), 'rides');
+    assert.strictEqual(
+      ridesInStoreWhenFetchingAll,
+      0,
+      'expected the partial ride list to be unloaded before fetching all rides',
+    );
+    assert.strictEqual(store.peekAll('ride').length, 2);
   });
 
   test('successful non-admin login forwards to the report route', async function (assert) {

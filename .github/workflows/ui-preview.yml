@@ -82,17 +82,13 @@ jobs:
           API_HOST: ${{ vars.API_HOST }}
           SOCKET_HOST: ${{ vars.SOCKET_HOST }}
           PREVIEW_PR_NUMBER: ${{ github.event.pull_request.number }}
-        # Without API_HOST the production build enables Mirage.
+        # Without API_HOST the build would call its own origin for the API.
         run: |
           if [ -z "$API_HOST" ]; then
             echo "::error::API_HOST is not set in the preview-${{ matrix.variant }} environment"
             exit 1
           fi
           pnpm exec ember build --environment=production
-      # Wrangler 4 needs a newer Node than the app's Volta pin.
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 22
       - name: Deploy to Cloudflare Pages
         id: deploy
         uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0 # v4.1.3
