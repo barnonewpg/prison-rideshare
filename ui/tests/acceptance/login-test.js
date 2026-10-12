@@ -80,6 +80,36 @@ module('Acceptance | login', function (hooks) {
     assert.strictEqual(store.peekAll('ride').length, 2);
   });
 
+  test('overlaps are refetched when logging in again', async function (assert) {
+    await page.visit();
+    await page.fillEmail('jorts@jants.ca');
+    await page.fillPassword('aaaaaaaaa');
+    await page.submit();
+
+    assert.ok(shared.ridesBadge.isHidden);
+
+    await shared.session.click();
+
+    let ride = this.server.create('ride', {
+      start: new Date(2117, 11, 4, 17, 0),
+      end: new Date(2117, 11, 4, 19, 0),
+    });
+    let person = this.server.create('person');
+    let slot = this.server.create('slot', {
+      start: new Date(2117, 11, 4, 17, 30),
+      end: new Date(2117, 11, 4, 20),
+    });
+    ride.createCommitment({ slot, person });
+    ride.save();
+
+    await page.visit();
+    await page.fillEmail('jorts@jants.ca');
+    await page.fillPassword('aaaaaaaaa');
+    await page.submit();
+
+    assert.strictEqual(shared.ridesBadge.text, '1');
+  });
+
   test('successful non-admin login forwards to the report route', async function (assert) {
     await page.visit();
 
