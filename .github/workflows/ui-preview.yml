@@ -82,7 +82,7 @@ jobs:
           API_HOST: ${{ vars.API_HOST }}
           SOCKET_HOST: ${{ vars.SOCKET_HOST }}
           PREVIEW_PR_NUMBER: ${{ github.event.pull_request.number }}
-        # Without API_HOST the production build enables Mirage.
+        # Without API_HOST the build would call its own origin for the API.
         run: |
           if [ -z "$API_HOST" ]; then
             echo "::error::API_HOST is not set in the preview-${{ matrix.variant }} environment"

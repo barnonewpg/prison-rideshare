@@ -45,10 +45,6 @@ module.exports = function (environment) {
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
-    ENV['ember-cli-mirage'] = {
-      enabled: false,
-    };
-
     if (process.env.API_HOST) {
       ENV.DS.host = process.env.API_HOST;
     }
@@ -84,10 +80,6 @@ module.exports = function (environment) {
 
     if (process.env.API_HOST) {
       ENV.DS.host = process.env.API_HOST;
-    } else {
-      ENV['ember-cli-mirage'] = {
-        enabled: true,
-      };
     }
 
     if (process.env.SOCKET_HOST) {
