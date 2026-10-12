@@ -1,4 +1,4 @@
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import EmberRouter from '@ember/routing/router';
 import config from 'prison-rideshare-ui/config/environment';
 

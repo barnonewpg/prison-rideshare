@@ -1,5 +1,5 @@
 import { action } from '@ember/object';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import PersonBadge from 'prison-rideshare-ui/components/person-badge';
 import { HdsFormSuperSelectSingleField } from '@hashicorp/design-system-components/components';

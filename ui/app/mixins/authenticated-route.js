@@ -1,5 +1,5 @@
 /* eslint-disable ember/no-new-mixins */
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import Route from '@ember/routing/route';
 
 export default class AuthenticatedRoute extends Route {
