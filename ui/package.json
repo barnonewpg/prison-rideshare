@@ -84,7 +84,7 @@
     "ember-decorators": "^7.0.0",
     "ember-eslint-parser": "^0.14.9",
     "ember-highcharts": "^7.0.0",
-    "ember-inflector": "^4.0.0",
+    "ember-inflector": "^7.0.0",
     "ember-lifeline": "^7.0.0",
     "ember-load-initializers": "^2.1.2",
     "ember-mirage": "^0.4.3",
