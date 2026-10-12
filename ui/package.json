@@ -133,7 +133,6 @@
     "stylelint-prettier": "^4.0.2",
     "testem": "^3.10.1",
     "testem-multi-reporter": "^1.2.0",
-    "tracked-built-ins": "^3.3.0",
     "webpack": "^5.89.0"
   },
   "engines": {

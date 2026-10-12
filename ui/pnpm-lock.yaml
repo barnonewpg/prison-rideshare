@@ -332,9 +332,6 @@ importers:
       testem-multi-reporter:
         specifier: ^1.2.0
         version: 1.2.0
-      tracked-built-ins:
-        specifier: ^3.3.0
-        version: 3.4.0(@babel/core@7.28.4)
       webpack:
         specifier: ^5.89.0
         version: 5.101.3
@@ -4673,10 +4670,6 @@ packages:
     resolution: {integrity: sha512-PgYcI9PeNvtKaF0QncxfbS68olMYM1idwuI8v/WxsjOGqUx5bmsu6V17vy/d9hX4mwmjgsBhEghrVasGSuaIgw==}
     engines: {node: 12.* || 14.* || >= 16.*}
 
-  ember-tracked-storage-polyfill@1.0.0:
-    resolution: {integrity: sha512-eL7lZat68E6P/D7b9UoTB5bB5Oh/0aju0Z7PCMi3aTwhaydRaxloE7TGrTRYU+NdJuyNVZXeGyxFxn2frvd3TA==}
-    engines: {node: 12.* || >= 14}
-
   ember-truth-helpers@5.0.0:
     resolution: {integrity: sha512-PnQd6D6hvlNC3k6gBu0SC2cvfXX6wH6W0nToomIIoxqyrD5cllk0zBh/j/1H0KsczVCWeuF9PWj5xJgL4jQAGg==}
 
@@ -8101,11 +8094,8 @@ packages:
   tr46@0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
 
-  tracked-built-ins@3.4.0:
-    resolution: {integrity: sha512-aRwWQXC3VkY50oYxS7wKZiavkjf3uaN+UYUH30D5gxUqbxDN2LnNsfWyDfckmxHUGw4gJDH5lpRS0jX/tim0vw==}
-
-  tracked-built-ins@4.0.0:
-    resolution: {integrity: sha512-0Jl43A1SDZd+yYCJvXfgDSn4Wk/zcawkyFTBPqOETU5UJRngnVEnQ8oOjawqPRg6qja3sKjIQ8z6X9xJzcUTUA==}
+  tracked-built-ins@4.1.2:
+    resolution: {integrity: sha512-KiiV/Pzi7VNKTn9Fip6Ic54AjKgFfqows1Jq3L0WLVqZcvfswdhVxQ9yqqhTXsmgLhVzIgtdzNBH4ExqWf34BQ==}
 
   tree-kill@1.2.2:
     resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==}
@@ -10823,7 +10813,7 @@ snapshots:
       prismjs: 1.30.0
       tabbable: 6.2.0
       tippy.js: 6.3.7
-      tracked-built-ins: 4.0.0(@babel/core@7.28.4)
+      tracked-built-ins: 4.1.2(@babel/core@7.28.4)
     transitivePeerDependencies:
       - '@babel/core'
       - '@ember/test-helpers'
@@ -14604,7 +14594,7 @@ snapshots:
       decorator-transforms: 2.3.0(@babel/core@7.28.4)
       ember-modifier: 4.2.2(@babel/core@7.28.4)
       ember-resources: 7.1.0(@glimmer/component@1.1.2(@babel/core@7.28.4))(@glint/template@1.6.1)
-      tracked-built-ins: 4.0.0(@babel/core@7.28.4)
+      tracked-built-ins: 4.1.2(@babel/core@7.28.4)
     transitivePeerDependencies:
       - '@babel/core'
       - '@glint/template'
@@ -14687,13 +14677,6 @@ snapshots:
       calculate-cache-key-for-tree: 2.0.0
       ember-cli-babel: 7.26.11
       ember-cli-version-checker: 5.1.2
-    transitivePeerDependencies:
-      - supports-color
-
-  ember-tracked-storage-polyfill@1.0.0:
-    dependencies:
-      ember-cli-babel: 7.26.11
-      ember-cli-htmlbars: 5.7.2
     transitivePeerDependencies:
       - supports-color
 
@@ -18730,20 +18713,10 @@ snapshots:
 
   tr46@0.0.3: {}
 
-  tracked-built-ins@3.4.0(@babel/core@7.28.4):
+  tracked-built-ins@4.1.2(@babel/core@7.28.4):
     dependencies:
-      '@embroider/addon-shim': 1.10.0
+      '@embroider/addon-shim': 1.10.3
       decorator-transforms: 2.3.0(@babel/core@7.28.4)
-      ember-tracked-storage-polyfill: 1.0.0
-    transitivePeerDependencies:
-      - '@babel/core'
-      - supports-color
-
-  tracked-built-ins@4.0.0(@babel/core@7.28.4):
-    dependencies:
-      '@embroider/addon-shim': 1.10.0
-      decorator-transforms: 2.3.0(@babel/core@7.28.4)
-      ember-tracked-storage-polyfill: 1.0.0
     transitivePeerDependencies:
       - '@babel/core'
       - supports-color
