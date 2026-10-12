@@ -21,9 +21,8 @@ defmodule PrisonRideshare.Mixfile do
   defp hex do
     [
       ignore_advisories: [
-        # cowlib 2.19.0 is the latest release and has no fix available; neither
-        # the cookie encoder nor structured-header escaping is reachable here.
-        "CVE-2026-43969",
+        # cowlib 2.21.0 is the latest release and has no fix available;
+        # structured-header escaping is not reachable here.
         "CVE-2026-43966",
         # hackney is fixed only in 4.x, but httpoison 1.x and sentry 8.x both
         # require ~> 1.8. Outbound HTTP is limited to the configured gas-price
