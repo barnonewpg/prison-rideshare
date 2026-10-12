@@ -1,6 +1,6 @@
 /* eslint-disable ember/classic-decorator-no-classic-methods, ember/no-classic-components, ember/no-computed-properties-in-native-classes, ember/no-get, ember/require-tagless-components */
 import { action, computed } from '@ember/object';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import { alias } from '@ember/object/computed';
 import Component from '@ember/component';
 import moment from 'moment-timezone';

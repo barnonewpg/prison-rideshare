@@ -1,6 +1,6 @@
 /* eslint-disable ember/no-side-effects */
 import { set } from '@ember/object';
-import Service, { inject as service } from '@ember/service';
+import Service, { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
 import fetch from 'fetch';

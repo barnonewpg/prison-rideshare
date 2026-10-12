@@ -1,5 +1,5 @@
 /* eslint-disable ember/no-get */
-import Service, { inject as service } from '@ember/service';
+import Service, { service } from '@ember/service';
 // TODO restore in #202
 // import { A } from '@ember/array';
 // import PhoenixSocket from 'ember-phoenix/app/services/phoenix-socket';
