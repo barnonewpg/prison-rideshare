@@ -8,6 +8,8 @@ module.exports = {
     sourceType: 'module',
     requireConfigFile: false,
     babelOptions: {
+      // The app's babel.config.mjs is async, which ESLint can't load
+      configFile: false,
       plugins: [
         ['@babel/plugin-proposal-decorators', { decoratorsBeforeExport: true }],
       ],
