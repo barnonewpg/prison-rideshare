@@ -84,10 +84,6 @@ module.exports = function (environment) {
 
     if (process.env.API_HOST) {
       ENV.DS.host = process.env.API_HOST;
-    } else {
-      ENV['ember-cli-mirage'] = {
-        enabled: true,
-      };
     }
 
     if (process.env.SOCKET_HOST) {
