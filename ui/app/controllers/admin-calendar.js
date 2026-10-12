@@ -2,7 +2,7 @@ import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import CalendarController from './calendar';
-import fetch from 'fetch';
+import fetch from 'prison-rideshare-ui/utils/fetch';
 import moment from 'moment-timezone';
 import RSVP from 'rsvp';
 

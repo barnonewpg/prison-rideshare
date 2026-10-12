@@ -3,7 +3,7 @@ import { inject as service } from '@ember/service';
 import Controller from '@ember/controller';
 import { get, action } from '@ember/object';
 
-import fetch from 'fetch';
+import fetch from 'prison-rideshare-ui/utils/fetch';
 
 export default class ResetController extends Controller {
   password = '';

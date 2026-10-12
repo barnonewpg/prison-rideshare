@@ -4,7 +4,7 @@ import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { tagName } from '@ember-decorators/component';
 import reasonToIcon from 'prison-rideshare-ui/utils/reason-to-icon';
-import fetch from 'fetch';
+import fetch from 'prison-rideshare-ui/utils/fetch';
 import ScrollTo from 'prison-rideshare-ui/components/scroll-to';
 import LinkedContact from 'prison-rideshare-ui/components/linked-contact';
 import RidePerson from 'prison-rideshare-ui/components/ride-person';
