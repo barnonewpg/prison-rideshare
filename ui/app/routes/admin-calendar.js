@@ -1,5 +1,5 @@
 /* eslint-disable ember/no-mixins */
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import moment from 'moment-timezone';
 import AuthenticatedRoute from 'prison-rideshare-ui/mixins/authenticated-route';
 import CalendarState from 'prison-rideshare-ui/utils/calendar-state';

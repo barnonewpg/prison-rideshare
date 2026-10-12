@@ -3,7 +3,7 @@ import { hash } from '@ember/helper';
 import Link from 'prison-rideshare-ui/components/app-side-nav/link';
 import Item from 'prison-rideshare-ui/components/app-side-nav/item';
 import { action } from '@ember/object';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import { on } from '@ember/modifier';
 
 // See docs/helios-overrides.md

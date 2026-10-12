@@ -1,5 +1,5 @@
 import SessionService from 'ember-simple-auth/services/session';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
 export default class Session extends SessionService {
