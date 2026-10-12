@@ -1,11 +1,6 @@
-/* eslint-disable ember/no-classic-classes, ember/no-classic-components, ember/require-tagless-components */
-import { classNames, tagName } from '@ember-decorators/component';
-import Component from '@ember/component';
-
-@tagName('span')
-@classNames('unit')
-export default class ReimbursementUnit extends Component {
-  <template>
-    <sup>¢</sup>&frasl;<sub>km</sub>
-  </template>
-}
+<template>
+  {{~! The space inside the span separates the unit from the amount before
+    it. The tildes keep any other whitespace from rendering around it. ~}}
+  <span class='unit'> <sup>¢</sup>&frasl;<sub>km</sub></span>
+  {{~! ~}}
+</template>
