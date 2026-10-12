@@ -335,9 +335,6 @@ importers:
       testem-multi-reporter:
         specifier: ^1.2.0
         version: 1.2.0
-      tracked-built-ins:
-        specifier: ^3.3.0
-        version: 3.4.0(@babel/core@7.28.4)
       webpack:
         specifier: ^5.89.0
         version: 5.101.3
@@ -8154,9 +8151,6 @@ packages:
 
   tr46@0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
-
-  tracked-built-ins@3.4.0:
-    resolution: {integrity: sha512-aRwWQXC3VkY50oYxS7wKZiavkjf3uaN+UYUH30D5gxUqbxDN2LnNsfWyDfckmxHUGw4gJDH5lpRS0jX/tim0vw==}
 
   tracked-built-ins@4.0.0:
     resolution: {integrity: sha512-0Jl43A1SDZd+yYCJvXfgDSn4Wk/zcawkyFTBPqOETU5UJRngnVEnQ8oOjawqPRg6qja3sKjIQ8z6X9xJzcUTUA==}
@@ -18507,15 +18501,6 @@ snapshots:
       punycode: 2.3.1
 
   tr46@0.0.3: {}
-
-  tracked-built-ins@3.4.0(@babel/core@7.28.4):
-    dependencies:
-      '@embroider/addon-shim': 1.10.0
-      decorator-transforms: 2.3.0(@babel/core@7.28.4)
-      ember-tracked-storage-polyfill: 1.0.0
-    transitivePeerDependencies:
-      - '@babel/core'
-      - supports-color
 
   tracked-built-ins@4.0.0(@babel/core@7.28.4):
     dependencies:
