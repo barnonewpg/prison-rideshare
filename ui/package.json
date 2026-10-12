@@ -71,7 +71,6 @@
     "ember-cli-deploy": "^2.0.0",
     "ember-cli-deploy-lightning-pack": "^6.0.0",
     "ember-cli-deprecation-workflow": "^3.4.0",
-    "ember-cli-head": "^2.0.0",
     "ember-cli-htmlbars": "^7.0.1",
     "ember-cli-inject-live-reload": "^2.1.0",
     "ember-cli-mirage": "^3.0.4",
