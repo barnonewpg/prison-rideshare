@@ -70,16 +70,6 @@ defmodule SandboxSeeds do
     )
   end
 
-  def createSlot(params) do
-    today = Timex.beginning_of_day(Timex.local())
-
-    Repo.insert!(%Slot{
-      start: Timex.shift(today, params.relative_start),
-      end: Timex.shift(Timex.shift(today, params.relative_start), params.relative_end),
-      count: params.count
-    })
-  end
-
   def version_information do
     [origin: "sandbox"]
   end
