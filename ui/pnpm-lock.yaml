@@ -160,7 +160,7 @@ importers:
         version: 2.1.0
       ember-cli-mirage:
         specifier: ^3.0.4
-        version: 3.0.4(@ember-data/model@5.8.0(@babel/core@7.28.4)(@glint/template@1.6.1))(@ember/test-helpers@5.7.0(@babel/core@7.28.4))(@glint/template@1.6.1)(ember-data@5.8.0(@babel/core@7.28.4)(@ember/test-helpers@5.7.0(@babel/core@7.28.4))(@ember/test-waiters@4.1.2)(@glint/template@1.6.1)(ember-inflector@4.0.3(ember-source@6.12.0(@glimmer/component@2.1.1)(rsvp@4.8.5)))(qunit@2.26.0))(ember-qunit@9.2.0(@ember/test-helpers@5.7.0(@babel/core@7.28.4))(qunit@2.26.0))(ember-source@6.12.0(@glimmer/component@2.1.1)(rsvp@4.8.5))(miragejs@0.1.48)(webpack@5.101.3)
+        version: 3.0.4(@ember-data/model@5.8.0(@babel/core@7.28.4)(@glint/template@1.6.1))(@ember/test-helpers@5.7.0(@babel/core@7.28.4))(@glint/template@1.6.1)(ember-data@5.8.0(@babel/core@7.28.4)(@ember/test-helpers@5.7.0(@babel/core@7.28.4))(@ember/test-waiters@4.1.2)(@glint/template@1.6.1)(ember-inflector@7.0.0(@babel/core@7.28.4))(qunit@2.26.0))(ember-qunit@9.2.0(@ember/test-helpers@5.7.0(@babel/core@7.28.4))(qunit@2.26.0))(ember-source@6.12.0(@glimmer/component@2.1.1)(rsvp@4.8.5))(miragejs@0.1.48)(webpack@5.101.3)
       ember-cli-page-object:
         specifier: ^2.1.1
         version: 2.3.2(@ember/test-helpers@5.7.0(@babel/core@7.28.4))
@@ -178,7 +178,7 @@ importers:
         version: 5.1.0(@babel/core@7.28.4)(@glint/template@1.6.1)
       ember-data:
         specifier: ^5.3.0
-        version: 5.8.0(@babel/core@7.28.4)(@ember/test-helpers@5.7.0(@babel/core@7.28.4))(@ember/test-waiters@4.1.2)(@glint/template@1.6.1)(ember-inflector@4.0.3(ember-source@6.12.0(@glimmer/component@2.1.1)(rsvp@4.8.5)))(qunit@2.26.0)
+        version: 5.8.0(@babel/core@7.28.4)(@ember/test-helpers@5.7.0(@babel/core@7.28.4))(@ember/test-waiters@4.1.2)(@glint/template@1.6.1)(ember-inflector@7.0.0(@babel/core@7.28.4))(qunit@2.26.0)
       ember-decorators:
         specifier: ^7.0.0
         version: 7.0.0(@babel/core@7.28.4)
@@ -192,8 +192,8 @@ importers:
         specifier: ^7.0.0
         version: 7.0.0(@glint/template@1.6.1)(ember-source@6.12.0(@glimmer/component@2.1.1)(rsvp@4.8.5))(highcharts@12.4.0)
       ember-inflector:
-        specifier: ^4.0.0
-        version: 4.0.3(ember-source@6.12.0(@glimmer/component@2.1.1)(rsvp@4.8.5))
+        specifier: ^7.0.0
+        version: 7.0.0(@babel/core@7.28.4)
       ember-lifeline:
         specifier: ^7.0.0
         version: 7.0.0(@ember/test-helpers@5.7.0(@babel/core@7.28.4))
@@ -4628,6 +4628,9 @@ packages:
     engines: {node: 14.* || 16.* || >= 18}
     peerDependencies:
       ember-source: ^3.16.0 || ^4.0.0 || ^5.0.0
+
+  ember-inflector@7.0.0:
+    resolution: {integrity: sha512-dHnlYfxBnpiRMZUgrYpdcQ/kGGMCuVh3KhHhJ0TU2PPJY7TB+3XqUWCf7ihppxkbRf1igLVRietYK2v0OXzm8Q==}
 
   ember-lifeline@7.0.0:
     resolution: {integrity: sha512-2l51NzgH5vjN972zgbs+32rnXnnEFKB7qsSpJF+lBI4V5TG6DMy4SfowC72ZEuAtS58OVfwITbOO+RnM21EdpA==}
@@ -10186,13 +10189,13 @@ snapshots:
       - '@glint/template'
       - supports-color
 
-  '@ember-data/request-utils@5.8.0(@babel/core@7.28.4)(@glint/template@1.6.1)(ember-inflector@4.0.3(ember-source@6.12.0(@glimmer/component@2.1.1)(rsvp@4.8.5)))':
+  '@ember-data/request-utils@5.8.0(@babel/core@7.28.4)(@glint/template@1.6.1)(ember-inflector@7.0.0(@babel/core@7.28.4))':
     dependencies:
       '@embroider/macros': 1.21.3(@babel/core@7.28.4)(@glint/template@1.6.1)
       '@warp-drive/core': 5.8.0(@babel/core@7.28.4)(@glint/template@1.6.1)
       '@warp-drive/utilities': 5.8.0(@babel/core@7.28.4)(@glint/template@1.6.1)(@warp-drive/core@5.8.0(@babel/core@7.28.4)(@glint/template@1.6.1))
     optionalDependencies:
-      ember-inflector: 4.0.3(ember-source@6.12.0(@glimmer/component@2.1.1)(rsvp@4.8.5))
+      ember-inflector: 7.0.0(@babel/core@7.28.4)
     transitivePeerDependencies:
       - '@babel/core'
       - '@glint/template'
@@ -13756,7 +13759,7 @@ snapshots:
 
   ember-cli-is-package-missing@1.0.0: {}
 
-  ember-cli-mirage@3.0.4(@ember-data/model@5.8.0(@babel/core@7.28.4)(@glint/template@1.6.1))(@ember/test-helpers@5.7.0(@babel/core@7.28.4))(@glint/template@1.6.1)(ember-data@5.8.0(@babel/core@7.28.4)(@ember/test-helpers@5.7.0(@babel/core@7.28.4))(@ember/test-waiters@4.1.2)(@glint/template@1.6.1)(ember-inflector@4.0.3(ember-source@6.12.0(@glimmer/component@2.1.1)(rsvp@4.8.5)))(qunit@2.26.0))(ember-qunit@9.2.0(@ember/test-helpers@5.7.0(@babel/core@7.28.4))(qunit@2.26.0))(ember-source@6.12.0(@glimmer/component@2.1.1)(rsvp@4.8.5))(miragejs@0.1.48)(webpack@5.101.3):
+  ember-cli-mirage@3.0.4(@ember-data/model@5.8.0(@babel/core@7.28.4)(@glint/template@1.6.1))(@ember/test-helpers@5.7.0(@babel/core@7.28.4))(@glint/template@1.6.1)(ember-data@5.8.0(@babel/core@7.28.4)(@ember/test-helpers@5.7.0(@babel/core@7.28.4))(@ember/test-waiters@4.1.2)(@glint/template@1.6.1)(ember-inflector@7.0.0(@babel/core@7.28.4))(qunit@2.26.0))(ember-qunit@9.2.0(@ember/test-helpers@5.7.0(@babel/core@7.28.4))(qunit@2.26.0))(ember-source@6.12.0(@glimmer/component@2.1.1)(rsvp@4.8.5))(miragejs@0.1.48)(webpack@5.101.3):
     dependencies:
       '@babel/core': 7.28.4
       '@embroider/macros': 1.21.3(@babel/core@7.28.4)(@glint/template@1.6.1)
@@ -13772,7 +13775,7 @@ snapshots:
     optionalDependencies:
       '@ember-data/model': 5.8.0(@babel/core@7.28.4)(@glint/template@1.6.1)
       '@ember/test-helpers': 5.7.0(@babel/core@7.28.4)
-      ember-data: 5.8.0(@babel/core@7.28.4)(@ember/test-helpers@5.7.0(@babel/core@7.28.4))(@ember/test-waiters@4.1.2)(@glint/template@1.6.1)(ember-inflector@4.0.3(ember-source@6.12.0(@glimmer/component@2.1.1)(rsvp@4.8.5)))(qunit@2.26.0)
+      ember-data: 5.8.0(@babel/core@7.28.4)(@ember/test-helpers@5.7.0(@babel/core@7.28.4))(@ember/test-waiters@4.1.2)(@glint/template@1.6.1)(ember-inflector@7.0.0(@babel/core@7.28.4))(qunit@2.26.0)
       ember-qunit: 9.2.0(@ember/test-helpers@5.7.0(@babel/core@7.28.4))(qunit@2.26.0)
     transitivePeerDependencies:
       - '@glint/template'
@@ -14062,7 +14065,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  ember-data@5.8.0(@babel/core@7.28.4)(@ember/test-helpers@5.7.0(@babel/core@7.28.4))(@ember/test-waiters@4.1.2)(@glint/template@1.6.1)(ember-inflector@4.0.3(ember-source@6.12.0(@glimmer/component@2.1.1)(rsvp@4.8.5)))(qunit@2.26.0):
+  ember-data@5.8.0(@babel/core@7.28.4)(@ember/test-helpers@5.7.0(@babel/core@7.28.4))(@ember/test-waiters@4.1.2)(@glint/template@1.6.1)(ember-inflector@7.0.0(@babel/core@7.28.4))(qunit@2.26.0):
     dependencies:
       '@ember-data/adapter': 5.8.0(@babel/core@7.28.4)(@glint/template@1.6.1)
       '@ember-data/debug': 5.8.0(@babel/core@7.28.4)(@glint/template@1.6.1)
@@ -14071,7 +14074,7 @@ snapshots:
       '@ember-data/legacy-compat': 5.8.0(@babel/core@7.28.4)(@glint/template@1.6.1)
       '@ember-data/model': 5.8.0(@babel/core@7.28.4)(@glint/template@1.6.1)
       '@ember-data/request': 5.8.0(@babel/core@7.28.4)(@glint/template@1.6.1)
-      '@ember-data/request-utils': 5.8.0(@babel/core@7.28.4)(@glint/template@1.6.1)(ember-inflector@4.0.3(ember-source@6.12.0(@glimmer/component@2.1.1)(rsvp@4.8.5)))
+      '@ember-data/request-utils': 5.8.0(@babel/core@7.28.4)(@glint/template@1.6.1)(ember-inflector@7.0.0(@babel/core@7.28.4))
       '@ember-data/serializer': 5.8.0(@babel/core@7.28.4)(@glint/template@1.6.1)
       '@ember-data/store': 5.8.0(@babel/core@7.28.4)(@ember-data/tracking@5.8.0(@babel/core@7.28.4)(@ember/test-waiters@4.1.2)(@glint/template@1.6.1))(@ember/test-waiters@4.1.2)(@glint/template@1.6.1)
       '@ember-data/tracking': 5.8.0(@babel/core@7.28.4)(@ember/test-waiters@4.1.2)(@glint/template@1.6.1)
@@ -14198,6 +14201,14 @@ snapshots:
       ember-cli-babel: 7.26.11
       ember-source: 6.12.0(@glimmer/component@2.1.1)(rsvp@4.8.5)
     transitivePeerDependencies:
+      - supports-color
+
+  ember-inflector@7.0.0(@babel/core@7.28.4):
+    dependencies:
+      '@embroider/addon-shim': 1.10.3
+      decorator-transforms: 2.4.0(@babel/core@7.28.4)
+    transitivePeerDependencies:
+      - '@babel/core'
       - supports-color
 
   ember-lifeline@7.0.0(@ember/test-helpers@5.7.0(@babel/core@7.28.4)):
