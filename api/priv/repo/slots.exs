@@ -2,7 +2,7 @@ alias PrisonRideshareWeb.Slot
 
 require Logger
 
-defmodule Ugh do
+defmodule SlotSeeds do
   def date_to_day_type(date) do
     case Timex.weekday(date) do
       1 -> :every_day
@@ -47,7 +47,7 @@ Logger.info(inspect(dates_in_month))
 
 slots =
   Enum.flat_map(dates_in_month, fn date ->
-    day_type = Ugh.date_to_day_type(date)
+    day_type = SlotSeeds.date_to_day_type(date)
     day_slots = day_type_slots[day_type]
 
     Enum.map(day_slots, fn day_slot ->
@@ -61,14 +61,14 @@ slots =
           NaiveDateTime.from_erl!({date_part, {String.to_integer(slot_start_text), 0, 0}}),
           "America/Winnipeg"
         )
-        |> Ugh.to_ecto()
+        |> SlotSeeds.to_ecto()
 
       slot_end =
         Timex.to_datetime(
           NaiveDateTime.from_erl!({date_part, {String.to_integer(slot_end_text), 0, 0}}),
           "America/Winnipeg"
         )
-        |> Ugh.to_ecto()
+        |> SlotSeeds.to_ecto()
 
       %Slot{
         start: slot_start,
