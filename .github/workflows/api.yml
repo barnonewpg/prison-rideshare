@@ -100,3 +100,53 @@ jobs:
         run: mix compile --warnings-as-errors
         env:
           MIX_ENV: dev
+
+  # The sandbox seeds otherwise only run locally and in the nightly sandbox reset
+  sandbox-seeds:
+    runs-on: ubuntu-latest
+    env:
+      MIX_ENV: dev
+    services:
+      db:
+        image: postgres:latest
+        ports: ['5432:5432']
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - name: Checkout Github repo
+        uses: actions/checkout@v7
+      - name: Sets up an Erlang/OTP environment
+        id: beam
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: "1.20.2"
+          otp-version: "28.5.0.4"
+      - name: Cache mix dependencies
+        id: mix-cache
+        uses: actions/cache@v6
+        with:
+          path: |
+            api/deps
+            api/_build
+          key: ${{ runner.os }}-mix-dev-${{ steps.beam.outputs.elixir-version }}-${{ steps.beam.outputs.otp-version }}-${{ hashFiles('api/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-dev-${{ steps.beam.outputs.elixir-version }}-${{ steps.beam.outputs.otp-version }}-
+      - name: Install dependencies
+        if: steps.mix-cache.outputs.cache-hit != 'true'
+        run: |
+          mix local.rebar --force
+          mix local.hex --force
+          mix deps.get
+          mix deps.compile
+      - name: Create the database
+        run: mix ecto.create
+      - name: Reset the database with sandbox data
+        run: mix reset_sandbox
+      - name: Check every seeded version has an origin
+        run: |
+          mix run -e '
+            import Ecto.Query
+            untagged = PrisonRideshare.Repo.aggregate(from(v in PaperTrail.Version, where: is_nil(v.origin)), :count)
+            if untagged > 0, do: raise "#{untagged} sandbox seed versions have no origin"
+          '
