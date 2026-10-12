@@ -127,16 +127,15 @@ sara = SandboxSeeds.create_person("Sara Ahmed")
 chelsea = SandboxSeeds.create_person("Chelsea Manning")
 brian = SandboxSeeds.create_person("Brian Pallister")
 
-tomorrow_ride =
-  SandboxSeeds.create_ride(%{
-    relative_start: [days: 1, hours: 13, minutes: 30],
-    relative_end: [hours: 1, minutes: 30],
-    institution: headingley,
-    driver: cnuth,
-    car_owner: sara,
-    request_notes: "This ride is in the future!",
-    medium: "txt"
-  })
+SandboxSeeds.create_ride(%{
+  relative_start: [days: 1, hours: 13, minutes: 30],
+  relative_end: [hours: 1, minutes: 30],
+  institution: headingley,
+  driver: cnuth,
+  car_owner: sara,
+  request_notes: "This ride is in the future!",
+  medium: "txt"
+})
 
 next_week_ride =
   SandboxSeeds.create_ride(%{
@@ -147,14 +146,13 @@ next_week_ride =
     medium: "phone"
   })
 
-similar_ride =
-  SandboxSeeds.create_ride(%{
-    relative_start: [days: 7, hours: 15, minutes: 15],
-    relative_end: [hours: 3, minutes: 30],
-    institution: milner_ridge,
-    medium: "phone",
-    request_confirmed: false
-  })
+SandboxSeeds.create_ride(%{
+  relative_start: [days: 7, hours: 15, minutes: 15],
+  relative_end: [hours: 3, minutes: 30],
+  institution: milner_ridge,
+  medium: "phone",
+  request_confirmed: false
+})
 
 SandboxSeeds.create_ride(%{
   relative_start: [days: 7, hours: 15],
@@ -164,22 +162,21 @@ SandboxSeeds.create_ride(%{
   medium: "txt"
 })
 
-last_week_ride =
-  SandboxSeeds.create_ride(%{
-    relative_start: [days: -7, hours: 12],
-    relative_end: [hours: 2],
-    institution: headingley,
-    passengers: 3,
-    distance: 25,
-    complete: true,
-    food_expenses: ~M[1200],
-    car_expenses: ~M[625],
-    request_notes: "Some request notes",
-    report_notes: "It happened! These are my notes.",
-    driver: chelsea,
-    car_owner: chelsea,
-    medium: "txt"
-  })
+SandboxSeeds.create_ride(%{
+  relative_start: [days: -7, hours: 12],
+  relative_end: [hours: 2],
+  institution: headingley,
+  passengers: 3,
+  distance: 25,
+  complete: true,
+  food_expenses: ~M[1200],
+  car_expenses: ~M[625],
+  request_notes: "Some request notes",
+  report_notes: "It happened! These are my notes.",
+  driver: chelsea,
+  car_owner: chelsea,
+  medium: "txt"
+})
 
 last_month_ride =
   SandboxSeeds.create_ride(%{
@@ -229,43 +226,39 @@ PaperTrail.insert!(
   SandboxSeeds.version_information()
 )
 
-cancelled_ride =
-  SandboxSeeds.create_ride(%{
-    relative_start: [days: -11, hours: 9],
-    relative_end: [hours: 2],
-    institution: milner_ridge,
-    enabled: false,
-    cancellation_reason: "visitor"
-  })
+SandboxSeeds.create_ride(%{
+  relative_start: [days: -11, hours: 9],
+  relative_end: [hours: 2],
+  institution: milner_ridge,
+  enabled: false,
+  cancellation_reason: "visitor"
+})
 
-yesterday_ride =
-  SandboxSeeds.create_ride(%{
-    relative_start: [days: -1, hours: 11],
-    relative_end: [hours: 1, minutes: 45],
-    institution: headingley,
-    driver: chelsea,
-    car_owner: chelsea
-  })
+SandboxSeeds.create_ride(%{
+  relative_start: [days: -1, hours: 11],
+  relative_end: [hours: 1, minutes: 45],
+  institution: headingley,
+  driver: chelsea,
+  car_owner: chelsea
+})
 
-older_ride =
-  SandboxSeeds.create_ride(%{
-    relative_start: [days: -3, hours: 16],
-    relative_end: [hours: 2],
-    institution: stony_mountain,
-    driver: cnuth,
-    car_owner: brian,
-    medium: "phone"
-  })
+SandboxSeeds.create_ride(%{
+  relative_start: [days: -3, hours: 16],
+  relative_end: [hours: 2],
+  institution: stony_mountain,
+  driver: cnuth,
+  car_owner: brian,
+  medium: "phone"
+})
 
-even_older_ride =
-  SandboxSeeds.create_ride(%{
-    relative_start: [days: -11, hours: 17],
-    relative_end: [hours: 2, minutes: 30],
-    institution: stony_mountain,
-    driver: cnuth,
-    car_owner: cnuth,
-    medium: "txt"
-  })
+SandboxSeeds.create_ride(%{
+  relative_start: [days: -11, hours: 17],
+  relative_end: [hours: 2, minutes: 30],
+  institution: stony_mountain,
+  driver: cnuth,
+  car_owner: cnuth,
+  medium: "txt"
+})
 
 reimbursed_ride =
   SandboxSeeds.create_ride(%{
