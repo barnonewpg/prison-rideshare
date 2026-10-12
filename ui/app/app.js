@@ -12,6 +12,7 @@ import '@warp-drive/ember/install';
 Sentry.init({
   dsn: config.sentry.dsn,
   sendDefaultPii: true,
+  tracesSampleRate: config.sentry.tracesSampleRate,
 });
 
 registerDateLibrary(DateUtils);

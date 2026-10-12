@@ -75,6 +75,7 @@ module.exports = function (environment) {
     if (process.env.SENTRY_DSN) {
       ENV.sentry = {
         dsn: process.env.SENTRY_DSN,
+        tracesSampleRate: Number(process.env.SENTRY_TRACES_SAMPLE_RATE ?? 1),
       };
     }
 
