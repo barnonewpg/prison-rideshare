@@ -75,7 +75,6 @@ defmodule PrisonRideshare.Mixfile do
       {:bamboo_phoenix, "~> 1.0"},
       {:icalendar, "~> 0.5.0"},
       {:jason, "~> 1.0"},
-      {:poison, "~> 3.1"},
       {:httpoison, "~> 1.0"},
       {:paper_trail, "~> 0.14"},
       {:excoveralls, "~> 0.15", only: :test},
