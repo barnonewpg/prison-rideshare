@@ -17,7 +17,7 @@ import Money.Sigils
 Faker.start()
 
 defmodule SandboxSeeds do
-  def createRide(params) do
+  def create_ride(params) do
     today = Timex.beginning_of_day(Timex.local())
 
     merged =
@@ -58,7 +58,7 @@ defmodule SandboxSeeds do
     PaperTrail.insert!(Ride.changeset(%Ride{}, merged), SandboxSeeds.version_information())
   end
 
-  def createPerson(name) do
+  def create_person(name) do
     PaperTrail.insert!(
       Person.changeset(%Person{
         name: name,
@@ -122,13 +122,13 @@ john_henderson =
     SandboxSeeds.version_information()
   )
 
-cnuth = SandboxSeeds.createPerson("Cnuth")
-sara = SandboxSeeds.createPerson("Sara Ahmed")
-chelsea = SandboxSeeds.createPerson("Chelsea Manning")
-brian = SandboxSeeds.createPerson("Brian Pallister")
+cnuth = SandboxSeeds.create_person("Cnuth")
+sara = SandboxSeeds.create_person("Sara Ahmed")
+chelsea = SandboxSeeds.create_person("Chelsea Manning")
+brian = SandboxSeeds.create_person("Brian Pallister")
 
-tomorrowRide =
-  SandboxSeeds.createRide(%{
+tomorrow_ride =
+  SandboxSeeds.create_ride(%{
     relative_start: [days: 1, hours: 13, minutes: 30],
     relative_end: [hours: 1, minutes: 30],
     institution: headingley,
@@ -138,8 +138,8 @@ tomorrowRide =
     medium: "txt"
   })
 
-nextWeekRide =
-  SandboxSeeds.createRide(%{
+next_week_ride =
+  SandboxSeeds.create_ride(%{
     relative_start: [days: 7, hours: 15],
     relative_end: [hours: 3],
     institution: milner_ridge,
@@ -147,8 +147,8 @@ nextWeekRide =
     medium: "phone"
   })
 
-similarRide =
-  SandboxSeeds.createRide(%{
+similar_ride =
+  SandboxSeeds.create_ride(%{
     relative_start: [days: 7, hours: 15, minutes: 15],
     relative_end: [hours: 3, minutes: 30],
     institution: milner_ridge,
@@ -156,16 +156,16 @@ similarRide =
     request_confirmed: false
   })
 
-SandboxSeeds.createRide(%{
+SandboxSeeds.create_ride(%{
   relative_start: [days: 7, hours: 15],
   relative_end: [hours: 3, minutes: 15],
   institution: milner_ridge,
-  combined_with_ride_id: nextWeekRide.id,
+  combined_with_ride_id: next_week_ride.id,
   medium: "txt"
 })
 
-lastWeekRide =
-  SandboxSeeds.createRide(%{
+last_week_ride =
+  SandboxSeeds.create_ride(%{
     relative_start: [days: -7, hours: 12],
     relative_end: [hours: 2],
     institution: headingley,
@@ -181,8 +181,8 @@ lastWeekRide =
     medium: "txt"
   })
 
-lastMonthRide =
-  SandboxSeeds.createRide(%{
+last_month_ride =
+  SandboxSeeds.create_ride(%{
     relative_start: [days: -30, hours: 8],
     relative_end: [hours: 4],
     institution: milner_ridge,
@@ -195,8 +195,8 @@ lastMonthRide =
     medium: "email"
   })
 
-brianRide =
-  SandboxSeeds.createRide(%{
+brian_ride =
+  SandboxSeeds.create_ride(%{
     relative_start: [days: -9, hours: 5],
     relative_end: [minutes: 45],
     institution: john_henderson,
@@ -213,7 +213,7 @@ brianRide =
 
 PaperTrail.insert!(
   %Reimbursement{
-    ride: lastMonthRide,
+    ride: last_month_ride,
     person: sara,
     food_expenses: ~M[1414]
   },
@@ -222,15 +222,15 @@ PaperTrail.insert!(
 
 PaperTrail.insert!(
   %Reimbursement{
-    ride: lastMonthRide,
+    ride: last_month_ride,
     person: sara,
     car_expenses: ~M[100]
   },
   SandboxSeeds.version_information()
 )
 
-cancelledRide =
-  SandboxSeeds.createRide(%{
+cancelled_ride =
+  SandboxSeeds.create_ride(%{
     relative_start: [days: -11, hours: 9],
     relative_end: [hours: 2],
     institution: milner_ridge,
@@ -238,8 +238,8 @@ cancelledRide =
     cancellation_reason: "visitor"
   })
 
-yesterdayRide =
-  SandboxSeeds.createRide(%{
+yesterday_ride =
+  SandboxSeeds.create_ride(%{
     relative_start: [days: -1, hours: 11],
     relative_end: [hours: 1, minutes: 45],
     institution: headingley,
@@ -247,8 +247,8 @@ yesterdayRide =
     car_owner: chelsea
   })
 
-olderRide =
-  SandboxSeeds.createRide(%{
+older_ride =
+  SandboxSeeds.create_ride(%{
     relative_start: [days: -3, hours: 16],
     relative_end: [hours: 2],
     institution: stony_mountain,
@@ -257,8 +257,8 @@ olderRide =
     medium: "phone"
   })
 
-evenOlderRide =
-  SandboxSeeds.createRide(%{
+even_older_ride =
+  SandboxSeeds.create_ride(%{
     relative_start: [days: -11, hours: 17],
     relative_end: [hours: 2, minutes: 30],
     institution: stony_mountain,
@@ -267,8 +267,8 @@ evenOlderRide =
     medium: "txt"
   })
 
-reimbursedRide =
-  SandboxSeeds.createRide(%{
+reimbursed_ride =
+  SandboxSeeds.create_ride(%{
     relative_start: [days: -45, hours: 9],
     relative_end: [hours: 2, minutes: 30],
     institution: headingley,
@@ -283,7 +283,7 @@ reimbursedRide =
 
 PaperTrail.insert!(
   %Reimbursement{
-    ride: reimbursedRide,
+    ride: reimbursed_ride,
     person: sara,
     food_expenses: ~M[999]
   },
@@ -292,15 +292,15 @@ PaperTrail.insert!(
 
 PaperTrail.insert!(
   %Reimbursement{
-    ride: reimbursedRide,
+    ride: reimbursed_ride,
     person: sara,
     car_expenses: ~M[550]
   },
   SandboxSeeds.version_information()
 )
 
-processedRide =
-  SandboxSeeds.createRide(%{
+processed_ride =
+  SandboxSeeds.create_ride(%{
     relative_start: [days: -50, hours: 8],
     relative_end: [hours: 2, minutes: 15],
     institution: headingley,
@@ -315,7 +315,7 @@ processedRide =
 
 PaperTrail.insert!(
   %Reimbursement{
-    ride: processedRide,
+    ride: processed_ride,
     person: sara,
     food_expenses: ~M[500],
     processed: true,
@@ -326,7 +326,7 @@ PaperTrail.insert!(
 
 PaperTrail.insert!(
   %Reimbursement{
-    ride: processedRide,
+    ride: processed_ride,
     person: sara,
     car_expenses: ~M[625],
     processed: true,
@@ -336,13 +336,13 @@ PaperTrail.insert!(
 )
 
 PaperTrail.insert!(%Reimbursement{
-  ride: brianRide,
+  ride: brian_ride,
   person: brian,
   food_expenses: ~M[1900000]
 })
 
 PaperTrail.insert!(%Reimbursement{
-  ride: brianRide,
+  ride: brian_ride,
   person: brian,
   car_expenses: ~M[502240],
   donation: true
@@ -395,24 +395,24 @@ PaperTrail.insert!(%Commitment{
   slot: d_slot
 })
 
-overlapRide =
-  SandboxSeeds.createRide(%{
+overlap_ride =
+  SandboxSeeds.create_ride(%{
     relative_start: [days: 6, hours: 13],
     relative_end: [hours: 2, minutes: 30],
     institution: john_henderson,
     medium: "phone"
   })
 
-overlapSlot = PaperTrail.insert!(%Slot{
+overlap_slot = PaperTrail.insert!(%Slot{
   # Inserted as a bare struct rather than a changeset, so nothing casts these
   # for us: :naive_datetime rejects the microseconds Timex carries along.
-  start: Timex.shift(overlapRide.start, [hours: -1]) |> NaiveDateTime.truncate(:second),
-  end: Timex.shift(overlapRide.end, [minutes: 30]) |> NaiveDateTime.truncate(:second),
+  start: Timex.shift(overlap_ride.start, [hours: -1]) |> NaiveDateTime.truncate(:second),
+  end: Timex.shift(overlap_ride.end, [minutes: 30]) |> NaiveDateTime.truncate(:second),
 })
 
 PaperTrail.insert!(%Commitment{
   person: brian,
-  slot: overlapSlot
+  slot: overlap_slot
 })
 
 today = Timex.beginning_of_day(Timex.local())
