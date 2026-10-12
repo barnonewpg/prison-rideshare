@@ -8,6 +8,11 @@ import * as Sentry from '@sentry/ember';
 import { registerDateLibrary } from 'ember-power-calendar';
 import DateUtils from 'ember-power-calendar-moment';
 import '@warp-drive/ember/install';
+import { importSync, isDevelopingApp, macroCondition } from '@embroider/macros';
+
+if (macroCondition(isDevelopingApp())) {
+  importSync('./deprecation-workflow');
+}
 
 Sentry.init({
   dsn: config.sentry.dsn,
