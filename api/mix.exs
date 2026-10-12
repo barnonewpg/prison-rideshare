@@ -52,7 +52,7 @@ defmodule PrisonRideshare.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.7.0"},
+      {:phoenix, "~> 1.8.15"},
       {:phoenix_pubsub, "~> 2.0"},
       {:ecto_sql, "~> 3.0"},
       {:phoenix_ecto, "~> 4.0"},
@@ -65,7 +65,7 @@ defmodule PrisonRideshare.Mixfile do
       {:plug_cowboy, "~> 2.9"},
       {:bcrypt_elixir, "~> 3.0"},
       {:cors_plug, "~> 3.0"},
-      {:csv, "~> 3.0.5"},
+      {:csv, "~> 3.2.2"},
       {:guardian, "~> 2.1"},
       {:guardian_phoenix, "~> 2.0"},
       {:sans_password, "~> 1.1.0"},
