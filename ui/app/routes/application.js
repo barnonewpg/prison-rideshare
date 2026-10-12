@@ -6,9 +6,7 @@ import momentAddLocaleShortMeridiemFormat from 'prison-rideshare-ui/utils/moment
 export default class ApplicationRoute extends Route {
   @service account;
   @service moment;
-  @service overlaps;
   @service session;
-  @service userSocket;
   @service toasts;
 
   async beforeModel() {
@@ -17,12 +15,6 @@ export default class ApplicationRoute extends Route {
     momentAddLocaleShortMeridiemFormat(this.moment);
 
     return this._loadCurrentUser();
-  }
-
-  sessionAuthenticated() {
-    this.userSocket.connect();
-    this.overlaps.fetch();
-    this._loadCurrentUser();
   }
 
   _loadCurrentUser() {
