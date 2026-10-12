@@ -19,6 +19,12 @@ updates:
       interval: "weekly"
       day: "monday"
     open-pull-requests-limit: 5
+    ignore:
+      # eslint-plugin-ember 12 depends on ember-eslint-parser 0.5, and with a
+      # second, newer copy installed ESLint silently skips every .gjs file.
+      # Lift this with an eslint-plugin-ember upgrade that uses the newer one.
+      - dependency-name: "ember-eslint-parser"
+        versions: [">= 0.6.0"]
     groups:
       # One PR a week for the routine bumps; majors still come through alone
       minor-and-patch:
