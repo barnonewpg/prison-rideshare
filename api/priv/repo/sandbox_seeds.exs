@@ -339,14 +339,14 @@ PaperTrail.insert!(%Reimbursement{
   ride: brian_ride,
   person: brian,
   food_expenses: ~M[1900000]
-})
+}, SandboxSeeds.version_information())
 
 PaperTrail.insert!(%Reimbursement{
   ride: brian_ride,
   person: brian,
   car_expenses: ~M[502240],
   donation: true
-})
+}, SandboxSeeds.version_information())
 
 today = Timex.beginning_of_day(Timex.local())
 
@@ -354,7 +354,7 @@ Enum.reduce(-60..0, ~M[110], fn days_ago, price ->
   PaperTrail.insert!(%GasPrice{
     inserted_at: Timex.add(today, Timex.Duration.from_days(days_ago)) |> DateTime.to_naive |> NaiveDateTime.truncate(:second),
     price: price
-  })
+  }, SandboxSeeds.version_information())
 
   Money.add(price, Enum.random([-3, -2, -1, 0, 1, 2, 3, 4]))
 end)
@@ -378,22 +378,22 @@ end)
 PaperTrail.insert!(%Commitment{
   person: brian,
   slot: a_slot
-})
+}, SandboxSeeds.version_information())
 
 PaperTrail.insert!(%Commitment{
   person: cnuth,
   slot: b_slot
-})
+}, SandboxSeeds.version_information())
 
 PaperTrail.insert!(%Commitment{
   person: brian,
   slot: c_slot
-})
+}, SandboxSeeds.version_information())
 
 PaperTrail.insert!(%Commitment{
   person: brian,
   slot: d_slot
-})
+}, SandboxSeeds.version_information())
 
 overlap_ride =
   SandboxSeeds.create_ride(%{
@@ -408,12 +408,12 @@ overlap_slot = PaperTrail.insert!(%Slot{
   # for us: :naive_datetime rejects the microseconds Timex carries along.
   start: Timex.shift(overlap_ride.start, [hours: -1]) |> NaiveDateTime.truncate(:second),
   end: Timex.shift(overlap_ride.end, [minutes: 30]) |> NaiveDateTime.truncate(:second),
-})
+}, SandboxSeeds.version_information())
 
 PaperTrail.insert!(%Commitment{
   person: brian,
   slot: overlap_slot
-})
+}, SandboxSeeds.version_information())
 
 today = Timex.beginning_of_day(Timex.local())
 
@@ -421,10 +421,10 @@ PaperTrail.insert!(%Post{
   poster: user,
   inserted_at: Timex.shift(today, [days: -9, hours: 9, minutes: 22]) |> DateTime.to_naive |> NaiveDateTime.truncate(:second),
   content: "Here is a blog post with some **bold text**."
-})
+}, SandboxSeeds.version_information())
 
 PaperTrail.insert!(%Post{
   poster: other_user,
   inserted_at: Timex.shift(today, [days: -2, hours: 1, minutes: 33]) |> DateTime.to_naive |> NaiveDateTime.truncate(:second),
   content: "# A heading\n\nThis is another blog post by a different user."
-})
+}, SandboxSeeds.version_information())
