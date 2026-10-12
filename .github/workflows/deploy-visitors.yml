@@ -28,10 +28,13 @@ jobs:
         include:
           - app: visitors-api-production
             environment: deploy-visitors-production
+            # Each app's Dokku deploy-branch: pushes to any other branch don't build
+            deploy_branch: main
             # Production data: only migrate, never reseed
             after: mix ecto.migrate
           - app: visitors-api-sandbox
             environment: deploy-visitors-sandbox
+            deploy_branch: primary
             # Rolls back, migrates and reseeds with fake data
             after: mix reset_sandbox
 
@@ -51,7 +54,7 @@ jobs:
       - name: Push to dokku
         uses: dokku/github-action@v1.4.0
         with:
-          branch: "primary"
+          branch: ${{ matrix.deploy_branch }}
           git_remote_url: "ssh://${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }}:22/${{ matrix.app }}"
           ssh_private_key: ${{ secrets.DEPLOYMENT_KEY }}
           # The visitors branch is rebased onto main, so it never fast-forwards
