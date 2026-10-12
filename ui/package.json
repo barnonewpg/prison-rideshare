@@ -143,9 +143,5 @@
   },
   "ember": {
     "edition": "octane"
-  },
-  "volta": {
-    "node": "18.20.8",
-    "pnpm": "10.30.1"
   }
 }
