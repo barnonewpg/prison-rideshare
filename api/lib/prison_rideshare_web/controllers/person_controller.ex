@@ -1,14 +1,40 @@
 defmodule PrisonRideshareWeb.PersonController do
   use PrisonRideshareWeb, :controller
 
-  alias PrisonRideshareWeb.Person
+  alias PrisonRideshareWeb.{Commitment, Person, Reimbursement, Ride}
   alias JaSerializer.Params
 
+  import Ecto.Query
+
   plug(:scrub_params, "data" when action in [:create, :update])
+
+  def index(conn, %{"filter" => %{"role" => "driver"}}) do
+    render(conn, "index.json-api", data: Repo.all(drivers()))
+  end
 
   def index(conn, _params) do
     people = Repo.all(Person)
     render(conn, "index.json-api", data: people)
+  end
+
+  # People and visitors share a table: a visitor is anyone with a visiting,
+  # and only visitors with no driving-side history are excluded. People with
+  # no rides at all count as drivers so newly-added ones appear.
+  defp drivers do
+    from(p in Person,
+      as: :person,
+      where:
+        not exists(from(r in Ride, where: r.visitor_id == parent_as(:person).id)) or
+          exists(
+            from(r in Ride,
+              where:
+                r.driver_id == parent_as(:person).id or
+                  r.car_owner_id == parent_as(:person).id
+            )
+          ) or
+          exists(from(r in Reimbursement, where: r.person_id == parent_as(:person).id)) or
+          exists(from(c in Commitment, where: c.person_id == parent_as(:person).id))
+    )
   end
 
   def create(conn, %{"data" => data = %{"type" => "people", "attributes" => _person_params}}) do
