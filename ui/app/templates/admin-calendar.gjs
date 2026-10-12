@@ -3,7 +3,7 @@ import ToolbarHeader from 'prison-rideshare-ui/components/toolbar-header';
 import PowerCalendar from 'ember-power-calendar/components/power-calendar';
 import { LinkTo } from '@ember/routing';
 import momentFormat from 'ember-moment/helpers/moment-format';
-import pluralize from 'ember-inflector/lib/helpers/pluralize';
+import pluralize from 'ember-inflector/helpers/pluralize';
 import CalendarDay from 'prison-rideshare-ui/components/calendar-day';
 import CalendarDays from 'prison-rideshare-ui/components/calendar-days';
 import gt from 'ember-truth-helpers/helpers/gt';
