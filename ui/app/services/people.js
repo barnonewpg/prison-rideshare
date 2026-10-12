@@ -11,7 +11,6 @@ export default class PeopleService extends Service {
 
   constructor(owner, options) {
     super(owner, options);
-    this.people = this.store.peekAll('person');
     this.load();
   }
 
@@ -20,10 +19,11 @@ export default class PeopleService extends Service {
       return this.loadPromise;
     }
 
+    // Visitors are people too, so the store holds more than this list should
     const promise = this.store
-      .findAll('person', { reload: true })
-      .then(() => {
-        this.people = this.store.peekAll('person');
+      .query('person', { filter: { role: 'driver' } })
+      .then((people) => {
+        this.people = people;
       })
       .finally(() => {
         this.loadPromise = null;

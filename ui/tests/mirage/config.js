@@ -86,7 +86,7 @@ export default function (config = {}) {
 
       this.get('/gas-prices');
 
-      this.get('/people', function ({ people }) {
+      this.get('/people', function ({ commitments, people }, { queryParams }) {
         people.all().models.forEach((person) => {
           const starts = person.drivings.models
             .map((ride) => ride.start)
@@ -98,7 +98,20 @@ export default function (config = {}) {
           });
         });
 
-        return people.all();
+        if (queryParams['filter[role]'] !== 'driver') {
+          return people.all();
+        }
+
+        return people
+          .all()
+          .filter(
+            (person) =>
+              person.visitings.length === 0 ||
+              person.drivings.length > 0 ||
+              person.carOwnings.length > 0 ||
+              person.reimbursements.length > 0 ||
+              commitments.where({ personId: person.id }).length > 0,
+          );
       });
       this.get('/people/:id');
       this.post('/people');

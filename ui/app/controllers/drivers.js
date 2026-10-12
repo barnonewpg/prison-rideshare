@@ -20,14 +20,13 @@ export default class DriversController extends Controller {
   errorMessage = undefined;
 
   @computed(
-    'model',
-    'model.[]',
-    'model.@each.{name,lastRideStart}',
+    'peopleService.people.[]',
+    'peopleService.people.@each.{name,lastRideStart}',
     'sortProp',
     'sortDir',
   )
   get sortedPeople() {
-    const people = Array.from(this.model || []);
+    const people = Array.from(this.peopleService.people || []);
     const sorted = people.slice().sort((a, b) => {
       let comparison;
 
