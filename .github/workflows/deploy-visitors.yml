@@ -1,0 +1,65 @@
+name: Deploy visitors
+
+# Deploys the visitors branch's API to both parallel apps. Only code goes
+# through here: the production-data app's database is refreshed from a local
+# snapshot on a maintainer's machine, never via Actions.
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - visitors
+    paths:
+      - 'api/**'
+      - '.github/workflows/deploy-visitors.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: 'Deploy (${{ matrix.app }})'
+    if: github.ref == 'refs/heads/visitors'
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - app: visitors-api-production
+            environment: deploy-visitors-production
+            # Production data: only migrate, never reseed
+            after: mix ecto.migrate
+          - app: visitors-api-sandbox
+            environment: deploy-visitors-sandbox
+            # Rolls back, migrates and reseeds with fake data
+            after: mix reset_sandbox
+
+    environment: ${{ matrix.environment }}
+
+    concurrency:
+      group: deploy-${{ matrix.app }}
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout Github repo
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      # Each Dokku app must be configured once with:
+      #   dokku builder:set <app> build-dir api
+      - name: Push to dokku
+        uses: dokku/github-action@v1.4.0
+        with:
+          branch: "primary"
+          git_remote_url: "ssh://${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }}:22/${{ matrix.app }}"
+          ssh_private_key: ${{ secrets.DEPLOYMENT_KEY }}
+          # The visitors branch is rebased onto main, so it never fast-forwards
+          git_push_flags: "--force"
+      - name: Run ${{ matrix.after }}
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOYMENT_HOST }}
+          username: ${{ secrets.DEPLOYMENT_USER }}
+          key: ${{ secrets.DEPLOYMENT_KEY }}
+          script: run ${{ matrix.app }} ${{ matrix.after }}

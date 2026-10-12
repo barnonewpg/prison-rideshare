@@ -4,10 +4,10 @@ import AuthenticatedRoute from 'prison-rideshare-ui/mixins/authenticated-route';
 
 export default class DriversRoute extends AuthenticatedRoute {
   @service store;
+  @service('people') peopleService;
 
   model() {
-    // FIXME this formerly used the people service but it wasn’t getting new records…
-    return this.store.findAll('person');
+    return this.peopleService.load();
   }
 
   afterModel() {

@@ -158,6 +158,22 @@ module('Acceptance | people', function (hooks) {
     assert.deepEqual(page.peopleNames, ['Kala', 'Sun']);
   });
 
+  test('people who are only visitors are not listed as drivers', async function (assert) {
+    const nomi = this.server.create('person', { name: 'Nomi' });
+    const riley = this.server.create('person', { name: 'Riley' });
+
+    this.server.create('ride', { visitor: nomi });
+    this.server.create('ride', { visitor: riley });
+    this.server.create('ride', { driver: riley });
+
+    await page.visit();
+
+    assert.deepEqual(
+      page.people.map((person) => person.name),
+      ['Kala', 'Riley', 'Sun'],
+    );
+  });
+
   test('a person can be created and chosen for a ride', async function (assert) {
     await ridesPage.visit();
     await ridesPage.rides[0].driver.click();

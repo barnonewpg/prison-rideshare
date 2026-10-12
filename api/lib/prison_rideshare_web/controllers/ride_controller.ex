@@ -1,7 +1,7 @@
 defmodule PrisonRideshareWeb.RideController do
   use PrisonRideshareWeb, :controller
 
-  alias PrisonRideshareWeb.{Commitment, Ride}
+  alias PrisonRideshareWeb.{Commitment, Person, Ride}
   alias JaSerializer.Params
 
   import Ecto.Query
@@ -12,9 +12,15 @@ defmodule PrisonRideshareWeb.RideController do
   def index(%{private: %{guardian_default_resource: %{admin: true}}} = conn, params) do
     rides =
       case params do
-        %{"filter" => %{"name" => name}} ->
-          Repo.all(from(r in Ride, where: ilike(r.name, ^"#{name}%"), order_by: [desc: r.start]))
-
+        %{"filter" => %{"visitor" => name}} ->
+          # Falls back to the legacy name column for rides that predate
+          # visitor records, so search keeps working until the backfill runs
+          Repo.all(
+            from r in Ride,
+            left_join: v in Person, on: v.id == r.visitor_id,
+            where: ilike(coalesce(v.name, r.name), ^"#{name}%"),
+            order_by: [desc: r.start]
+          )
         _ ->
           Repo.all(Ride)
       end
@@ -252,7 +258,7 @@ defmodule PrisonRideshareWeb.RideController do
   defp preload(model) do
     model
     |> Repo.preload(
-      [:institution, :driver, :car_owner, :children, [reimbursements: [:person, :ride]]],
+      [:institution, :visitor, :driver, :car_owner, :children, [reimbursements: [:person, :ride]]],
       force: true
     )
   end

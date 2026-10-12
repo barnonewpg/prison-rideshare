@@ -11,13 +11,14 @@ export default function (config) {
       this.namespace = '/api';
 
       this.get('/rides', function ({ rides }, { queryParams, requestHeaders }) {
-        if (queryParams['filter[name]']) {
-          // FIXME this is a mess, no better way???
-          const nameFilter = queryParams['filter[name]'].toLowerCase();
+        if (queryParams['filter[visitor]']) {
+          const visitorFilter = queryParams['filter[visitor]'].toLowerCase();
           const matchingRides = rides
             .all()
             .models.filter((ride) =>
-              (ride.name || '').toLowerCase().includes(nameFilter),
+              (ride.visitor?.name || ride.name || '')
+                .toLowerCase()
+                .includes(visitorFilter),
             );
           return {
             data: matchingRides.map((ride) => this.serialize(ride)['data']),
@@ -42,7 +43,22 @@ export default function (config) {
 
       this.get('/gas-prices');
 
-      this.get('/people');
+      this.get('/people', function ({ commitments, people }, { queryParams }) {
+        if (queryParams['filter[role]'] !== 'driver') {
+          return people.all();
+        }
+
+        return people
+          .all()
+          .filter(
+            (person) =>
+              person.visitings.length === 0 ||
+              person.drivings.length > 0 ||
+              person.carOwnings.length > 0 ||
+              person.reimbursements.length > 0 ||
+              commitments.where({ personId: person.id }).length > 0,
+          );
+      });
       this.get('/people/:id');
       this.post('/people');
       this.patch('/people/:id');
