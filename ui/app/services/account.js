@@ -4,7 +4,7 @@ import Service, { service } from '@ember/service';
 import { isEmpty } from '@ember/utils';
 import { isTesting } from '@ember/debug';
 
-import fetch from 'fetch';
+import fetch from 'prison-rideshare-ui/utils/fetch';
 import config from '../config/environment';
 
 // This is mostly taken from the dummy Ember Simple Auth app
