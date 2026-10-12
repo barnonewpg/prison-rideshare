@@ -2,7 +2,7 @@
 import { classNames } from '@ember-decorators/component';
 import { computed } from '@ember/object';
 import Component from '@ember/component';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import formatTimespan from 'prison-rideshare-ui/utils/format-timespan';
 import momentTimeZone from 'moment-timezone';
 import HighCharts from 'ember-highcharts/components/high-charts';

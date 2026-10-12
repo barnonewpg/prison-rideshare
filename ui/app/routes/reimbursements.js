@@ -1,5 +1,5 @@
 /* eslint-disable ember/no-mixins */
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import { all } from 'rsvp';
 import AuthenticatedRoute from 'prison-rideshare-ui/mixins/authenticated-route';
 

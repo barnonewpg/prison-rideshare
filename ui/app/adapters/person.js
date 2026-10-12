@@ -1,6 +1,6 @@
 /* eslint-disable ember/classic-decorator-no-classic-methods, ember/no-computed-properties-in-native-classes, ember/no-get */
 import { equal } from '@ember/object/computed';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import ApplicationAdapter from './application';
 
 export default class Person extends ApplicationAdapter {

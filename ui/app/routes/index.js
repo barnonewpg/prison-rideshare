@@ -1,5 +1,5 @@
 /* eslint-disable ember/no-mixins, prettier/prettier */
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import AuthenticatedRoute from 'prison-rideshare-ui/mixins/authenticated-route';
 
 export default class IndexRoute extends AuthenticatedRoute {

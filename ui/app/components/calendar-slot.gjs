@@ -1,4 +1,4 @@
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import formatBriefTimespan from 'prison-rideshare-ui/utils/format-brief-timespan';
 import moment from 'moment-timezone';
