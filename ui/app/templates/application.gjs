@@ -1,5 +1,4 @@
 import RouteTemplate from 'ember-route-template';
-import HeadLayout from 'ember-cli-head/components/head-layout';
 import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { on } from '@ember/modifier';
@@ -65,7 +64,6 @@ class ApplicationComponent extends Component {
     {{#if this.previewLabel}}
       {{pageTitle this.previewLabel front=true}}
     {{/if}}
-    <HeadLayout />
 
     {{#if this.activeToast}}
       <HdsToast

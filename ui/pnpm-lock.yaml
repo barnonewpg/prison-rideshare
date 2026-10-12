@@ -149,9 +149,6 @@ importers:
       ember-cli-deprecation-workflow:
         specifier: ^2.0.0
         version: 2.2.0
-      ember-cli-head:
-        specifier: ^2.0.0
-        version: 2.0.0
       ember-cli-htmlbars:
         specifier: ^6.3.0
         version: 6.3.0
@@ -4303,10 +4300,6 @@ packages:
   ember-cli-get-component-path-option@1.0.0:
     resolution: {integrity: sha512-k47TDwcJ2zPideBCZE8sCiShSxQSpebY2BHcX2DdipMmBox5gsfyVrbKJWIHeSTTKyEUgmBIvQkqTOozEziCZA==}
 
-  ember-cli-head@2.0.0:
-    resolution: {integrity: sha512-i9qwljBlpzU/ei0xN+FiCHUvU1ZdjVXk0OzRKoeMZJK3m4p29CvB095klT0q+PigvYFYHIyTaeSWmbgjP8CZiw==}
-    engines: {node: 12.* || >= 14}
-
   ember-cli-htmlbars@5.7.2:
     resolution: {integrity: sha512-Uj6R+3TtBV5RZoJY14oZn/sNPnc+UgmC8nb5rI4P3fR/gYoyTFIZSXiIM7zl++IpMoIrocxOrgt+mhonKphgGg==}
     engines: {node: 10.* || >= 12.*}
@@ -4507,10 +4500,6 @@ packages:
     peerDependencies:
       ember-source: '>= 3.28.0'
       highcharts: '>= 10.0.0'
-
-  ember-in-element-polyfill@1.0.1:
-    resolution: {integrity: sha512-eHs+7D7PuQr8a1DPqsJTsEyo3FZ1XuH6WEZaEBPDa9s0xLlwByCNKl8hi1EbXOgvgEZNHHi9Rh0vjxyfakrlgg==}
-    engines: {node: 10.* || >= 12}
 
   ember-inflector@4.0.3:
     resolution: {integrity: sha512-E+NnmzybMRWn1JyEfDxY7arjOTJLIcGjcXnUxizgjD4TlvO1s3O65blZt+Xq2C2AFSPeqHLC6PXd6XHYM8BxdQ==}
@@ -13784,14 +13773,6 @@ snapshots:
 
   ember-cli-get-component-path-option@1.0.0: {}
 
-  ember-cli-head@2.0.0:
-    dependencies:
-      ember-cli-babel: 7.26.11
-      ember-cli-htmlbars: 5.7.2
-      ember-in-element-polyfill: 1.0.1
-    transitivePeerDependencies:
-      - supports-color
-
   ember-cli-htmlbars@5.7.2:
     dependencies:
       '@ember/edition-utils': 1.2.0
@@ -14326,15 +14307,6 @@ snapshots:
       highcharts: 12.4.0
     transitivePeerDependencies:
       - '@glint/template'
-      - supports-color
-
-  ember-in-element-polyfill@1.0.1:
-    dependencies:
-      debug: 4.4.3
-      ember-cli-babel: 7.26.11
-      ember-cli-htmlbars: 5.7.2
-      ember-cli-version-checker: 5.1.2
-    transitivePeerDependencies:
       - supports-color
 
   ember-inflector@4.0.3(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.28.4))(@glint/template@1.6.1)(rsvp@4.8.5)(webpack@5.101.3)):

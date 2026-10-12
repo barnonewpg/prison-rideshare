@@ -1,16 +1,9 @@
-import { inject as service } from '@ember/service';
 import EmberRouter from '@ember/routing/router';
 import config from 'prison-rideshare-ui/config/environment';
 
 export default class Router extends EmberRouter {
-  @service headData;
-
   location = config.locationType;
   rootURL = config.rootURL;
-
-  setTitle(title) {
-    this.headData.set('title', title);
-  }
 }
 
 Router.map(function () {
