@@ -16,7 +16,7 @@ import Money.Sigils
 
 Faker.start()
 
-defmodule Lol do
+defmodule SandboxSeeds do
   def createRide(params) do
     today = Timex.beginning_of_day(Timex.local())
 
@@ -55,7 +55,7 @@ defmodule Lol do
         false -> merged
       end
 
-    PaperTrail.insert!(Ride.changeset(%Ride{}, merged), Lol.version_information())
+    PaperTrail.insert!(Ride.changeset(%Ride{}, merged), SandboxSeeds.version_information())
   end
 
   def createPerson(name) do
@@ -66,7 +66,7 @@ defmodule Lol do
         mobile: Faker.Phone.EnUs.phone(),
         address: Faker.Address.street_address(),
       }),
-      Lol.version_information()
+      SandboxSeeds.version_information()
     )
   end
 
@@ -93,10 +93,10 @@ user =
     password_confirmation: "password",
     confirmed_at: DateTime.utc_now()
   })
-  |> PaperTrail.insert!(Lol.version_information())
+  |> PaperTrail.insert!(SandboxSeeds.version_information())
 
 User.admin_changeset(user, %{admin: true})
-|> PaperTrail.update!(Lol.version_information())
+|> PaperTrail.update!(SandboxSeeds.version_information())
 
 other_user =
   User.changeset(%User{}, %{
@@ -106,39 +106,39 @@ other_user =
     password_confirmation: "password",
     confirmed_at: DateTime.utc_now()
   })
-  |> PaperTrail.insert!(Lol.version_information())
+  |> PaperTrail.insert!(SandboxSeeds.version_information())
 
 headingley =
   PaperTrail.insert!(
     Institution.changeset(%Institution{name: "Headingley", far: false}),
-    Lol.version_information()
+    SandboxSeeds.version_information()
   )
 
 milner_ridge =
   PaperTrail.insert!(
     Institution.changeset(%Institution{name: "Milner Ridge", far: true}),
-    Lol.version_information()
+    SandboxSeeds.version_information()
   )
 
 stony_mountain =
   PaperTrail.insert!(
     Institution.changeset(%Institution{name: "Stony Mountain", far: false}),
-    Lol.version_information()
+    SandboxSeeds.version_information()
   )
 
 john_henderson =
   PaperTrail.insert!(
     Institution.changeset(%Institution{name: "John Henderson Junior High", far: false}),
-    Lol.version_information()
+    SandboxSeeds.version_information()
   )
 
-cnuth = Lol.createPerson("Cnuth")
-sara = Lol.createPerson("Sara Ahmed")
-chelsea = Lol.createPerson("Chelsea Manning")
-brian = Lol.createPerson("Brian Pallister")
+cnuth = SandboxSeeds.createPerson("Cnuth")
+sara = SandboxSeeds.createPerson("Sara Ahmed")
+chelsea = SandboxSeeds.createPerson("Chelsea Manning")
+brian = SandboxSeeds.createPerson("Brian Pallister")
 
 tomorrowRide =
-  Lol.createRide(%{
+  SandboxSeeds.createRide(%{
     relative_start: [days: 1, hours: 13, minutes: 30],
     relative_end: [hours: 1, minutes: 30],
     institution: headingley,
@@ -149,7 +149,7 @@ tomorrowRide =
   })
 
 nextWeekRide =
-  Lol.createRide(%{
+  SandboxSeeds.createRide(%{
     relative_start: [days: 7, hours: 15],
     relative_end: [hours: 3],
     institution: milner_ridge,
@@ -158,7 +158,7 @@ nextWeekRide =
   })
 
 similarRide =
-  Lol.createRide(%{
+  SandboxSeeds.createRide(%{
     relative_start: [days: 7, hours: 15, minutes: 15],
     relative_end: [hours: 3, minutes: 30],
     institution: milner_ridge,
@@ -166,7 +166,7 @@ similarRide =
     request_confirmed: false
   })
 
-Lol.createRide(%{
+SandboxSeeds.createRide(%{
   relative_start: [days: 7, hours: 15],
   relative_end: [hours: 3, minutes: 15],
   institution: milner_ridge,
@@ -175,7 +175,7 @@ Lol.createRide(%{
 })
 
 lastWeekRide =
-  Lol.createRide(%{
+  SandboxSeeds.createRide(%{
     relative_start: [days: -7, hours: 12],
     relative_end: [hours: 2],
     institution: headingley,
@@ -192,7 +192,7 @@ lastWeekRide =
   })
 
 lastMonthRide =
-  Lol.createRide(%{
+  SandboxSeeds.createRide(%{
     relative_start: [days: -30, hours: 8],
     relative_end: [hours: 4],
     institution: milner_ridge,
@@ -206,7 +206,7 @@ lastMonthRide =
   })
 
 brianRide =
-  Lol.createRide(%{
+  SandboxSeeds.createRide(%{
     relative_start: [days: -9, hours: 5],
     relative_end: [minutes: 45],
     institution: john_henderson,
@@ -227,7 +227,7 @@ PaperTrail.insert!(
     person: sara,
     food_expenses: ~M[1414]
   },
-  Lol.version_information()
+  SandboxSeeds.version_information()
 )
 
 PaperTrail.insert!(
@@ -236,11 +236,11 @@ PaperTrail.insert!(
     person: sara,
     car_expenses: ~M[100]
   },
-  Lol.version_information()
+  SandboxSeeds.version_information()
 )
 
 cancelledRide =
-  Lol.createRide(%{
+  SandboxSeeds.createRide(%{
     relative_start: [days: -11, hours: 9],
     relative_end: [hours: 2],
     institution: milner_ridge,
@@ -249,7 +249,7 @@ cancelledRide =
   })
 
 yesterdayRide =
-  Lol.createRide(%{
+  SandboxSeeds.createRide(%{
     relative_start: [days: -1, hours: 11],
     relative_end: [hours: 1, minutes: 45],
     institution: headingley,
@@ -258,7 +258,7 @@ yesterdayRide =
   })
 
 olderRide =
-  Lol.createRide(%{
+  SandboxSeeds.createRide(%{
     relative_start: [days: -3, hours: 16],
     relative_end: [hours: 2],
     institution: stony_mountain,
@@ -268,7 +268,7 @@ olderRide =
   })
 
 evenOlderRide =
-  Lol.createRide(%{
+  SandboxSeeds.createRide(%{
     relative_start: [days: -11, hours: 17],
     relative_end: [hours: 2, minutes: 30],
     institution: stony_mountain,
@@ -278,7 +278,7 @@ evenOlderRide =
   })
 
 reimbursedRide =
-  Lol.createRide(%{
+  SandboxSeeds.createRide(%{
     relative_start: [days: -45, hours: 9],
     relative_end: [hours: 2, minutes: 30],
     institution: headingley,
@@ -297,7 +297,7 @@ PaperTrail.insert!(
     person: sara,
     food_expenses: ~M[999]
   },
-  Lol.version_information()
+  SandboxSeeds.version_information()
 )
 
 PaperTrail.insert!(
@@ -306,11 +306,11 @@ PaperTrail.insert!(
     person: sara,
     car_expenses: ~M[550]
   },
-  Lol.version_information()
+  SandboxSeeds.version_information()
 )
 
 processedRide =
-  Lol.createRide(%{
+  SandboxSeeds.createRide(%{
     relative_start: [days: -50, hours: 8],
     relative_end: [hours: 2, minutes: 15],
     institution: headingley,
@@ -331,7 +331,7 @@ PaperTrail.insert!(
     processed: true,
     donation: true
   },
-  Lol.version_information()
+  SandboxSeeds.version_information()
 )
 
 PaperTrail.insert!(
@@ -342,7 +342,7 @@ PaperTrail.insert!(
     processed: true,
     donation: true
   },
-  Lol.version_information()
+  SandboxSeeds.version_information()
 )
 
 PaperTrail.insert!(%Reimbursement{
@@ -406,7 +406,7 @@ PaperTrail.insert!(%Commitment{
 })
 
 overlapRide =
-  Lol.createRide(%{
+  SandboxSeeds.createRide(%{
     relative_start: [days: 6, hours: 13],
     relative_end: [hours: 2, minutes: 30],
     institution: john_henderson,
