@@ -53,7 +53,7 @@ defmodule PrisonRideshareWeb.ReimbursementController do
 
     case PaperTrail.update(changeset, version_information(conn)) do
       {:ok, %{model: reimbursement}} ->
-        render(conn, "show.json-api", data: reimbursement)
+        render(conn, "show.json-api", data: reimbursement |> Repo.preload([:person, :ride]))
 
       {:error, changeset} ->
         conn

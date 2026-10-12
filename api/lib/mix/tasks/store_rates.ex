@@ -24,7 +24,7 @@ defmodule Mix.Tasks.StoreRates do
         )
       )
 
-    gas_prices = Repo.all(GasPrice, order_by: :inserted_at)
+    gas_prices = Repo.all(from(g in GasPrice, order_by: g.inserted_at))
 
     today = Timex.today()
 

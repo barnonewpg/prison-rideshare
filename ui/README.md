@@ -7,7 +7,7 @@ This is an Ember front-end for the [prison rideshare API](../api). Visit the [sa
 You will need the following things properly installed on your computer.
 
 * [Git](https://git-scm.com/)
-* [Node.js](https://nodejs.org/) (with npm)
+* [mise](https://mise.jdx.dev/), which installs the Node and pnpm versions in `mise.toml`
 * [Ember CLI](https://cli.emberjs.com/release/)
 * [Google Chrome](https://google.com/chrome/)
 
@@ -15,7 +15,8 @@ You will need the following things properly installed on your computer.
 
 * `git clone <repository-url>` this repository
 * `cd prison-rideshare/ui`
-* `npm install`
+* `mise install`
+* `pnpm install`
 
 ## Running / Development
 
