@@ -1,4 +1,5 @@
 import {
+  property,
   clickable,
   create,
   fillable,
@@ -15,4 +16,6 @@ export default create({
   error: text('[data-test-login-error]'),
 
   submit: clickable('[data-test-login-submit]'),
+  submitText: text('[data-test-login-submit]'),
+  submitDisabled: property('disabled', '[data-test-login-submit]'),
 });

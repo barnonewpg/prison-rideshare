@@ -20,4 +20,10 @@ export default class LoginRoute extends Route {
 
     return EmberObject.create(user);
   }
+
+  resetController(controller, isExiting) {
+    if (isExiting) {
+      controller.isLoggingIn = false;
+    }
+  }
 }
