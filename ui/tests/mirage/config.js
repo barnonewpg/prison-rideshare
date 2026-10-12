@@ -1,10 +1,20 @@
 import { createServer, Response } from 'miragejs';
 import { isEmpty } from '@ember/utils';
+import { pluralize, singularize } from 'ember-inflector';
 
-export default function (config) {
+import factories from './factories';
+import models from './models';
+import serializers from './serializers';
+
+export default function (config = {}) {
   let finalConfig = {
+    environment: 'test',
+    factories,
+    models,
+    serializers,
+    // Match Ember Data's pluralization, as ember-cli-mirage did
+    inflector: { pluralize, singularize },
     ...config,
-    models: { ...config.models },
     routes() {
       this.logging = window.location.search.includes('mirage-logging=true');
 
