@@ -2,7 +2,7 @@ name: Deploy visitors
 
 # Deploys the visitors branch's API to both parallel apps. Only code goes
 # through here: the production-data app's database is refreshed from a local
-# snapshot (see migration/RUNBOOK.md), never via Actions.
+# snapshot on a maintainer's machine, never via Actions.
 
 on:
   workflow_dispatch:
