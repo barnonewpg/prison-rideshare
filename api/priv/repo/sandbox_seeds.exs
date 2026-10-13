@@ -127,7 +127,7 @@ sara = SandboxSeeds.create_person("Sara Ahmed")
 chelsea = SandboxSeeds.create_person("Chelsea Manning")
 brian = SandboxSeeds.create_person("Brian Pallister")
 
-tomorrow_ride =
+_tomorrow_ride =
   SandboxSeeds.create_ride(%{
     relative_start: [days: 1, hours: 13, minutes: 30],
     relative_end: [hours: 1, minutes: 30],
@@ -147,7 +147,7 @@ next_week_ride =
     medium: "phone"
   })
 
-similar_ride =
+_similar_ride =
   SandboxSeeds.create_ride(%{
     relative_start: [days: 7, hours: 15, minutes: 15],
     relative_end: [hours: 3, minutes: 30],
@@ -164,7 +164,7 @@ SandboxSeeds.create_ride(%{
   medium: "txt"
 })
 
-last_week_ride =
+_last_week_ride =
   SandboxSeeds.create_ride(%{
     relative_start: [days: -7, hours: 12],
     relative_end: [hours: 2],
@@ -229,7 +229,7 @@ PaperTrail.insert!(
   SandboxSeeds.version_information()
 )
 
-cancelled_ride =
+_cancelled_ride =
   SandboxSeeds.create_ride(%{
     relative_start: [days: -11, hours: 9],
     relative_end: [hours: 2],
@@ -238,7 +238,7 @@ cancelled_ride =
     cancellation_reason: "visitor"
   })
 
-yesterday_ride =
+_yesterday_ride =
   SandboxSeeds.create_ride(%{
     relative_start: [days: -1, hours: 11],
     relative_end: [hours: 1, minutes: 45],
@@ -247,7 +247,7 @@ yesterday_ride =
     car_owner: chelsea
   })
 
-older_ride =
+_older_ride =
   SandboxSeeds.create_ride(%{
     relative_start: [days: -3, hours: 16],
     relative_end: [hours: 2],
@@ -257,7 +257,7 @@ older_ride =
     medium: "phone"
   })
 
-even_older_ride =
+_even_older_ride =
   SandboxSeeds.create_ride(%{
     relative_start: [days: -11, hours: 17],
     relative_end: [hours: 2, minutes: 30],
