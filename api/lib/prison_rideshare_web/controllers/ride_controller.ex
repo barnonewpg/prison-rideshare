@@ -12,6 +12,20 @@ defmodule PrisonRideshareWeb.RideController do
   def index(%{private: %{guardian_default_resource: %{admin: true}}} = conn, params) do
     rides =
       case params do
+        %{"filter" => %{} = filter}
+        when is_map_key(filter, "complete") or is_map_key(filter, "enabled") ->
+          rides =
+            Ride
+            |> filter_boolean(:complete, filter["complete"])
+            |> filter_boolean(:enabled, filter["enabled"])
+            |> Repo.all()
+
+          # Combined rides are rendered beneath their parents, so they must be present
+          parent_ids = Enum.map(rides, & &1.id)
+          children = Repo.all(from(r in Ride, where: r.combined_with_ride_id in ^parent_ids))
+
+          Enum.uniq_by(rides ++ children, & &1.id)
+
         %{"filter" => %{"name" => name}} ->
           Repo.all(from(r in Ride, where: ilike(r.name, ^"#{name}%"), order_by: [desc: r.start]))
 
@@ -124,15 +138,16 @@ defmodule PrisonRideshareWeb.RideController do
   end
 
   def calendar(conn, _) do
-    rides = Repo.all(
-      from(
-        r in Ride,
-        where:
-          r.enabled and is_nil(r.combined_with_ride_id) and is_nil(r.distance) and
-            not (r.car_expenses > 0) and is_nil(r.driver_id),
-        preload: [:institution, :driver, :children]
+    rides =
+      Repo.all(
+        from(
+          r in Ride,
+          where:
+            r.enabled and is_nil(r.combined_with_ride_id) and is_nil(r.distance) and
+              not (r.car_expenses > 0) and is_nil(r.driver_id),
+          preload: [:institution, :driver, :children]
+        )
       )
-    )
 
     events =
       Enum.map(Enum.sort_by(rides, fn ride -> ride.start end), fn ride ->
@@ -145,25 +160,23 @@ defmodule PrisonRideshareWeb.RideController do
         institution_name = ride.institution.name
 
         summary =
-          "#{institution_name}: #{request_count} request#{
-            if request_count > 1 do
-              "s"
-            end
-          }#{
-            if passenger_count > 1 do
-              ", #{passenger_count} passengers"
-            end
-          }"
+          "#{institution_name}: #{request_count} request#{if request_count > 1 do
+            "s"
+          end}#{if passenger_count > 1 do
+            ", #{passenger_count} passengers"
+          end}"
 
         %ICalendar.Event{
           summary: summary,
           description: "Please email barnone.coordinator@gmail.com to get assigned to this ride.",
           dtstart:
-            DateTime.from_naive!(ride.start,
+            DateTime.from_naive!(
+              ride.start,
               "Etc/UTC"
             ),
           dtend:
-            DateTime.from_naive!(ride.end,
+            DateTime.from_naive!(
+              ride.end,
               "Etc/UTC"
             )
         }
@@ -247,6 +260,12 @@ defmodule PrisonRideshareWeb.RideController do
     PaperTrail.delete!(ride, version_information(conn))
 
     send_resp(conn, :no_content, "")
+  end
+
+  defp filter_boolean(query, _field, nil), do: query
+
+  defp filter_boolean(query, field, value) when value in ["true", "false"] do
+    where(query, [r], field(r, ^field) == ^(value == "true"))
   end
 
   defp preload(model) do

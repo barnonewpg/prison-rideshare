@@ -388,12 +388,25 @@ module('Acceptance | rides', function (hooks) {
       complete: true,
     });
 
+    const filteredRidesRequests = [];
+    this.server.pretender.handledRequest = (verb, path, request) => {
+      if (request.queryParams['filter[enabled]']) {
+        filteredRidesRequests.push(request);
+      }
+    };
+    const lastFilteredRidesRequest = () => filteredRidesRequests.at(-1);
+
     await page.visit();
 
     assert.strictEqual(
       page.rides.length,
       2,
       'expected the completed rides to be hidden',
+    );
+    assert.strictEqual(
+      lastFilteredRidesRequest().queryParams['filter[complete]'],
+      'false',
+      'expected completed rides to not be requested',
     );
     assert.notOk(
       page.head.completedSwitch.enabled,
@@ -410,6 +423,11 @@ module('Acceptance | rides', function (hooks) {
     assert.ok(
       page.head.completedSwitch.enabled,
       'expected the completed switch to be on',
+    );
+    assert.strictEqual(
+      lastFilteredRidesRequest().queryParams['filter[complete]'],
+      undefined,
+      'expected completed rides to be requested once shown',
     );
 
     assert.strictEqual(
