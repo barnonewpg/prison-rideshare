@@ -1,5 +1,10 @@
 /* eslint-disable qunit/require-expect */
-import { currentRouteName, currentURL } from '@ember/test-helpers';
+import {
+  currentRouteName,
+  currentURL,
+  settled,
+  waitUntil,
+} from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from '../helpers/application-tests';
 import percySnapshot from '@percy/ember';
@@ -110,6 +115,35 @@ module('Acceptance | login', function (hooks) {
     assert.strictEqual(shared.ridesBadge.text, '1');
   });
 
+  test('the login button shows a loading state until rides load', async function (assert) {
+    let ridesRequested = false;
+    let resolveRides;
+    const ridesResponse = new Promise((resolve) => (resolveRides = resolve));
+
+    overrideRoute(this.server, 'get', '/rides', async function ({ rides }) {
+      ridesRequested = true;
+      await ridesResponse;
+      return rides.all();
+    });
+
+    await page.visit();
+    await page.fillEmail('jorts@jants.ca');
+    await page.fillPassword('aaaaaaaaa');
+
+    // Not awaited, as it would wait for the held rides response
+    page.submit();
+    await waitUntil(() => ridesRequested);
+
+    assert.strictEqual(currentRouteName(), 'login');
+    assert.strictEqual(page.submitText, 'Logging in…');
+    assert.true(page.submitDisabled);
+
+    resolveRides();
+    await settled();
+
+    assert.strictEqual(currentRouteName(), 'rides');
+  });
+
   test('successful non-admin login forwards to the report route', async function (assert) {
     await page.visit();
 
@@ -157,6 +191,8 @@ module('Acceptance | login', function (hooks) {
       shared.inlineAlert.text,
       'There was an error logging you in.',
     );
+    assert.strictEqual(page.submitText, 'Log in');
+    assert.false(page.submitDisabled);
 
     restoreToken();
     this.server.create('user', {

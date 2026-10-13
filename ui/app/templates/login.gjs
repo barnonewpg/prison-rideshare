@@ -75,7 +75,9 @@ export default RouteTemplate(
             form='login-form'
             @size='small'
             @color='primary'
-            @text='Log in'
+            @text={{if @controller.isLoggingIn 'Logging in…' 'Log in'}}
+            @icon={{if @controller.isLoggingIn 'loading'}}
+            disabled={{@controller.isLoggingIn}}
             data-test-login-submit
           />
           <HdsButton

@@ -7,6 +7,7 @@ export default class LoginController extends Controller {
   @service session;
 
   @tracked error;
+  @tracked isLoggingIn = false;
 
   @action
   updateEmail(event) {
@@ -27,7 +28,9 @@ export default class LoginController extends Controller {
     const user = this.model;
 
     this.error = undefined;
+    this.isLoggingIn = true;
 
+    // On success this stays true while the next route loads.
     this.session
       .authenticate(
         'authenticator:application',
@@ -35,6 +38,7 @@ export default class LoginController extends Controller {
         user.get('password'),
       )
       .catch((error) => {
+        this.isLoggingIn = false;
         this.error =
           error?.errors?.[0]?.detail ?? 'There was an error logging you in.';
       });
