@@ -5,6 +5,7 @@ import Component from '@ember/component';
 import { tagName } from '@ember-decorators/component';
 import reasonToIcon from 'prison-rideshare-ui/utils/reason-to-icon';
 import fetch from 'prison-rideshare-ui/utils/fetch';
+import { formatDate } from 'prison-rideshare-ui/utils/dates';
 import ScrollTo from 'prison-rideshare-ui/components/scroll-to';
 import LinkedContact from 'prison-rideshare-ui/components/linked-contact';
 import RidePerson from 'prison-rideshare-ui/components/ride-person';
@@ -293,9 +294,6 @@ export default class RideRow extends Component {
   </template>
 
   @service
-  moment;
-
-  @service
   overlaps;
 
   @service
@@ -331,7 +329,7 @@ export default class RideRow extends Component {
   @computed('ride.insertedAt')
   get creation() {
     const insertedAt = this.ride.insertedAt;
-    return this.moment.moment(insertedAt).format('ddd MMM D YYYY h:mma');
+    return formatDate(insertedAt, 'EEE LLL d yyyy h:mma');
   }
 
   @computed('ride.{enabled,cancellationReason}')

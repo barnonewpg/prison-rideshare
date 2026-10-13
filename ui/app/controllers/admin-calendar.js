@@ -3,10 +3,10 @@ import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import CalendarController from './calendar';
 import fetch from 'prison-rideshare-ui/utils/fetch';
-import moment from 'moment-timezone';
+import { formatDate, toDateTime } from 'prison-rideshare-ui/utils/dates';
 import RSVP from 'rsvp';
 
-const format = 'YYYY-MM';
+const format = 'yyyy-MM';
 
 export default class AdminCalendarController extends CalendarController {
   @service('people')
@@ -43,23 +43,19 @@ export default class AdminCalendarController extends CalendarController {
   }
 
   get previousMonth() {
-    return moment(this.month).add(-1, 'M').format(format);
+    return formatDate(toDateTime(this.month).minus({ months: 1 }), format);
   }
 
   get nextMonth() {
-    return moment(this.month).add(1, 'M').format(format);
+    return formatDate(toDateTime(this.month).plus({ months: 1 }), format);
   }
 
   get monthString() {
-    return moment(this.month).format(format);
-  }
-
-  get monthMoment() {
-    return moment(this.month);
+    return formatDate(this.month, format);
   }
 
   get title() {
-    return `${moment(this.month).format('MMMM YYYY')} calendar`;
+    return `${formatDate(this.month, 'LLLL yyyy')} calendar`;
   }
 
   get remainingPeople() {
@@ -116,8 +112,9 @@ export default class AdminCalendarController extends CalendarController {
       await commitment.save();
       this.errorMessage = undefined;
       this.toasts.show(
-        `Committed ${person.name} to drive on ${moment(slot.start).format(
-          'MMMM D',
+        `Committed ${person.name} to drive on ${formatDate(
+          slot.start,
+          'LLLL d',
         )}`,
       );
     } catch (error) {
@@ -129,7 +126,7 @@ export default class AdminCalendarController extends CalendarController {
   @action
   async deleteCommitment(commitment) {
     const name = commitment?.person?.name;
-    const date = moment(commitment?.slot?.start).format('MMMM D');
+    const date = formatDate(commitment?.slot?.start, 'LLLL d');
 
     try {
       await commitment.destroyRecord();

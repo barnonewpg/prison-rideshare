@@ -2,7 +2,8 @@
 import { action, computed } from '@ember/object';
 import { equal } from '@ember/object/computed';
 import Component from '@ember/component';
-import moment from 'moment-timezone';
+import { DateTime } from 'luxon';
+import { formatDate } from 'prison-rideshare-ui/utils/dates';
 import HighCharts from 'ember-highcharts/components/high-charts';
 
 const MAX_RIDE_DURATION_HOURS = 24;
@@ -44,7 +45,10 @@ function visitHoursForRide(ride, grouping, ridesById) {
     return 0;
   }
 
-  const durationHours = moment(end).diff(start, 'hours', true);
+  const durationHours = DateTime.fromJSDate(end).diff(
+    DateTime.fromJSDate(start),
+    'hours',
+  ).hours;
 
   if (
     !Number.isFinite(durationHours) ||
@@ -124,9 +128,12 @@ export default class RequestsAndReimbursementsChart extends Component {
     const start = ride.get('start');
 
     if (this.timeGrouping === 'weeks') {
-      return moment(start).startOf('week').format('YYMMDD');
+      return formatDate(
+        DateTime.fromJSDate(start).startOf('week', { useLocaleWeeks: true }),
+        'yyMMdd',
+      );
     } else {
-      return moment(start).format('YYYY-MM');
+      return formatDate(start, 'yyyy-MM');
     }
   }
 

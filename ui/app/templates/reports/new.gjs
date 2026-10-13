@@ -1,6 +1,6 @@
 import RouteTemplate from 'ember-route-template';
 import ToolbarHeader from 'prison-rideshare-ui/components/toolbar-header';
-import momentFormat from 'ember-moment/helpers/moment-format';
+import { formatDate } from 'prison-rideshare-ui/utils/dates';
 import ReimbursementUnit from 'prison-rideshare-ui/components/reimbursement-unit';
 import { fn } from '@ember/helper';
 import { on } from '@ember/modifier';
@@ -56,7 +56,7 @@ export default RouteTemplate(
                       {{#if ride.initials}}
                         {{ride.initials}}:
                       {{/if}}
-                      {{momentFormat ride.start 'ddd, MMM D [at] h:mma'}}
+                      {{formatDate ride.start "EEE, LLL d 'at' h:mma"}}
                       to
                       {{ride.institution.name}}
                       {{#if ride.rate}}

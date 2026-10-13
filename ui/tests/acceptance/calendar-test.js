@@ -11,6 +11,7 @@ import { pollTaskFor } from 'ember-lifeline/test-support';
 import page from 'prison-rideshare-ui/tests/pages/calendar';
 import shared from 'prison-rideshare-ui/tests/pages/shared';
 import { POLL_TOKEN } from 'prison-rideshare-ui/routes/calendar';
+import { winnipegDate } from '../helpers/winnipeg-date';
 
 module('Acceptance | calendar', function (hooks) {
   setupApplicationTest(hooks);
@@ -41,20 +42,20 @@ module('Acceptance | calendar', function (hooks) {
     });
 
     const committedSlot = this.server.create('slot', {
-      start: new Date(2117, 11, 4, 17, 30),
-      end: new Date(2117, 11, 4, 20),
+      start: winnipegDate(2117, 11, 4, 17, 30),
+      end: winnipegDate(2117, 11, 4, 20),
       count: 1,
     });
 
     this.toCommitSlot = this.server.create('slot', {
-      start: new Date(2117, 11, 10, 17),
-      end: new Date(2117, 11, 10, 21),
+      start: winnipegDate(2117, 11, 10, 17),
+      end: winnipegDate(2117, 11, 10, 21),
       count: 2,
     });
 
     this.server.create('slot', {
-      start: new Date(2117, 11, 10, 11),
-      end: new Date(2117, 11, 10, 17),
+      start: winnipegDate(2117, 11, 10, 11),
+      end: winnipegDate(2117, 11, 10, 17),
       count: 0,
     });
 
@@ -64,8 +65,8 @@ module('Acceptance | calendar', function (hooks) {
     committedSlot.createCommitment({ person });
 
     const fullyCommittedSlot = this.server.create('slot', {
-      start: new Date(2117, 11, 14, 17, 30),
-      end: new Date(2117, 11, 14, 20),
+      start: winnipegDate(2117, 11, 14, 17, 30),
+      end: winnipegDate(2117, 11, 14, 20),
       count: 1,
     });
 
@@ -76,14 +77,14 @@ module('Acceptance | calendar', function (hooks) {
     });
 
     this.server.create('slot', {
-      start: new Date(2017, 11, 10, 11),
-      end: new Date(2017, 11, 10, 17),
+      start: winnipegDate(2017, 11, 10, 11),
+      end: winnipegDate(2017, 11, 10, 17),
       count: 0,
     });
 
     const pastCommittedSlot = this.server.create('slot', {
-      start: new Date(2017, 11, 11, 11),
-      end: new Date(2017, 11, 11, 17),
+      start: winnipegDate(2017, 11, 11, 11),
+      end: winnipegDate(2017, 11, 11, 17),
       count: 0,
     });
 

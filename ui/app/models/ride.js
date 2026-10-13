@@ -2,7 +2,6 @@
 import Model, { attr, belongsTo, hasMany } from '@ember-data/model';
 import { gt } from '@ember/object/computed';
 import { computed } from '@ember/object';
-import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
 import dollars from 'prison-rideshare-ui/utils/dollars';
@@ -11,8 +10,6 @@ import formatTimespan from 'prison-rideshare-ui/utils/format-timespan';
 import anonymiseAddress from 'prison-rideshare-ui/utils/anonymise-address';
 
 export default Model.extend({
-  moment: service(),
-
   enabled: attr('boolean', { defaultValue: true }),
   complete: attr('boolean', { defaultValue: false }),
 
@@ -62,7 +59,7 @@ export default Model.extend({
     const start = this.start;
     const end = this.end;
 
-    return formatTimespan(this.moment, start, end);
+    return formatTimespan(start, end);
   }),
 
   driver: belongsTo('person', { async: true, inverse: 'drivings' }),

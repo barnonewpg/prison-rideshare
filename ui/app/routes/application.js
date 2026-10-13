@@ -1,18 +1,13 @@
 import { service } from '@ember/service';
 import Route from '@ember/routing/route';
 
-import momentAddLocaleShortMeridiemFormat from 'prison-rideshare-ui/utils/moment-add-locale-short-meridiem-format';
-
 export default class ApplicationRoute extends Route {
   @service account;
-  @service moment;
   @service session;
   @service toasts;
 
   async beforeModel() {
     await this.session.setup();
-
-    momentAddLocaleShortMeridiemFormat(this.moment);
 
     return this._loadCurrentUser();
   }

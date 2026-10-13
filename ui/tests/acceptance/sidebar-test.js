@@ -5,6 +5,7 @@ import { authenticateSession } from 'ember-simple-auth/test-support';
 
 import rides from 'prison-rideshare-ui/tests/pages/rides';
 import shared from 'prison-rideshare-ui/tests/pages/shared';
+import { winnipegDate } from '../helpers/winnipeg-date';
 
 module('Acceptance | sidebar', function (hooks) {
   setupApplicationTest(hooks);
@@ -104,7 +105,7 @@ module('Acceptance | sidebar', function (hooks) {
       content: 'hello',
       poster: this.server.create('user'),
       unread: true,
-      insertedAt: new Date(2018, 6, 6, 14),
+      insertedAt: winnipegDate(2018, 6, 6, 14),
     });
 
     const week = 7 * 24 * 60 * 60 * 1000;
@@ -122,14 +123,14 @@ module('Acceptance | sidebar', function (hooks) {
       name: 'Visitor',
       contact: '555-1919',
       address: '91 alb',
-      start: new Date(2117, 11, 4, 17, 0),
-      end: new Date(2117, 11, 4, 30),
+      start: winnipegDate(2117, 11, 4, 17, 0),
+      end: winnipegDate(2117, 11, 4, 30),
     });
 
     let person = this.server.create('person', { name: 'Octavia Butler' });
     let slot = this.server.create('slot', {
-      start: new Date(2117, 11, 4, 17, 30),
-      end: new Date(2117, 11, 4, 20),
+      start: winnipegDate(2117, 11, 4, 17, 30),
+      end: winnipegDate(2117, 11, 4, 20),
     });
 
     this.firstRide.createCommitment({ slot, person });

@@ -11,6 +11,7 @@ import ridesPage from 'prison-rideshare-ui/tests/pages/rides';
 import shared from 'prison-rideshare-ui/tests/pages/shared';
 import { getPageTitle } from 'ember-page-title/test-support';
 import { overrideRoute } from '../helpers/override-route';
+import { winnipegDate } from '../helpers/winnipeg-date';
 
 module('Acceptance | people', function (hooks) {
   setupApplicationTest(hooks);
@@ -26,7 +27,7 @@ module('Acceptance | people', function (hooks) {
     });
 
     this.server.create('ride', {
-      start: new Date(2017, 2, 22),
+      start: winnipegDate(2017, 2, 22),
       driver: sun,
     });
 

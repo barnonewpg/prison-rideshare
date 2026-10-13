@@ -5,7 +5,7 @@ import Controller from '@ember/controller';
 import ReimbursementCollection from 'prison-rideshare-ui/utils/reimbursement-collection';
 // import BufferedProxy from 'ember-buffered-proxy/proxy';
 
-import moment from 'moment-timezone';
+import { formatDate } from 'prison-rideshare-ui/utils/dates';
 
 export default class ReimbursementsController extends Controller {
   queryParams = [
@@ -48,15 +48,14 @@ export default class ReimbursementsController extends Controller {
       (monthToPersonIdToReimbursements, reimbursement) => {
         // FIXME this assumes a ride is always preloaded and present
         const start = reimbursement.belongsTo('ride').value().get('start');
-        const month = moment(start).format('YYYY-MM');
+        const month = formatDate(start, 'yyyy-MM');
 
         if (!monthToPersonIdToReimbursements[month]) {
           monthToPersonIdToReimbursements[month] = {};
         }
 
         if (!monthNumberStringToMonthName[month]) {
-          monthNumberStringToMonthName[month] =
-            moment(start).format('MMMM YYYY');
+          monthNumberStringToMonthName[month] = formatDate(start, 'LLLL yyyy');
         }
 
         const person = reimbursement.get('person');

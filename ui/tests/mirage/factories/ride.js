@@ -1,6 +1,7 @@
 import { Factory } from 'miragejs';
 
 import { faker } from '@faker-js/faker';
+import { winnipegDate } from '../../helpers/winnipeg-date';
 faker.seed(1919);
 
 export default Factory.extend({
@@ -17,10 +18,10 @@ export default Factory.extend({
   passengers: 1,
 
   start(i) {
-    return new Date(2016, 11, 26, 20, 30 + i);
+    return winnipegDate(2016, 11, 26, 20, 30 + i);
   },
   end() {
-    return new Date(2016, 11, 26, 22, 0);
+    return winnipegDate(2016, 11, 26, 22, 0);
   },
   complete() {
     return false;

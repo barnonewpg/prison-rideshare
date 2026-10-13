@@ -8,6 +8,7 @@ import page from 'prison-rideshare-ui/tests/pages/users';
 import loginPage from 'prison-rideshare-ui/tests/pages/login';
 import shared from 'prison-rideshare-ui/tests/pages/shared';
 import { getPageTitle } from 'ember-page-title/test-support';
+import { winnipegDate } from '../helpers/winnipeg-date';
 
 module('Acceptance | users', function (hooks) {
   setupApplicationTest(hooks);
@@ -16,7 +17,7 @@ module('Acceptance | users', function (hooks) {
     this.admin = this.server.create('user', {
       email: 'abc@def.com',
       admin: true,
-      lastSeenAt: new Date(2018, 6, 6, 14),
+      lastSeenAt: winnipegDate(2018, 6, 6, 14),
     });
 
     this.nonAdmin = this.server.create('user', {

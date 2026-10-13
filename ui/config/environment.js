@@ -33,10 +33,6 @@ module.exports = function (environment) {
     sentry: {},
 
     toastDuration: 3000,
-
-    moment: {
-      includeTimezone: 'subset',
-    },
   };
 
   if (environment === 'development') {

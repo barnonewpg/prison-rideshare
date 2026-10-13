@@ -4,6 +4,7 @@ import { setupApplicationTest } from '../helpers/application-tests';
 import percySnapshot from '@percy/ember';
 import page from 'prison-rideshare-ui/tests/pages/gas-prices';
 import { getPageTitle } from 'ember-page-title/test-support';
+import { winnipegDate } from '../helpers/winnipeg-date';
 
 module('Acceptance | gas prices', function (hooks) {
   setupApplicationTest(hooks);
@@ -13,26 +14,46 @@ module('Acceptance | gas prices', function (hooks) {
       price: 100,
       closeRate: 96,
       farRate: 69,
-      insertedAt: new Date(2018, 6, 6, 14),
+      insertedAt: winnipegDate(2018, 6, 6, 14),
     });
 
     this.server.create('gas-price', {
       price: 101,
       closeRate: 84,
       farRate: 48,
-      insertedAt: new Date(2018, 6, 7, 14),
+      insertedAt: winnipegDate(2018, 6, 7, 14),
     });
 
-    this.server.create('gas-price', { insertedAt: new Date(2018, 6, 1, 14) });
-    this.server.create('gas-price', { insertedAt: new Date(2018, 6, 1, 14) });
-    this.server.create('gas-price', { insertedAt: new Date(2018, 6, 1, 14) });
-    this.server.create('gas-price', { insertedAt: new Date(2018, 6, 1, 14) });
-    this.server.create('gas-price', { insertedAt: new Date(2018, 6, 1, 14) });
-    this.server.create('gas-price', { insertedAt: new Date(2018, 6, 1, 14) });
-    this.server.create('gas-price', { insertedAt: new Date(2018, 6, 1, 14) });
-    this.server.create('gas-price', { insertedAt: new Date(2018, 6, 1, 14) });
-    this.server.create('gas-price', { insertedAt: new Date(2018, 6, 1, 14) });
-    this.server.create('gas-price', { insertedAt: new Date(2018, 6, 1, 14) });
+    this.server.create('gas-price', {
+      insertedAt: winnipegDate(2018, 6, 1, 14),
+    });
+    this.server.create('gas-price', {
+      insertedAt: winnipegDate(2018, 6, 1, 14),
+    });
+    this.server.create('gas-price', {
+      insertedAt: winnipegDate(2018, 6, 1, 14),
+    });
+    this.server.create('gas-price', {
+      insertedAt: winnipegDate(2018, 6, 1, 14),
+    });
+    this.server.create('gas-price', {
+      insertedAt: winnipegDate(2018, 6, 1, 14),
+    });
+    this.server.create('gas-price', {
+      insertedAt: winnipegDate(2018, 6, 1, 14),
+    });
+    this.server.create('gas-price', {
+      insertedAt: winnipegDate(2018, 6, 1, 14),
+    });
+    this.server.create('gas-price', {
+      insertedAt: winnipegDate(2018, 6, 1, 14),
+    });
+    this.server.create('gas-price', {
+      insertedAt: winnipegDate(2018, 6, 1, 14),
+    });
+    this.server.create('gas-price', {
+      insertedAt: winnipegDate(2018, 6, 1, 14),
+    });
   });
 
   test('it lists gas prices and reïmbursement rates', async function (assert) {

@@ -8,6 +8,7 @@ import page from 'prison-rideshare-ui/tests/pages/rides';
 import shared from 'prison-rideshare-ui/tests/pages/shared';
 
 import { Response } from 'miragejs';
+import { winnipegDate } from '../helpers/winnipeg-date';
 
 module('Acceptance | overlaps', function (hooks) {
   setupApplicationTest(hooks);
@@ -20,16 +21,16 @@ module('Acceptance | overlaps', function (hooks) {
       name: 'Visitor',
       contact: '555-1919',
       address: '91 alb',
-      start: new Date(2117, 11, 4, 17, 0),
-      end: new Date(2117, 11, 4, 30),
+      start: winnipegDate(2117, 11, 4, 17, 0),
+      end: winnipegDate(2117, 11, 4, 30),
     });
   });
 
   test('overlaps display a count badge in the sidebar and overlapping rides can be assigned to the driver', async function (assert) {
     let person = this.server.create('person', { name: 'Octavia Butler' });
     let slot = this.server.create('slot', {
-      start: new Date(2117, 11, 4, 17, 30),
-      end: new Date(2117, 11, 4, 20),
+      start: winnipegDate(2117, 11, 4, 17, 30),
+      end: winnipegDate(2117, 11, 4, 20),
     });
 
     let commitment = this.firstRide.createCommitment({ slot, person });
@@ -104,8 +105,8 @@ module('Acceptance | overlaps', function (hooks) {
   test('an overlap can be ignored', async function (assert) {
     let person = this.server.create('person', { name: 'Octavia Butler' });
     let slot = this.server.create('slot', {
-      start: new Date(2117, 11, 4, 17, 30),
-      end: new Date(2117, 11, 4, 20),
+      start: winnipegDate(2117, 11, 4, 17, 30),
+      end: winnipegDate(2117, 11, 4, 20),
     });
 
     let commitment = this.firstRide.createCommitment({ slot, person });

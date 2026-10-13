@@ -1,7 +1,8 @@
 /* eslint-disable ember/classic-decorator-hooks, ember/classic-decorator-no-classic-methods, ember/no-classic-classes, ember/no-computed-properties-in-native-classes */
 import { action, computed } from '@ember/object';
 import Controller from '@ember/controller';
-import moment from 'moment-timezone';
+import { DateTime } from 'luxon';
+import { formatDate, toDateTime } from 'prison-rideshare-ui/utils/dates';
 
 // Sunset theme adapted from here: https://github.com/highcharts/highcharts/blob/master/js/themes/sunset.js
 const theme = {
@@ -34,14 +35,13 @@ export default class StatisticsController extends Controller {
 
   @computed('model.@each.start', 'start', 'end')
   get rides() {
-    const rangeStart = moment(this.start);
-    const rangeEnd = moment(this.end);
+    const rangeStart = toDateTime(this.start);
+    const rangeEnd = toDateTime(this.end);
 
     return this.model.filter((ride) => {
-      return (
-        rangeStart.isBefore(ride.get('start')) &&
-        rangeEnd.isAfter(ride.get('start'))
-      );
+      const start = toDateTime(ride.get('start'));
+
+      return start && rangeStart < start && rangeEnd > start;
     });
   }
 
@@ -57,7 +57,7 @@ export default class StatisticsController extends Controller {
         .sort((a, b) => a.start - b.start)
         .map((ride) => {
           return (
-            `${moment(ride.get('start')).format('YYYY-MM-DD')}\t` +
+            `${formatDate(ride.get('start'), 'yyyy-MM-dd')}\t` +
             `${ride.get('institution.name')}\t` +
             `${ride.get('allAnonymisedAddresses')}\t` +
             `${ride.get('allPassengers')}\t` +
@@ -77,20 +77,20 @@ export default class StatisticsController extends Controller {
 
   @action
   setPastYear() {
-    this.set('start', moment().subtract(1, 'y').format('YYYY-MM-DD'));
-    this.set('end', moment().format('YYYY-MM-DD'));
+    this.set('start', DateTime.now().minus({ years: 1 }).toISODate());
+    this.set('end', DateTime.now().toISODate());
   }
 
   @action
   setPastTwoWeeks() {
-    this.set('start', moment().subtract(2, 'w').format('YYYY-MM-DD'));
-    this.set('end', moment().format('YYYY-MM-DD'));
+    this.set('start', DateTime.now().minus({ weeks: 2 }).toISODate());
+    this.set('end', DateTime.now().toISODate());
   }
 
   @action
   setThisYear() {
-    this.set('start', moment().startOf('year').format('YYYY-MM-DD'));
-    this.set('end', moment().format('YYYY-MM-DD'));
+    this.set('start', DateTime.now().startOf('year').toISODate());
+    this.set('end', DateTime.now().toISODate());
   }
 
   @action

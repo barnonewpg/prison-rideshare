@@ -9,6 +9,7 @@ import page from 'prison-rideshare-ui/tests/pages/log';
 import loginPage from 'prison-rideshare-ui/tests/pages/login';
 import shared from 'prison-rideshare-ui/tests/pages/shared';
 import { getPageTitle } from 'ember-page-title/test-support';
+import { winnipegDate } from '../helpers/winnipeg-date';
 
 module('Acceptance | log', function (hooks) {
   setupApplicationTest(hooks);
@@ -23,14 +24,14 @@ module('Acceptance | log', function (hooks) {
       content: 'hello',
       poster: this.server.create('user'),
       unread: true,
-      insertedAt: new Date(2018, 6, 6, 14),
+      insertedAt: winnipegDate(2018, 6, 6, 14),
     });
 
     this.server.create('post', {
       content: 'ya',
       poster,
       unread: false,
-      insertedAt: new Date(2018, 7, 7, 14, 18, 22),
+      insertedAt: winnipegDate(2018, 7, 7, 14, 18, 22),
     });
   });
 
@@ -109,7 +110,7 @@ module('Acceptance | log', function (hooks) {
       content:
         '# Heading\n\nSome **bold** text.\n\n- a bullet\n\n<script>alert(1)</script>',
       poster: this.server.create('user'),
-      insertedAt: new Date(2018, 6, 6, 14),
+      insertedAt: winnipegDate(2018, 6, 6, 14),
     });
 
     await authenticateSession({ access_token: 'abcdef' });
