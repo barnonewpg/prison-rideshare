@@ -15,6 +15,15 @@ defmodule PrisonRideshareWeb.RideController do
         %{"filter" => %{"name" => name}} ->
           Repo.all(from(r in Ride, where: ilike(r.name, ^"#{name}%"), order_by: [desc: r.start]))
 
+        %{"filter" => %{"requires_confirmation" => "true"}} ->
+          now = NaiveDateTime.utc_now()
+
+          Repo.all(
+            from(r in Ride,
+              where: r.start > ^now and r.enabled and not r.request_confirmed
+            )
+          )
+
         _ ->
           Repo.all(Ride)
       end
@@ -124,15 +133,16 @@ defmodule PrisonRideshareWeb.RideController do
   end
 
   def calendar(conn, _) do
-    rides = Repo.all(
-      from(
-        r in Ride,
-        where:
-          r.enabled and is_nil(r.combined_with_ride_id) and is_nil(r.distance) and
-            not (r.car_expenses > 0) and is_nil(r.driver_id),
-        preload: [:institution, :driver, :children]
+    rides =
+      Repo.all(
+        from(
+          r in Ride,
+          where:
+            r.enabled and is_nil(r.combined_with_ride_id) and is_nil(r.distance) and
+              not (r.car_expenses > 0) and is_nil(r.driver_id),
+          preload: [:institution, :driver, :children]
+        )
       )
-    )
 
     events =
       Enum.map(Enum.sort_by(rides, fn ride -> ride.start end), fn ride ->
@@ -145,25 +155,23 @@ defmodule PrisonRideshareWeb.RideController do
         institution_name = ride.institution.name
 
         summary =
-          "#{institution_name}: #{request_count} request#{
-            if request_count > 1 do
-              "s"
-            end
-          }#{
-            if passenger_count > 1 do
-              ", #{passenger_count} passengers"
-            end
-          }"
+          "#{institution_name}: #{request_count} request#{if request_count > 1 do
+            "s"
+          end}#{if passenger_count > 1 do
+            ", #{passenger_count} passengers"
+          end}"
 
         %ICalendar.Event{
           summary: summary,
           description: "Please email barnone.coordinator@gmail.com to get assigned to this ride.",
           dtstart:
-            DateTime.from_naive!(ride.start,
+            DateTime.from_naive!(
+              ride.start,
               "Etc/UTC"
             ),
           dtend:
-            DateTime.from_naive!(ride.end,
+            DateTime.from_naive!(
+              ride.end,
               "Etc/UTC"
             )
         }

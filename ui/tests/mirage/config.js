@@ -32,6 +32,16 @@ export default function (config = {}) {
           return {
             data: matchingRides.map((ride) => this.serialize(ride)['data']),
           };
+        } else if (queryParams['filter[requires_confirmation]']) {
+          const now = new Date();
+
+          return rides.all().filter((ride) => {
+            return (
+              new Date(ride.start) > now &&
+              ride.enabled !== false &&
+              !ride.requestConfirmed
+            );
+          });
         } else if (requestHeaders.Authorization) {
           return rides.all();
         } else {

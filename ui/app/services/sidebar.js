@@ -47,14 +47,17 @@ export default class SidebarService extends Service {
     return this.postsRequestProxy;
   }
 
+  // Only load the rides that need confirmation rather than every ride
   get ridesRequest() {
     if (!this.ridesRequestProxy) {
       this.ridesRequestProxy = ObjectPromiseProxy.create({
-        promise: this.store.findAll('ride').then((rides) => {
-          return {
-            rides,
-          };
-        }),
+        promise: this.store
+          .query('ride', { filter: { requires_confirmation: true } })
+          .then(() => {
+            return {
+              rides: this.store.peekAll('ride'),
+            };
+          }),
       });
     }
 
