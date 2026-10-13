@@ -26,6 +26,22 @@ module('Acceptance | sidebar', function (hooks) {
     assert.strictEqual(shared.sidebarState, initialState);
   });
 
+  test('the link for the current route is marked active', async function (assert) {
+    await rides.visit();
+
+    assert
+      .dom('.app-side-nav__link--active')
+      .exists({ count: 1 })
+      .includesText('Rides');
+
+    await visit('/institutions');
+
+    assert
+      .dom('.app-side-nav__link--active')
+      .exists({ count: 1 })
+      .includesText('Institutions');
+  });
+
   test('the sidebar is closed on mobile until toggled open', async function (assert) {
     const restoreMatchMedia = stubDesktopMatchMedia(false);
 
