@@ -267,7 +267,7 @@ defmodule PrisonRideshareWeb.RideControllerTest do
       institution_id: institution.id
     })
 
-    conn = get(conn, Routes.ride_path(conn, :index, "filter[requires_confirmation]": "true"))
+    conn = get(conn, Routes.ride_path(conn, :index, "filter[requires-confirmation]": "true"))
 
     [ride] = json_response(conn, 200)["data"]
 

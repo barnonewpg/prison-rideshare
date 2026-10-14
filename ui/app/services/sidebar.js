@@ -52,7 +52,7 @@ export default class SidebarService extends Service {
     if (!this.ridesRequestProxy) {
       this.ridesRequestProxy = ObjectPromiseProxy.create({
         promise: this.store
-          .query('ride', { filter: { requires_confirmation: true } })
+          .query('ride', { filter: { 'requires-confirmation': true } })
           .then(() => {
             return {
               rides: this.store.peekAll('ride'),

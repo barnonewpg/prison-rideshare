@@ -32,7 +32,7 @@ export default function (config = {}) {
           return {
             data: matchingRides.map((ride) => this.serialize(ride)['data']),
           };
-        } else if (queryParams['filter[requires_confirmation]']) {
+        } else if (queryParams['filter[requires-confirmation]']) {
           const now = new Date();
 
           return rides.all().filter((ride) => {
