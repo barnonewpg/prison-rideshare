@@ -1,5 +1,12 @@
 /* eslint-disable qunit/assert-args, qunit/require-expect */
-import { click, currentURL, findAll, waitUntil } from '@ember/test-helpers';
+import {
+  click,
+  currentURL,
+  find,
+  findAll,
+  visit,
+  waitUntil,
+} from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from '../helpers/application-tests';
 import percySnapshot from '@percy/ember';
@@ -317,6 +324,25 @@ module('Acceptance | rides', function (hooks) {
       url.includes('search=Chelsea'),
       'expected the search query to be reflected in the URL',
     );
+  });
+
+  test('a search in the URL is restored when the page loads', async function (assert) {
+    this.server.create('ride', { name: 'Chelsea' });
+    this.server.create('ride', { name: 'Visitor' });
+
+    await visit('/rides?search=chel');
+
+    assert.strictEqual(
+      find('[data-test-ride-search]').value,
+      'chel',
+      'expected the search field to contain the search from the URL',
+    );
+    assert.strictEqual(
+      page.rides.length,
+      1,
+      'expected the rides to be filtered by the search from the URL',
+    );
+    assert.strictEqual(page.rides[0].name, 'Chelsea');
   });
 
   test('shows the end year when a ride spans years', async function (assert) {
