@@ -3,7 +3,9 @@ defmodule PrisonRideshare.Email do
 
   def report(ride) do
     start =
-      Timex.Timezone.convert(NaiveDateTime.to_erl(ride.start), "America/Winnipeg")
+      ride.start
+      |> DateTime.from_naive!("Etc/UTC")
+      |> Timex.Timezone.convert("America/Winnipeg")
       |> Timex.format!("{h12}:{m} {AM} on {WDshort}, {Mshort} {D} {YYYY}")
 
     new_email(
