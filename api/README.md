@@ -22,13 +22,16 @@ This can be deployed to various environments but [Dokku](https://dokku.com) is t
 
 ```bash
 dokku apps:create rideshare-api
-dokku buildpacks:add rideshare-api https://github.com/gigalixir/gigalixir-buildpack-elixir.git
+dokku buildpacks:add rideshare-api https://github.com/barnonewpg/gigalixir-buildpack-elixir.git#mise-toml-1
+dokku builder:set rideshare-api build-dir api
 
 dokku postgres:create rideshare-api
 dokku postgres:link rideshare-api rideshare-api
 
 dokku domains:add rideshare-api [ORIGIN_HOST]
 ```
+
+The buildpack is [our fork](https://github.com/barnonewpg/gigalixir-buildpack-elixir), which reads the Erlang and Elixir versions from `mise.toml` ([upstream PR](https://github.com/gigalixir/gigalixir-buildpack-elixir/pull/14)).
 
 ### Add environment variables
 
