@@ -182,6 +182,44 @@ defmodule PrisonRideshareWeb.RideControllerTest do
            ]
   end
 
+  test "filters rides by completion and cancellation, including combined rides", %{conn: conn} do
+    institution = Repo.insert!(%Institution{})
+
+    pending_ride = Repo.insert!(%Ride{name: "Pending", institution_id: institution.id})
+
+    combined_completed_ride =
+      Repo.insert!(%Ride{
+        name: "Combined completed",
+        complete: true,
+        combined_with_ride_id: pending_ride.id,
+        institution_id: institution.id
+      })
+
+    completed_ride =
+      Repo.insert!(%Ride{name: "Completed", complete: true, institution_id: institution.id})
+
+    cancelled_ride =
+      Repo.insert!(%Ride{name: "Cancelled", enabled: false, institution_id: institution.id})
+
+    ids_for = fn filter ->
+      conn
+      |> get(Routes.ride_path(conn, :index, filter: filter))
+      |> json_response(200)
+      |> Map.get("data")
+      |> Enum.map(& &1["id"])
+      |> MapSet.new()
+    end
+
+    assert ids_for.(%{complete: "false", enabled: "true"}) ==
+             MapSet.new([pending_ride.id, combined_completed_ride.id])
+
+    assert ids_for.(%{enabled: "true"}) ==
+             MapSet.new([pending_ride.id, combined_completed_ride.id, completed_ride.id])
+
+    assert ids_for.(%{complete: "false"}) ==
+             MapSet.new([pending_ride.id, combined_completed_ride.id, cancelled_ride.id])
+  end
+
   test "returns descending-by-start rides that match the visitor search", %{conn: conn} do
     institution = Repo.insert!(%Institution{})
 
