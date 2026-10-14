@@ -74,6 +74,7 @@ dokku letsencrypt:enable rideshare-api
 
 To start your Phoenix app:
 
+- Install Elixir and Erlang with [mise](https://mise.jdx.dev/) via `mise install`, which uses the versions in `mise.toml`
 - Install dependencies with `mix deps.get`
 - Create and migrate your database with `mix ecto.create && mix ecto.migrate`
 - Install Node.js dependencies with `npm install`
