@@ -35,11 +35,9 @@ jobs:
     steps:
       - name: Checkout Github repo
         uses: actions/checkout@v7
-      - name: Sets up an Erlang/OTP environment
-        uses: erlef/setup-beam@v1
+      - uses: jdx/mise-action@v5
         with:
-          elixir-version: "1.20.2"
-          otp-version: "28.5.0.4"
+          working_directory: api
       - name: Install dependencies
         run: |
           mix local.rebar --force
@@ -60,12 +58,9 @@ jobs:
     steps:
       - name: Checkout Github repo
         uses: actions/checkout@v7
-      - name: Sets up an Erlang/OTP environment
-        id: beam
-        uses: erlef/setup-beam@v1
+      - uses: jdx/mise-action@v5
         with:
-          elixir-version: "1.20.2"
-          otp-version: "28.5.0.4"
+          working_directory: api
       - name: Cache mix dependencies
         id: mix-cache
         uses: actions/cache@v6
@@ -73,9 +68,9 @@ jobs:
           path: |
             api/deps
             api/_build
-          key: ${{ runner.os }}-mix-${{ steps.beam.outputs.elixir-version }}-${{ steps.beam.outputs.otp-version }}-${{ hashFiles('api/mix.lock') }}
+          key: ${{ runner.os }}-mix-${{ hashFiles('api/mise.toml') }}-${{ hashFiles('api/mix.lock') }}
           restore-keys: |
-            ${{ runner.os }}-mix-${{ steps.beam.outputs.elixir-version }}-${{ steps.beam.outputs.otp-version }}-
+            ${{ runner.os }}-mix-${{ hashFiles('api/mise.toml') }}-
       - name: Install dependencies
         if: steps.mix-cache.outputs.cache-hit != 'true'
         run: |
@@ -116,12 +111,9 @@ jobs:
     steps:
       - name: Checkout Github repo
         uses: actions/checkout@v7
-      - name: Sets up an Erlang/OTP environment
-        id: beam
-        uses: erlef/setup-beam@v1
+      - uses: jdx/mise-action@v5
         with:
-          elixir-version: "1.20.2"
-          otp-version: "28.5.0.4"
+          working_directory: api
       - name: Cache mix dependencies
         id: mix-cache
         uses: actions/cache@v6
@@ -129,9 +121,9 @@ jobs:
           path: |
             api/deps
             api/_build
-          key: ${{ runner.os }}-mix-dev-${{ steps.beam.outputs.elixir-version }}-${{ steps.beam.outputs.otp-version }}-${{ hashFiles('api/mix.lock') }}
+          key: ${{ runner.os }}-mix-dev-${{ hashFiles('api/mise.toml') }}-${{ hashFiles('api/mix.lock') }}
           restore-keys: |
-            ${{ runner.os }}-mix-dev-${{ steps.beam.outputs.elixir-version }}-${{ steps.beam.outputs.otp-version }}-
+            ${{ runner.os }}-mix-dev-${{ hashFiles('api/mise.toml') }}-
       - name: Install dependencies
         if: steps.mix-cache.outputs.cache-hit != 'true'
         run: |
