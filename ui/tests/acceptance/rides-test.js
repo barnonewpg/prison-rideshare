@@ -319,6 +319,25 @@ module('Acceptance | rides', function (hooks) {
     );
   });
 
+  test('a search in the URL is restored when the page loads', async function (assert) {
+    this.server.create('ride', { name: 'Chelsea' });
+    this.server.create('ride', { name: 'Visitor' });
+
+    await page.visit({ search: 'chel' });
+
+    assert.strictEqual(
+      this.element.querySelector('[data-test-ride-search]').value,
+      'chel',
+      'expected the search field to contain the search from the URL',
+    );
+    assert.strictEqual(
+      page.rides.length,
+      1,
+      'expected the rides to be filtered by the search from the URL',
+    );
+    assert.strictEqual(page.rides[0].name, 'Chelsea');
+  });
+
   test('shows the end year when a ride spans years', async function (assert) {
     this.server.create('ride', {
       name: 'New Year Ride',

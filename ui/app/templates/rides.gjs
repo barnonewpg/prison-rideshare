@@ -35,7 +35,7 @@ export default RouteTemplate(
             id='ride-search-input'
             @type='search'
             placeholder='Institution, driver, visitor, address'
-            value={{if @controller.search @controller.search ''}}
+            @value={{if @controller.search @controller.search ''}}
             {{on 'input' @controller.updateSearchInput}}
           />
         </div>
