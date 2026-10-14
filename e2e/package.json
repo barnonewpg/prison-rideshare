@@ -1,0 +1,14 @@
+{
+  "name": "prison-rideshare-e2e",
+  "private": true,
+  "description": "Smoke tests that drive the built UI against a real API and database",
+  "scripts": {
+    "build:ui": "cd ../ui && API_HOST=http://localhost:4100 SOCKET_HOST=ws://localhost:4100 pnpm build",
+    "reset-db": "cd ../api && MIX_ENV=dev POSTGRES_DB=prison_rideshare_e2e mix do ecto.create + reset_sandbox",
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.0",
+    "sirv-cli": "^3.0.1"
+  }
+}

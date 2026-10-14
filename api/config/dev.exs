@@ -7,7 +7,7 @@ import Config
 # watchers to your application. For example, we use it
 # with brunch.io to recompile .js and .css sources.
 config :prison_rideshare, PrisonRideshareWeb.Endpoint,
-  http: [port: 4000],
+  http: [port: String.to_integer(System.get_env("PORT") || "4000")],
   code_reloader: true,
   check_origin: false,
   watchers: []
@@ -35,7 +35,7 @@ config :prison_rideshare, PrisonRideshare.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "postgres",
   password: "postgres",
-  database: "prison_rideshare_dev",
+  database: System.get_env("POSTGRES_DB") || "prison_rideshare_dev",
   hostname: "localhost",
   pool_size: 10
 
