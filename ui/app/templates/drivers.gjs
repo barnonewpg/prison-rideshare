@@ -1,6 +1,6 @@
 import RouteTemplate from 'ember-route-template';
 import ToolbarHeader from 'prison-rideshare-ui/components/toolbar-header';
-import momentFormat from 'ember-moment/helpers/moment-format';
+import { formatDate } from 'prison-rideshare-ui/utils/dates';
 import or from 'ember-truth-helpers/helpers/or';
 import ReimbursementForm from 'prison-rideshare-ui/components/reimbursement-form';
 import { get, fn } from '@ember/helper';
@@ -178,7 +178,7 @@ export default RouteTemplate(
                 </Body.Td>
                 <Body.Td class='last-ride' data-test-driver-last-ride>
                   {{#if person.lastRide}}
-                    {{momentFormat person.lastRide.start 'MMMM D, YYYY'}}
+                    {{formatDate person.lastRide.start 'LLLL d, yyyy'}}
                   {{/if}}
                 </Body.Td>
                 <Body.Td class='notes' data-test-driver-notes>

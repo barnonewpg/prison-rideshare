@@ -34,7 +34,7 @@ class CalendarComponent extends Component {
     {{/if}}
 
     <PowerCalendar
-      @center={{@controller.monthMoment}}
+      @center={{@controller.monthDate}}
       @daysComponent={{CalendarDays}}
       as |calendar|
     >

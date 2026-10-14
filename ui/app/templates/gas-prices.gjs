@@ -1,6 +1,6 @@
 import RouteTemplate from 'ember-route-template';
 import ToolbarHeader from 'prison-rideshare-ui/components/toolbar-header';
-import momentFormat from 'ember-moment/helpers/moment-format';
+import { formatDate } from 'prison-rideshare-ui/utils/dates';
 import {
   HdsCardContainer,
   HdsTable,
@@ -37,7 +37,7 @@ export default RouteTemplate(
           {{#each @controller.recentPrices as |gasPrice|}}
             <Body.Tr data-test-gas-prices-row>
               <Body.Td class='date' data-test-gas-prices-date>
-                {{momentFormat gasPrice.insertedAt 'ddd, MMM D'}}
+                {{formatDate gasPrice.insertedAt 'EEE, LLL d'}}
               </Body.Td>
               <Body.Td class='price' data-test-gas-prices-price>
                 {{gasPrice.price}}<span class='unit'><sup>¢</sup>&frasl;<sub

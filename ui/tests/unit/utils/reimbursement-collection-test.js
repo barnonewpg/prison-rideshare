@@ -1,17 +1,16 @@
 /* eslint-disable ember/no-classic-classes */
 import EmberObject from '@ember/object';
 import ReimbursementCollection from 'prison-rideshare-ui/utils/reimbursement-collection';
+import { formatDate } from 'prison-rideshare-ui/utils/dates';
+import { winnipegDate } from '../../helpers/winnipeg-date';
 
 import { module, test } from 'qunit';
 
 module('Unit | Utility | reimbursement collection', function () {
-  const reimbursementDate = new Date('2017-10-23');
+  const reimbursementDate = winnipegDate(2017, 9, 23);
   const ride = EmberObject.create({ start: reimbursementDate });
 
-  const today = new Date();
-  const dateString = `${
-    today.getMonth() + 1
-  }/${today.getDate()}/${today.getFullYear()}`;
+  const dateString = formatDate(new Date(), 'L/d/yyyy');
 
   class FakeReimbursement extends EmberObject {
     ride = ride;

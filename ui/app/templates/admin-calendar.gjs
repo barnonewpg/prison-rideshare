@@ -2,7 +2,7 @@ import RouteTemplate from 'ember-route-template';
 import ToolbarHeader from 'prison-rideshare-ui/components/toolbar-header';
 import PowerCalendar from 'ember-power-calendar/components/power-calendar';
 import { LinkTo } from '@ember/routing';
-import momentFormat from 'ember-moment/helpers/moment-format';
+import { formatDate } from 'prison-rideshare-ui/utils/dates';
 import pluralize from 'ember-inflector/helpers/pluralize';
 import CalendarDay from 'prison-rideshare-ui/components/calendar-day';
 import CalendarDays from 'prison-rideshare-ui/components/calendar-days';
@@ -125,7 +125,7 @@ class AdminCalendarComponent extends Component {
 
     <div class='admin-calendar'>
       <PowerCalendar
-        @center={{@controller.monthMoment}}
+        @center={{@controller.monthDate}}
         @daysComponent={{CalendarDays}}
         @onCenterChange={{this.changeMonth}}
         as |calendar|
@@ -139,7 +139,7 @@ class AdminCalendarComponent extends Component {
             ‹
           </LinkTo>
           <div class='ember-power-calendar-nav-title'>
-            {{momentFormat calendar.center 'MMMM YYYY'}}:
+            {{formatDate calendar.center 'LLLL yyyy'}}:
             {{pluralize @controller.commitmentCount 'commitment'}}
           </div>
           <LinkTo
@@ -166,10 +166,10 @@ class AdminCalendarComponent extends Component {
         {{#if @controller.viewingSlot}}
           <HdsCardContainer class='viewing-slot'>
             <h3 class='hours'>
-              {{momentFormat
+              {{formatDate
                 @controller.viewingSlot.start
-                'dddd, MMMM D, h:mma'
-              }}–{{momentFormat @controller.viewingSlot.end 'h:mma'}}
+                'EEEE, LLLL d, h:mma'
+              }}–{{formatDate @controller.viewingSlot.end 'h:mma'}}
             </h3>
 
             <div class='commitments' data-test-commitments>

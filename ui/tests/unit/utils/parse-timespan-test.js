@@ -2,7 +2,7 @@
 import parseTimespan from 'prison-rideshare-ui/utils/parse-timespan';
 import { module, test } from 'qunit';
 
-import moment from 'moment-timezone';
+import { formatDate } from 'prison-rideshare-ui/utils/dates';
 
 module('Unit | Utility | parse timespan', function (hooks) {
   hooks.beforeEach(function () {
@@ -14,7 +14,7 @@ module('Unit | Utility | parse timespan', function (hooks) {
     window.chronokinesis.reset();
   });
 
-  const formatString = 'YYYY-MM-DD HH:mm';
+  const formatString = 'yyyy-MM-dd HH:mm';
 
   const assertParsing = function (
     assert,
@@ -24,14 +24,8 @@ module('Unit | Utility | parse timespan', function (hooks) {
   ) {
     const parsed = parseTimespan(timespanString);
 
-    assert.strictEqual(
-      moment(parsed.start.date()).format(formatString),
-      startString,
-    );
-    assert.strictEqual(
-      moment(parsed.end.date()).format(formatString),
-      endString,
-    );
+    assert.strictEqual(formatDate(parsed.start, formatString), startString);
+    assert.strictEqual(formatDate(parsed.end, formatString), endString);
   };
 
   test('it parses a well-specified timespan', function (assert) {
@@ -74,7 +68,7 @@ module('Unit | Utility | parse timespan', function (hooks) {
     const parsed = parseTimespan('september 27 2017 from 630');
 
     assert.strictEqual(
-      moment(parsed.start.date()).format(formatString),
+      formatDate(parsed.start, formatString),
       '2017-09-27 18:30',
     );
     assert.notOk(parsed.end);
@@ -97,5 +91,12 @@ module('Unit | Utility | parse timespan', function (hooks) {
       '2019-10-10 13:00',
       '2019-10-10 16:00',
     );
+  });
+
+  test('it parses times after Manitoba stopped changing clocks as UTC-5', function (assert) {
+    const parsed = parseTimespan('december 5 2026 9am to 11am');
+
+    assert.strictEqual(parsed.start.toISOString(), '2026-12-05T14:00:00.000Z');
+    assert.strictEqual(parsed.end.toISOString(), '2026-12-05T16:00:00.000Z');
   });
 });

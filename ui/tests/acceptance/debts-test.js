@@ -6,6 +6,7 @@ import { authenticateSession } from 'ember-simple-auth/test-support';
 
 import page from 'prison-rideshare-ui/tests/pages/debts';
 import { getPageTitle } from 'ember-page-title/test-support';
+import { winnipegDate } from '../helpers/winnipeg-date';
 
 module('Acceptance | debts', function (hooks) {
   setupApplicationTest(hooks);
@@ -24,8 +25,8 @@ module('Acceptance | debts', function (hooks) {
       carOwner: kala,
       carExpenses: 4400,
 
-      start: new Date(2016, 11, 25, 10, 15),
-      end: new Date(2016, 11, 25, 12, 0),
+      start: winnipegDate(2016, 11, 25, 10, 15),
+      end: winnipegDate(2016, 11, 25, 12, 0),
     });
 
     secondSunRide = this.server.create('ride', {
@@ -35,8 +36,8 @@ module('Acceptance | debts', function (hooks) {
       carOwner: sun,
       carExpenses: 0,
 
-      start: new Date(2016, 11, 26, 10, 15),
-      end: new Date(2016, 11, 26, 12, 0),
+      start: winnipegDate(2016, 11, 26, 10, 15),
+      end: winnipegDate(2016, 11, 26, 12, 0),
     });
 
     willRide = this.server.create('ride', {

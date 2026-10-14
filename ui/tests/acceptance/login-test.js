@@ -15,6 +15,7 @@ import { overrideRoute } from '../helpers/override-route';
 import page from 'prison-rideshare-ui/tests/pages/login';
 import reportPage from 'prison-rideshare-ui/tests/pages/report';
 import shared from 'prison-rideshare-ui/tests/pages/shared';
+import { winnipegDate } from '../helpers/winnipeg-date';
 
 module('Acceptance | login', function (hooks) {
   setupApplicationTest(hooks);
@@ -96,13 +97,13 @@ module('Acceptance | login', function (hooks) {
     await shared.session.click();
 
     let ride = this.server.create('ride', {
-      start: new Date(2117, 11, 4, 17, 0),
-      end: new Date(2117, 11, 4, 19, 0),
+      start: winnipegDate(2117, 11, 4, 17, 0),
+      end: winnipegDate(2117, 11, 4, 19, 0),
     });
     let person = this.server.create('person');
     let slot = this.server.create('slot', {
-      start: new Date(2117, 11, 4, 17, 30),
-      end: new Date(2117, 11, 4, 20),
+      start: winnipegDate(2117, 11, 4, 17, 30),
+      end: winnipegDate(2117, 11, 4, 20),
     });
     ride.createCommitment({ slot, person });
     ride.save();

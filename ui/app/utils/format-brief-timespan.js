@@ -1,27 +1,36 @@
+import { formatDate, toDateTime } from 'prison-rideshare-ui/utils/dates';
+
 function isAnteMeridiem(time) {
-  return time.getHours() < 12;
+  return time.hour < 12;
 }
 
-export default function formatBriefTimespan(moment, start, end) {
-  let startTime, endTime;
+export default function formatBriefTimespan(start, end) {
+  const startTime = toDateTime(start);
+  const endTime = toDateTime(end);
+  let startTimeFormat, endTimeFormat;
 
-  if (start && start.getMinutes() === 0) {
-    startTime = 'ha';
+  if (startTime && startTime.minute === 0) {
+    startTimeFormat = 'ha';
   } else {
-    startTime = 'h:mma';
+    startTimeFormat = 'h:mma';
   }
 
-  if (end && end.getMinutes() === 0) {
-    endTime = 'h';
+  if (endTime && endTime.minute === 0) {
+    endTimeFormat = 'h';
   } else {
-    endTime = 'h:mm';
+    endTimeFormat = 'h:mm';
   }
 
-  if (!start || !end || isAnteMeridiem(start) !== isAnteMeridiem(end)) {
-    endTime += 'a';
+  if (
+    !startTime ||
+    !endTime ||
+    isAnteMeridiem(startTime) !== isAnteMeridiem(endTime)
+  ) {
+    endTimeFormat += 'a';
   }
 
-  return `${moment.moment(start).format(startTime)}—${moment
-    .moment(end)
-    .format(endTime)}`;
+  return `${formatDate(startTime, startTimeFormat)}—${formatDate(
+    endTime,
+    endTimeFormat,
+  )}`;
 }

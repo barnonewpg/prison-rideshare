@@ -11,6 +11,7 @@ import page from 'prison-rideshare-ui/tests/pages/report';
 import shared from 'prison-rideshare-ui/tests/pages/shared';
 import { getPageTitle } from 'ember-page-title/test-support';
 import { overrideRoute } from '../helpers/override-route';
+import { winnipegDate } from '../helpers/winnipeg-date';
 
 module('Acceptance | reports', function (hooks) {
   setupApplicationTest(hooks);
@@ -26,8 +27,8 @@ module('Acceptance | reports', function (hooks) {
 
     this.server.create('ride', {
       name: 'Edward',
-      start: new Date(2016, 11, 27, 17, 0),
-      end: new Date(2016, 11, 27, 19, 0),
+      start: winnipegDate(2016, 11, 27, 17, 0),
+      end: winnipegDate(2016, 11, 27, 19, 0),
       passengers: 1,
       institution: leavenworth,
       donatable: false,
@@ -35,8 +36,8 @@ module('Acceptance | reports', function (hooks) {
 
     this.server.create('ride', {
       name: 'Chelsea',
-      start: new Date(2016, 11, 25, 10, 15),
-      end: new Date(2016, 11, 25, 12, 0),
+      start: winnipegDate(2016, 11, 25, 10, 15),
+      end: winnipegDate(2016, 11, 25, 12, 0),
       passengers: 1,
       institution: remand,
       rate: 33,

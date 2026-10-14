@@ -6,6 +6,7 @@ import { authenticateSession } from 'ember-simple-auth/test-support';
 
 import reimbursementsPage from 'prison-rideshare-ui/tests/pages/reimbursements';
 import { getPageTitle } from 'ember-page-title/test-support';
+import { winnipegDate } from '../helpers/winnipeg-date';
 
 module('Acceptance | reimbursements', function (hooks) {
   setupApplicationTest(hooks);
@@ -20,10 +21,10 @@ module('Acceptance | reimbursements', function (hooks) {
     });
 
     const unprocessedRideNextMonth = this.server.create('ride', {
-      start: new Date(2017, 4, 22),
+      start: winnipegDate(2017, 4, 22),
     });
     const unprocessedRide = this.server.create('ride', {
-      start: new Date(2017, 3, 22),
+      start: winnipegDate(2017, 3, 22),
     });
 
     sun.createReimbursement({
@@ -67,7 +68,7 @@ module('Acceptance | reimbursements', function (hooks) {
 
     const reimbursedRide = this.server.create('ride', {
       institution: leavenworth,
-      start: new Date(2017, 2, 22),
+      start: winnipegDate(2017, 2, 22),
       driver: kala,
       carOwner: kala,
     });
@@ -77,13 +78,13 @@ module('Acceptance | reimbursements', function (hooks) {
       carExpenses: 999,
       processed: true,
       donation: true,
-      insertedAt: new Date(2017, 2, 25),
+      insertedAt: winnipegDate(2017, 2, 25),
     });
     kala.createReimbursement({
       ride: reimbursedRide,
       foodExpenses: 1100,
       processed: true,
-      insertedAt: new Date(2017, 2, 26),
+      insertedAt: winnipegDate(2017, 2, 26),
     });
 
     this.server.create('ride', {

@@ -1,6 +1,6 @@
 import RouteTemplate from 'ember-route-template';
 import ToolbarHeader from 'prison-rideshare-ui/components/toolbar-header';
-import momentFormat from 'ember-moment/helpers/moment-format';
+import { formatDate } from 'prison-rideshare-ui/utils/dates';
 import eq from 'ember-truth-helpers/helpers/eq';
 import { fn } from '@ember/helper';
 import { on } from '@ember/modifier';
@@ -31,7 +31,7 @@ export default RouteTemplate(
               {{user.email}}
             </Body.Td>
             <Body.Td class='last-seen' data-test-user-last-seen>
-              {{momentFormat user.lastSeenAt 'MMM D YYYY'}}
+              {{formatDate user.lastSeenAt 'LLL d yyyy'}}
             </Body.Td>
             <Body.Td class='present' data-test-user-present>
               {{#if user.isPresent}}

@@ -1,6 +1,6 @@
 import RouteTemplate from 'ember-route-template';
 import ToolbarHeader from 'prison-rideshare-ui/components/toolbar-header';
-import momentFormat from 'ember-moment/helpers/moment-format';
+import { formatDate } from 'prison-rideshare-ui/utils/dates';
 import and from 'ember-truth-helpers/helpers/and';
 import ReimbursementForm from 'prison-rideshare-ui/components/reimbursement-form';
 import { fn, hash } from '@ember/helper';
@@ -174,14 +174,14 @@ export default RouteTemplate(
                 data-reimbursement-id={{row.id}}
               >
                 <Body.Td class='date' data-test-processed-date>
-                  {{momentFormat row.date 'YYYY-MM-DD'}}
+                  {{formatDate row.date 'yyyy-MM-dd'}}
                 </Body.Td>
                 <Body.Td class='name' data-test-processed-name>
                   {{row.name}}
                 </Body.Td>
                 <Body.Td class='ride' data-test-processed-ride>
                   {{#if (and row.ride.start row.ride.institution.name)}}
-                    {{momentFormat row.ride.start 'YYYY-MM-DD'}}
+                    {{formatDate row.ride.start 'yyyy-MM-dd'}}
                     to
                     {{row.ride.institution.name}}
                   {{/if}}

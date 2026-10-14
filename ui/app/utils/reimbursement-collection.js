@@ -4,7 +4,7 @@ import EmberObject, { computed } from '@ember/object';
 
 import dollars from 'prison-rideshare-ui/utils/dollars';
 
-import moment from 'moment-timezone';
+import { formatDate } from 'prison-rideshare-ui/utils/dates';
 
 export default class ReimbursementCollection extends EmberObject {
   @mapBy('reimbursements', 'foodExpenses')
@@ -47,10 +47,7 @@ export default class ReimbursementCollection extends EmberObject {
     const name = this.get('person.name');
     const total = this.totalExpensesDollars;
 
-    const today = new Date();
-    const dateString = `${
-      today.getMonth() + 1
-    }/${today.getDate()}/${today.getFullYear()}`;
+    const dateString = formatDate(new Date(), 'L/d/yyyy');
 
     return (
       `${dateString}\t` +
@@ -105,6 +102,6 @@ export default class ReimbursementCollection extends EmberObject {
   @computed('reimbursements.firstObject.ride.start')
   get monthName() {
     const date = this.reimbursements[0].ride.get('start');
-    return moment(date).format('MMMM');
+    return formatDate(date, 'LLLL');
   }
 }

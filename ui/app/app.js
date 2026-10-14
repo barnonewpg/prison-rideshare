@@ -6,7 +6,9 @@ import loadInitializers from 'ember-load-initializers';
 import config from 'prison-rideshare-ui/config/environment';
 import * as Sentry from '@sentry/ember';
 import { registerDateLibrary } from 'ember-power-calendar';
-import DateUtils from 'ember-power-calendar-moment';
+import DateUtils from 'ember-power-calendar-luxon';
+import { Settings } from 'luxon';
+import { winnipegZone } from 'prison-rideshare-ui/utils/dates';
 import '@warp-drive/ember/install';
 import { importSync, isDevelopingApp, macroCondition } from '@embroider/macros';
 
@@ -19,6 +21,8 @@ Sentry.init({
   sendDefaultPii: true,
 });
 
+Settings.defaultLocale = 'en-US';
+Settings.defaultZone = winnipegZone;
 registerDateLibrary(DateUtils);
 
 export default class App extends Application {

@@ -1,6 +1,6 @@
 import RouteTemplate from 'ember-route-template';
 import ToolbarHeader from 'prison-rideshare-ui/components/toolbar-header';
-import momentFormat from 'ember-moment/helpers/moment-format';
+import { formatDate } from 'prison-rideshare-ui/utils/dates';
 import eq from 'ember-truth-helpers/helpers/eq';
 import { fn } from '@ember/helper';
 import { modifier } from 'ember-modifier';
@@ -55,7 +55,7 @@ export default RouteTemplate(
               <Body.Tr data-test-log-post-row>
                 <Body.Td class='meta'>
                   <div class='date' data-test-log-post-date>
-                    {{momentFormat post.insertedAt 'ddd MMM D YYYY h:mma'}}
+                    {{formatDate post.insertedAt 'EEE LLL d yyyy h:mma'}}
                   </div>
                   <div class='poster' data-test-log-post-poster>
                     {{post.poster.email}}
