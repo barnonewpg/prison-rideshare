@@ -302,6 +302,17 @@ html {
   flex: 0 1 auto;
 }
 
+.rides-loading {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.rides-table.is-loading {
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
 .rides-filters .hds-form__section-multi-field-group-item:first-of-type {
   flex: 1 1 16rem;
   min-width: 12rem;

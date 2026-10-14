@@ -488,6 +488,61 @@ module('Acceptance | rides', function (hooks) {
     );
   });
 
+  test('toggling a filter shows that rides are loading', async function (assert) {
+    this.server.create('ride', { name: 'Pending' });
+    this.server.create('ride', { name: 'Completed', complete: true });
+
+    await page.visit();
+
+    assert.strictEqual(page.rides.length, 1);
+    assert.strictEqual(
+      this.element
+        .querySelector('[data-test-rides-loading]')
+        .textContent.trim(),
+      '',
+      'expected no loading indicator before toggling',
+    );
+
+    let ridesRequested = false;
+    let resolveRides;
+    const ridesResponse = new Promise((resolve) => (resolveRides = resolve));
+
+    overrideRoute(this.server, 'get', '/rides', async function ({ rides }) {
+      ridesRequested = true;
+      await ridesResponse;
+      return rides.all();
+    });
+
+    // Not awaited, as it would wait for the held rides response
+    page.head.completedSwitch.click();
+    await waitUntil(() => ridesRequested);
+
+    assert.strictEqual(
+      this.element
+        .querySelector('[data-test-rides-loading]')
+        .textContent.trim(),
+      'Loading rides…',
+      'expected a loading indicator while rides load',
+    );
+    assert.strictEqual(
+      page.rides.length,
+      1,
+      'expected the current rides to remain while loading',
+    );
+
+    resolveRides();
+    await waitUntil(() => page.rides.length === 2);
+
+    assert.strictEqual(
+      this.element
+        .querySelector('[data-test-rides-loading]')
+        .textContent.trim(),
+      '',
+      'expected the loading indicator to be gone once rides load',
+    );
+    assert.strictEqual(page.rides.length, 2);
+  });
+
   test('create and edit a ride', async function (assert) {
     const rockwood = this.server.create('institution', {
       name: 'Rockwood',
