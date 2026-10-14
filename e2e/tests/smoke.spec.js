@@ -115,3 +115,44 @@ test('an admin edits a driver and the change survives a reload', async ({
   await page.reload();
   await expect(page.getByText(notes)).toBeVisible();
 });
+
+test.describe('in a browser outside Winnipeg', () => {
+  // Far enough from Winnipeg that using the browser’s zone by mistake
+  // would show a different day
+  test.use({ timezoneId: 'Asia/Tokyo' });
+
+  test('ride times entered in Winnipeg time reach the API in UTC', async ({
+    page,
+    request,
+  }) => {
+    await logIn(page);
+
+    const row = page.locator('tbody tr.ride').first();
+    const rideId = await row.getAttribute('data-ride-id');
+    await row.getByRole('button', { name: 'Edit ride' }).click();
+
+    // December, so a browser still on CST (UTC-6) would store 00:00Z
+    // rather than Manitoba’s permanent UTC-5
+    await page.getByLabel('Timespan').fill('Dec 2 2030 from 6p to 8p');
+    await page.getByRole('button', { name: 'Save' }).click();
+
+    const token = await adminToken(request);
+    await expect(async () => {
+      const response = await request.get(`${API}/rides/${rideId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const { attributes } = (await response.json()).data;
+
+      // The API appends Z to the naive time it stores
+      expect(attributes).toMatchObject({
+        start: '2030-12-02T23:00:00Z',
+        end: '2030-12-03T01:00:00Z',
+      });
+    }).toPass();
+
+    await page.reload();
+    await expect(
+      page.locator(`tbody tr.ride[data-ride-id="${rideId}"]`),
+    ).toContainText(/Dec 2 2030\s*6p\s*—\s*8\b/);
+  });
+});
