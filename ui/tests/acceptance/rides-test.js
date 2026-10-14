@@ -1,12 +1,5 @@
 /* eslint-disable qunit/assert-args, qunit/require-expect */
-import {
-  click,
-  currentURL,
-  find,
-  findAll,
-  visit,
-  waitUntil,
-} from '@ember/test-helpers';
+import { click, currentURL, findAll, waitUntil } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from '../helpers/application-tests';
 import percySnapshot from '@percy/ember';
@@ -330,10 +323,10 @@ module('Acceptance | rides', function (hooks) {
     this.server.create('ride', { name: 'Chelsea' });
     this.server.create('ride', { name: 'Visitor' });
 
-    await visit('/rides?search=chel');
+    await page.visit({ search: 'chel' });
 
     assert.strictEqual(
-      find('[data-test-ride-search]').value,
+      this.element.querySelector('[data-test-ride-search]').value,
       'chel',
       'expected the search field to contain the search from the URL',
     );
