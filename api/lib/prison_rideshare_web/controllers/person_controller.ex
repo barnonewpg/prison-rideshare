@@ -1,13 +1,28 @@
 defmodule PrisonRideshareWeb.PersonController do
   use PrisonRideshareWeb, :controller
 
-  alias PrisonRideshareWeb.Person
+  alias PrisonRideshareWeb.{Person, Ride}
   alias JaSerializer.Params
+
+  import Ecto.Query
 
   plug(:scrub_params, "data" when action in [:create, :update])
 
   def index(conn, _params) do
-    people = Repo.all(Person)
+    last_ride_starts =
+      Repo.all(
+        from(r in Ride,
+          where: not is_nil(r.driver_id),
+          group_by: r.driver_id,
+          select: {r.driver_id, max(r.start)}
+        )
+      )
+      |> Map.new()
+
+    people =
+      Repo.all(Person)
+      |> Enum.map(&%{&1 | last_ride_start: Map.get(last_ride_starts, &1.id)})
+
     render(conn, "index.json-api", data: people)
   end
 
@@ -79,11 +94,9 @@ defmodule PrisonRideshareWeb.PersonController do
 
             %ICalendar.Event{
               summary:
-                "#{
-                  unless ride.enabled do
-                    "CANCELLED "
-                  end
-                }Visit to #{institution_name}",
+                "#{unless ride.enabled do
+                  "CANCELLED "
+                end}Visit to #{institution_name}",
               description:
                 Enum.join(
                   Enum.map([ride] ++ ride.children, fn ride ->

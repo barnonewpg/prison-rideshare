@@ -7,11 +7,7 @@ export default class DriversRoute extends AuthenticatedRoute {
 
   model() {
     // FIXME this formerly used the people service but it wasn’t getting new records…
-    return this.store.findAll('person');
-  }
-
-  afterModel() {
-    // FIXME this is ridiculous, should just be sync relationships perhaps, or have last ride be computed by API
-    return this.store.findAll('ride');
+    // Reload so last ride starts are present, as people embedded in rides lack them
+    return this.store.findAll('person', { reload: true });
   }
 }

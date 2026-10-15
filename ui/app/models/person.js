@@ -23,12 +23,8 @@ export default Model.extend({
   drivings: hasMany('ride', { async: true, inverse: 'driver' }),
   carOwnings: hasMany('ride', { async: true, inverse: 'carOwner' }),
 
-  lastRide: computed('drivings.@each.start', function () {
-    const drivings = this.hasMany('drivings').value() || [];
-    const sorted = Array.from(drivings).sort((a, b) => a.start - b.start);
-
-    return sorted[sorted.length - 1];
-  }),
+  // Only included in the people index, see the API's PersonView
+  lastRideStart: attr('date'),
 
   calendarSecret: attr('string'),
 

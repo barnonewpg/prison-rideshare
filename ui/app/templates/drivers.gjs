@@ -177,8 +177,8 @@ export default RouteTemplate(
                   {{/if}}
                 </Body.Td>
                 <Body.Td class='last-ride' data-test-driver-last-ride>
-                  {{#if person.lastRide}}
-                    {{formatDate person.lastRide.start 'LLLL d, yyyy'}}
+                  {{#if person.lastRideStart}}
+                    {{formatDate person.lastRideStart 'LLLL d, yyyy'}}
                   {{/if}}
                 </Body.Td>
                 <Body.Td class='notes' data-test-driver-notes>

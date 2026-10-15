@@ -17,4 +17,16 @@ defmodule PrisonRideshareWeb.PersonView do
     :inserted_at,
     :updated_at
   ])
+
+  # Only the people index computes this; people are also included in ride
+  # payloads, where omitting it avoids overwriting the indexed value
+  def attributes(person, conn) do
+    attributes = super(person, conn)
+
+    case person.last_ride_start do
+      :not_loaded -> attributes
+      nil -> Map.put(attributes, :last_ride_start, nil)
+      start -> Map.put(attributes, :last_ride_start, "#{NaiveDateTime.to_iso8601(start)}Z")
+    end
+  end
 end
