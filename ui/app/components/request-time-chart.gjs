@@ -2,9 +2,8 @@
 import { classNames } from '@ember-decorators/component';
 import { computed } from '@ember/object';
 import Component from '@ember/component';
-import { service } from '@ember/service';
 import formatTimespan from 'prison-rideshare-ui/utils/format-timespan';
-import momentTimeZone from 'moment-timezone';
+import { DateTime } from 'luxon';
 import HighCharts from 'ember-highcharts/components/high-charts';
 
 const MAX_RIDE_DURATION_HOURS = 24;
@@ -45,8 +44,6 @@ export default class RequestTimeChart extends Component {
     {{/if}}
   </template>
 
-  @service moment;
-
   @computed('grouping', 'rides.@each.{end,passengers,start}')
   get data() {
     const grouping = this.grouping;
@@ -65,10 +62,10 @@ export default class RequestTimeChart extends Component {
         return;
       }
 
-      const startInTimeZone = momentTimeZone.tz(start, 'America/Winnipeg');
-      const endInTimeZone = momentTimeZone.tz(end, 'America/Winnipeg');
+      const startInTimeZone = DateTime.fromJSDate(start);
+      const endInTimeZone = DateTime.fromJSDate(end);
 
-      const durationHours = endInTimeZone.diff(startInTimeZone, 'hours', true);
+      const durationHours = endInTimeZone.diff(startInTimeZone, 'hours').hours;
 
       if (durationHours <= 0 || durationHours > MAX_RIDE_DURATION_HOURS) {
         return;
@@ -76,14 +73,14 @@ export default class RequestTimeChart extends Component {
 
       const rideAddition = grouping === 'rides' ? 1 : ride.get('passengers');
 
-      let currentHour = startInTimeZone.clone().startOf('hour');
+      let currentHour = startInTimeZone.startOf('hour');
 
-      while (currentHour.isBefore(endInTimeZone)) {
-        const hour = currentHour.hour();
-        const day = currentHour.day() ? currentHour.day() - 1 : 6;
+      while (currentHour < endInTimeZone) {
+        const hour = currentHour.hour;
+        const day = currentHour.weekday - 1;
 
         days[day].hours[hour] += rideAddition;
-        currentHour = currentHour.add(1, 'hour');
+        currentHour = currentHour.plus({ hours: 1 });
       }
     });
 
@@ -118,9 +115,10 @@ export default class RequestTimeChart extends Component {
         return true;
       }
 
-      const startInTimeZone = momentTimeZone.tz(start, 'America/Winnipeg');
-      const endInTimeZone = momentTimeZone.tz(end, 'America/Winnipeg');
-      const durationHours = endInTimeZone.diff(startInTimeZone, 'hours', true);
+      const durationHours = DateTime.fromJSDate(end).diff(
+        DateTime.fromJSDate(start),
+        'hours',
+      ).hours;
 
       return durationHours <= 0 || durationHours > MAX_RIDE_DURATION_HOURS;
     });
@@ -133,7 +131,7 @@ export default class RequestTimeChart extends Component {
       const end = ride.get('end');
       const timespan =
         start && end
-          ? formatTimespan(this.moment, start, end)
+          ? formatTimespan(start, end)
           : start
             ? 'Missing end'
             : 'Missing start';

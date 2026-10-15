@@ -1,4 +1,5 @@
 import chrono from 'chrono-node';
+import { DateTime } from 'luxon';
 
 const assumeEndDay = new chrono.Refiner();
 assumeEndDay.refine = function (text, results) {
@@ -42,9 +43,35 @@ const chronoInstance = new chrono.Chrono();
 chronoInstance.refiners.push(assumeEndDay);
 chronoInstance.refiners.push(assumePM);
 
+// chrono works in the device’s time zone, so give it the current Winnipeg
+// wall-clock time and read the parsed wall-clock fields back as Winnipeg.
+function winnipegNowAsDeviceDate() {
+  const now = DateTime.now();
+
+  return new Date(now.year, now.month - 1, now.day, now.hour, now.minute);
+}
+
+function componentToDate(component) {
+  return DateTime.fromObject({
+    year: component.get('year'),
+    month: component.get('month'),
+    day: component.get('day'),
+    hour: component.get('hour'),
+    minute: component.get('minute'),
+  }).toJSDate();
+}
+
 export default function parseTimespan(value) {
-  const [parsed] = chronoInstance.parse(value, new Date(), {
+  const [parsed] = chronoInstance.parse(value, winnipegNowAsDeviceDate(), {
     forwardDate: true,
   });
-  return parsed;
+
+  if (!parsed) {
+    return undefined;
+  }
+
+  return {
+    start: parsed.start ? componentToDate(parsed.start) : undefined,
+    end: parsed.end ? componentToDate(parsed.end) : undefined,
+  };
 }

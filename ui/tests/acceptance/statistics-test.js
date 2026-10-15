@@ -7,9 +7,7 @@ import { authenticateSession } from 'ember-simple-auth/test-support';
 import page from 'prison-rideshare-ui/tests/pages/statistics';
 import { getPageTitle } from 'ember-page-title/test-support';
 
-import moment from 'moment-timezone';
-
-const format = 'YYYY-MM-DD';
+import { DateTime } from 'luxon';
 
 module('Acceptance | statistics', function (hooks) {
   setupApplicationTest(hooks);
@@ -24,12 +22,12 @@ module('Acceptance | statistics', function (hooks) {
     assert.strictEqual(getPageTitle(), 'Statistics · Prison Rideshare');
     assert.strictEqual(
       page.start.value,
-      moment().subtract(1, 'year').format(format),
+      DateTime.now().minus({ years: 1 }).toISODate(),
       'expected the start date to be a year ago',
     );
     assert.strictEqual(
       page.end.value,
-      moment().format(format),
+      DateTime.now().toISODate(),
       'expected the end date to be today',
     );
 
@@ -37,12 +35,12 @@ module('Acceptance | statistics', function (hooks) {
 
     assert.strictEqual(
       page.start.value,
-      moment().subtract(2, 'weeks').format(format),
+      DateTime.now().minus({ weeks: 2 }).toISODate(),
       'expected the start date to be two weeks ago',
     );
     assert.strictEqual(
       page.end.value,
-      moment().format(format),
+      DateTime.now().toISODate(),
       'expected the end date to be today',
     );
 
@@ -50,12 +48,12 @@ module('Acceptance | statistics', function (hooks) {
 
     assert.strictEqual(
       page.start.value,
-      moment().startOf('year').format(format),
+      DateTime.now().startOf('year').toISODate(),
       'expected the start date to be the beginning of this year',
     );
     assert.strictEqual(
       page.end.value,
-      moment().format(format),
+      DateTime.now().toISODate(),
       'expected the end date to be today',
     );
 
@@ -63,12 +61,12 @@ module('Acceptance | statistics', function (hooks) {
 
     assert.strictEqual(
       page.start.value,
-      moment().subtract(1, 'year').format(format),
+      DateTime.now().minus({ years: 1 }).toISODate(),
       'expected the start date to be a year ago',
     );
     assert.strictEqual(
       page.end.value,
-      moment().format(format),
+      DateTime.now().toISODate(),
       'expected the end date to be today',
     );
   });

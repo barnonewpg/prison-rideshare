@@ -14,8 +14,7 @@ import AppFrame from 'prison-rideshare-ui/components/app-frame';
 import AppSideNav from 'prison-rideshare-ui/components/app-side-nav';
 import AppSideNavList from 'prison-rideshare-ui/components/app-side-nav/list';
 import { pageTitle } from 'ember-page-title';
-import momentFormat from 'ember-moment/helpers/moment-format';
-import now from 'ember-moment/helpers/now';
+import { formatDate } from 'prison-rideshare-ui/utils/dates';
 import BasicDropdownWormhole from 'ember-basic-dropdown/components/basic-dropdown-wormhole';
 import { modifier } from 'ember-modifier';
 import { previewLabel } from 'prison-rideshare-ui/utils/deployment';
@@ -48,6 +47,10 @@ class ApplicationComponent extends Component {
 
   get activeToast() {
     return this.toasts.activeToast;
+  }
+
+  get currentMonth() {
+    return formatDate(new Date(), 'yyyy-MM');
   }
 
   @action registerSidebarComponent(component) {
@@ -110,7 +113,7 @@ class ApplicationComponent extends Component {
               <List.Link @route='institutions' @text='Institutions' />
               <List.Link
                 @route='admin-calendar'
-                @model={{momentFormat (now) 'YYYY-MM'}}
+                @model={{this.currentMonth}}
                 @text='Calendar'
               />
               <List.Link @route='statistics' @text='Statistics' />

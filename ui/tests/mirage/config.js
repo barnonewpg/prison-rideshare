@@ -21,6 +21,29 @@ export default function (config = {}) {
       this.namespace = '/api';
 
       this.get('/rides', function ({ rides }, { queryParams, requestHeaders }) {
+        if (queryParams['filter[complete]'] || queryParams['filter[enabled]']) {
+          const complete = queryParams['filter[complete]'];
+          const enabled = queryParams['filter[enabled]'];
+
+          const matchingRides = rides.all().filter((ride) => {
+            return (
+              (!complete || String(Boolean(ride.complete)) === complete) &&
+              (!enabled || String(ride.enabled !== false) === enabled)
+            );
+          });
+
+          const parentIds = matchingRides.models.map((ride) => ride.id);
+          const children = rides
+            .all()
+            .filter(
+              (ride) =>
+                parentIds.includes(ride.combinedWithId) &&
+                !parentIds.includes(ride.id),
+            );
+
+          return matchingRides.mergeCollection(children);
+        }
+
         if (queryParams['filter[name]']) {
           // FIXME this is a mess, no better way???
           const nameFilter = queryParams['filter[name]'].toLowerCase();

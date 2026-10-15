@@ -3,7 +3,7 @@ import { service } from '@ember/service';
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 
-import moment from 'moment-timezone';
+import { toDateTime } from 'prison-rideshare-ui/utils/dates';
 import { task } from 'ember-concurrency';
 
 export default class CalendarController extends Controller {
@@ -24,8 +24,8 @@ export default class CalendarController extends Controller {
   @tracked error = undefined;
   @tracked showPerson = false;
 
-  get monthMoment() {
-    return moment(this.month);
+  get monthDate() {
+    return toDateTime(this.month)?.toJSDate();
   }
 
   get httpSubscriptionUrl() {

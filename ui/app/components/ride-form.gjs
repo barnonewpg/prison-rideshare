@@ -3,7 +3,8 @@ import { action, computed } from '@ember/object';
 import { service } from '@ember/service';
 import { alias } from '@ember/object/computed';
 import Component from '@ember/component';
-import moment from 'moment-timezone';
+import { DateTime } from 'luxon';
+import { formatDate } from 'prison-rideshare-ui/utils/dates';
 import formatTimespan from 'prison-rideshare-ui/utils/format-timespan';
 import parseTimespan from 'prison-rideshare-ui/utils/parse-timespan';
 import deduplicateVisitorSuggestions from 'prison-rideshare-ui/utils/deduplicate-visitor-suggestions';
@@ -31,7 +32,7 @@ import { tracked } from '@glimmer/tracking';
 import { scheduleTask } from 'ember-lifeline';
 import Alert from 'prison-rideshare-ui/components/alert';
 
-const DATETIME_LOCAL_FORMAT = 'YYYY-MM-DDTHH:mm';
+const DATETIME_LOCAL_FORMAT = "yyyy-MM-dd'T'HH:mm";
 
 const SelectedRideVisitor = <template>{{@option.name}}</template>;
 
@@ -486,9 +487,6 @@ export default class RideForm extends Component {
   @alias('institutionsService.all')
   institutions;
 
-  @service
-  moment;
-
   @service('store')
   store;
 
@@ -561,7 +559,7 @@ export default class RideForm extends Component {
       const start = this.get('ride.start');
       const end = this.get('ride.end');
 
-      return formatTimespan(this.moment, start, end);
+      return formatTimespan(start, end);
     } else {
       return undefined;
     }
@@ -574,7 +572,7 @@ export default class RideForm extends Component {
       return '';
     }
 
-    return moment(start).format(DATETIME_LOCAL_FORMAT);
+    return formatDate(start, DATETIME_LOCAL_FORMAT);
   }
 
   @computed('ride.end')
@@ -584,7 +582,7 @@ export default class RideForm extends Component {
       return '';
     }
 
-    return moment(end).format(DATETIME_LOCAL_FORMAT);
+    return formatDate(end, DATETIME_LOCAL_FORMAT);
   }
 
   @action
@@ -595,11 +593,11 @@ export default class RideForm extends Component {
 
     if (parsed) {
       if (parsed.start) {
-        this.set('ride.start', parsed.start.date());
+        this.set('ride.start', parsed.start);
       }
 
       if (parsed.end) {
-        this.set('ride.end', parsed.end.date());
+        this.set('ride.end', parsed.end);
       }
     }
   }
@@ -705,7 +703,7 @@ export default class RideForm extends Component {
 
     this.set(
       'ride.start',
-      new Date(moment(value, DATETIME_LOCAL_FORMAT).valueOf()),
+      DateTime.fromFormat(value, DATETIME_LOCAL_FORMAT).toJSDate(),
     );
   }
 
@@ -718,7 +716,7 @@ export default class RideForm extends Component {
 
     this.set(
       'ride.end',
-      new Date(moment(value, DATETIME_LOCAL_FORMAT).valueOf()),
+      DateTime.fromFormat(value, DATETIME_LOCAL_FORMAT).toJSDate(),
     );
   }
 

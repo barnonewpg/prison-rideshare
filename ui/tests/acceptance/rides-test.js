@@ -11,9 +11,10 @@ import page from 'prison-rideshare-ui/tests/pages/rides';
 import shared from 'prison-rideshare-ui/tests/pages/shared';
 import { getPageTitle } from 'ember-page-title/test-support';
 
-import moment from 'moment-timezone';
+import { formatDate } from 'prison-rideshare-ui/utils/dates';
 import { overrideRoute } from '../helpers/override-route';
 import { selectChoose } from 'ember-power-select/test-support';
+import { winnipegDate } from '../helpers/winnipeg-date';
 
 module('Acceptance | rides', function (hooks) {
   setupApplicationTest(hooks);
@@ -57,13 +58,13 @@ module('Acceptance | rides', function (hooks) {
       carOwner: lito,
       overridable: true,
 
-      insertedAt: new Date(2016, 11, 20, 20, 15),
+      insertedAt: winnipegDate(2016, 11, 20, 20, 15),
     });
 
     const chelseaRide = this.server.create('ride', {
       name: 'Chelsea',
-      start: new Date(2016, 11, 25, 10, 15),
-      end: new Date(2016, 11, 25, 12, 0),
+      start: winnipegDate(2016, 11, 25, 10, 15),
+      end: winnipegDate(2016, 11, 25, 12, 0),
       passengers: 1,
       contact: '5145551212',
       address: '421 osborne',
@@ -72,8 +73,8 @@ module('Acceptance | rides', function (hooks) {
     chelseaRide.createChild({
       combinedWith: chelseaRide,
       name: 'Visitor',
-      start: new Date(2016, 11, 25, 10, 10),
-      end: new Date(2016, 11, 25, 12, 10),
+      start: winnipegDate(2016, 11, 25, 10, 10),
+      end: winnipegDate(2016, 11, 25, 12, 10),
     });
 
     await page.visit();
@@ -318,11 +319,30 @@ module('Acceptance | rides', function (hooks) {
     );
   });
 
+  test('a search in the URL is restored when the page loads', async function (assert) {
+    this.server.create('ride', { name: 'Chelsea' });
+    this.server.create('ride', { name: 'Visitor' });
+
+    await page.visit({ search: 'chel' });
+
+    assert.strictEqual(
+      this.element.querySelector('[data-test-ride-search]').value,
+      'chel',
+      'expected the search field to contain the search from the URL',
+    );
+    assert.strictEqual(
+      page.rides.length,
+      1,
+      'expected the rides to be filtered by the search from the URL',
+    );
+    assert.strictEqual(page.rides[0].name, 'Chelsea');
+  });
+
   test('shows the end year when a ride spans years', async function (assert) {
     this.server.create('ride', {
       name: 'New Year Ride',
-      start: new Date(2010, 11, 31, 23, 0),
-      end: new Date(2011, 0, 1, 1, 0),
+      start: winnipegDate(2010, 11, 31, 23, 0),
+      end: winnipegDate(2011, 0, 1, 1, 0),
     });
 
     await page.visit();
@@ -388,12 +408,25 @@ module('Acceptance | rides', function (hooks) {
       complete: true,
     });
 
+    const filteredRidesRequests = [];
+    this.server.pretender.handledRequest = (verb, path, request) => {
+      if (request.queryParams['filter[enabled]']) {
+        filteredRidesRequests.push(request);
+      }
+    };
+    const lastFilteredRidesRequest = () => filteredRidesRequests.at(-1);
+
     await page.visit();
 
     assert.strictEqual(
       page.rides.length,
       2,
       'expected the completed rides to be hidden',
+    );
+    assert.strictEqual(
+      lastFilteredRidesRequest().queryParams['filter[complete]'],
+      'false',
+      'expected completed rides to not be requested',
     );
     assert.notOk(
       page.head.completedSwitch.enabled,
@@ -410,6 +443,11 @@ module('Acceptance | rides', function (hooks) {
     assert.ok(
       page.head.completedSwitch.enabled,
       'expected the completed switch to be on',
+    );
+    assert.strictEqual(
+      lastFilteredRidesRequest().queryParams['filter[complete]'],
+      undefined,
+      'expected completed rides to be requested once shown',
     );
 
     assert.strictEqual(
@@ -561,11 +599,11 @@ module('Acceptance | rides', function (hooks) {
     assert.strictEqual(lastRide.medium, 'phone');
     assert.strictEqual(lastRide.name, 'Edward');
     assert.strictEqual(
-      moment(lastRide.start).format('YYYY-MM-DD HH:mm'),
+      formatDate(lastRide.start, 'yyyy-MM-dd HH:mm'),
       '2016-12-26 09:00',
     );
     assert.strictEqual(
-      moment(lastRide.end).format('YYYY-MM-DD HH:mm'),
+      formatDate(lastRide.end, 'yyyy-MM-dd HH:mm'),
       '2016-12-26 11:30',
     );
     assert.strictEqual(lastRide.address, '114 Spence');
@@ -694,8 +732,8 @@ module('Acceptance | rides', function (hooks) {
       address: '91 Albert St.',
       contact: 'greyson@example.com',
       institution: rockwood,
-      start: new Date(2016, 11, 20, 9, 0),
-      end: new Date(2016, 11, 20, 11, 0),
+      start: winnipegDate(2016, 11, 20, 9, 0),
+      end: winnipegDate(2016, 11, 20, 11, 0),
     });
 
     await page.visit();
@@ -1045,8 +1083,8 @@ module('Acceptance | rides', function (hooks) {
 
     this.server.create('ride', {
       name: 'Chelsea',
-      start: new Date(2016, 11, 25, 10, 15),
-      end: new Date(2016, 11, 25, 12, 0),
+      start: winnipegDate(2016, 11, 25, 10, 15),
+      end: winnipegDate(2016, 11, 25, 12, 0),
       passengers: 1,
       contact: '5145551212',
     });

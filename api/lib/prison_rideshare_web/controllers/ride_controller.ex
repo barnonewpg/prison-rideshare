@@ -12,6 +12,20 @@ defmodule PrisonRideshareWeb.RideController do
   def index(%{private: %{guardian_default_resource: %{admin: true}}} = conn, params) do
     rides =
       case params do
+        %{"filter" => %{} = filter}
+        when is_map_key(filter, "complete") or is_map_key(filter, "enabled") ->
+          rides =
+            Ride
+            |> filter_boolean(:complete, filter["complete"])
+            |> filter_boolean(:enabled, filter["enabled"])
+            |> Repo.all()
+
+          # Combined rides are rendered beneath their parents, so they must be present
+          parent_ids = Enum.map(rides, & &1.id)
+          children = Repo.all(from(r in Ride, where: r.combined_with_ride_id in ^parent_ids))
+
+          Enum.uniq_by(rides ++ children, & &1.id)
+
         %{"filter" => %{"name" => name}} ->
           Repo.all(from(r in Ride, where: ilike(r.name, ^"#{name}%"), order_by: [desc: r.start]))
 
@@ -255,6 +269,12 @@ defmodule PrisonRideshareWeb.RideController do
     PaperTrail.delete!(ride, version_information(conn))
 
     send_resp(conn, :no_content, "")
+  end
+
+  defp filter_boolean(query, _field, nil), do: query
+
+  defp filter_boolean(query, field, value) when value in ["true", "false"] do
+    where(query, [r], field(r, ^field) == ^(value == "true"))
   end
 
   defp preload(model) do

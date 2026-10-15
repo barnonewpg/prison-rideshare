@@ -1,7 +1,7 @@
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import formatBriefTimespan from 'prison-rideshare-ui/utils/format-brief-timespan';
-import moment from 'moment-timezone';
+import { formatDate } from 'prison-rideshare-ui/utils/dates';
 import { task } from 'ember-concurrency';
 import gt from 'ember-truth-helpers/helpers/gt';
 import perform from 'ember-concurrency/helpers/perform';
@@ -44,9 +44,6 @@ export default class CalendarSlot extends Component {
     </div>
   </template>
   @service
-  moment;
-
-  @service
   toasts;
 
   @service
@@ -81,12 +78,7 @@ export default class CalendarSlot extends Component {
   }
 
   get timespan() {
-    return formatBriefTimespan(
-      this.moment,
-      this.slot?.start,
-      this.slot?.end,
-      false,
-    );
+    return formatBriefTimespan(this.slot?.start, this.slot?.end);
   }
 
   get hidden() {
@@ -137,9 +129,10 @@ export default class CalendarSlot extends Component {
 
         this.args.setError(undefined);
         this.toasts.show(
-          `Cancelled your agreement to drive on ${moment(
+          `Cancelled your agreement to drive on ${formatDate(
             this.slot?.start,
-          ).format('MMMM D')}`,
+            'LLLL d',
+          )}`,
         );
       } catch (error) {
         if (checkbox) {
@@ -160,8 +153,9 @@ export default class CalendarSlot extends Component {
 
         this.args.setError(undefined);
         this.toasts.show(
-          `Thanks for agreeing to drive on ${moment(this.slot?.start).format(
-            'MMMM D',
+          `Thanks for agreeing to drive on ${formatDate(
+            this.slot?.start,
+            'LLLL d',
           )}!`,
         );
       } catch (error) {

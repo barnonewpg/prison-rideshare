@@ -2,6 +2,7 @@
 import { computed } from '@ember/object';
 import Component from '@ember/component';
 import CalendarSlot from 'prison-rideshare-ui/components/calendar-slot';
+import { formatDate } from 'prison-rideshare-ui/utils/dates';
 
 export default class CalendarDay extends Component {
   <template>
@@ -22,11 +23,13 @@ export default class CalendarDay extends Component {
 
   @computed('day.{date,id}', 'slots.@each.start')
   get daySlots() {
-    const dayDateString = this.get('day.date').toDateString();
+    const dayDateString = formatDate(this.get('day.date'), 'yyyy-MM-dd');
     const slots = this.slots;
 
     return slots
-      .filter((slot) => dayDateString === slot.get('start').toDateString())
+      .filter(
+        (slot) => dayDateString === formatDate(slot.get('start'), 'yyyy-MM-dd'),
+      )
       .sort((a, b) => a.get('start') - b.get('start'));
   }
 }
