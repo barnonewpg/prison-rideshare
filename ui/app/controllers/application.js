@@ -1,6 +1,6 @@
 import { action } from '@ember/object';
 import { service } from '@ember/service';
-import Controller, { inject as controller } from '@ember/controller';
+import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 
 export default class ApplicationController extends Controller {
@@ -10,20 +10,12 @@ export default class ApplicationController extends Controller {
   @service store;
   @service userSocket;
 
-  @controller rides;
-
   @tracked headerElement;
 
   get ridesBadgeCount() {
     const overlapsCount = this.overlaps.count ?? 0;
-    const rides = this.rides.model || [];
 
-    const ridesNeedingConfirmation =
-      typeof rides.filterBy === 'function'
-        ? rides.filter((ride) => ride.requiresConfirmation)
-        : rides.filter((ride) => ride?.requiresConfirmation);
-
-    return overlapsCount + ridesNeedingConfirmation.length;
+    return overlapsCount + this.sidebar.requiresConfirmationCount;
   }
 
   @action

@@ -263,6 +263,55 @@ defmodule PrisonRideshareWeb.RideControllerTest do
     assert ride3["id"] == francine_ride.id
   end
 
+  test "returns only future enabled unconfirmed rides when filtering by requiring confirmation",
+       %{conn: conn} do
+    institution = Repo.insert!(%Institution{})
+
+    future =
+      NaiveDateTime.add(NaiveDateTime.utc_now(), 7 * 24 * 60 * 60)
+      |> NaiveDateTime.truncate(:second)
+
+    past =
+      NaiveDateTime.add(NaiveDateTime.utc_now(), -7 * 24 * 60 * 60)
+      |> NaiveDateTime.truncate(:second)
+
+    requiring_ride =
+      Repo.insert!(%Ride{
+        start: future,
+        end: future,
+        request_confirmed: false,
+        institution_id: institution.id
+      })
+
+    Repo.insert!(%Ride{
+      start: future,
+      end: future,
+      request_confirmed: true,
+      institution_id: institution.id
+    })
+
+    Repo.insert!(%Ride{
+      start: future,
+      end: future,
+      request_confirmed: false,
+      enabled: false,
+      institution_id: institution.id
+    })
+
+    Repo.insert!(%Ride{
+      start: past,
+      end: past,
+      request_confirmed: false,
+      institution_id: institution.id
+    })
+
+    conn = get(conn, Routes.ride_path(conn, :index, "filter[requires-confirmation]": "true"))
+
+    [ride] = json_response(conn, 200)["data"]
+
+    assert ride["id"] == requiring_ride.id
+  end
+
   test "returns rides with corresponding commitments", %{conn: conn} do
     institution = Repo.insert!(%Institution{})
 

@@ -29,6 +29,15 @@ defmodule PrisonRideshareWeb.RideController do
         %{"filter" => %{"name" => name}} ->
           Repo.all(from(r in Ride, where: ilike(r.name, ^"#{name}%"), order_by: [desc: r.start]))
 
+        %{"filter" => %{"requires_confirmation" => "true"}} ->
+          now = NaiveDateTime.utc_now()
+
+          Repo.all(
+            from(r in Ride,
+              where: r.start > ^now and r.enabled and not r.request_confirmed
+            )
+          )
+
         _ ->
           Repo.all(Ride)
       end
