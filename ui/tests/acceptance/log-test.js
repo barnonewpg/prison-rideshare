@@ -1,5 +1,5 @@
 /* eslint-disable qunit/require-expect */
-import { find } from '@ember/test-helpers';
+import { find, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from '../helpers/application-tests';
 import percySnapshot from '@percy/ember';
@@ -33,6 +33,21 @@ module('Acceptance | log', function (hooks) {
       unread: false,
       insertedAt: winnipegDate(2018, 7, 7, 14, 18, 22),
     });
+  });
+
+  test('only unread posts are loaded for the sidebar count outside the log', async function (assert) {
+    await authenticateSession({ access_token: 'abcdef' });
+    await visit('/rides');
+
+    assert.strictEqual(shared.logCount.text, '1');
+
+    const loadedPosts = this.owner.lookup('service:store').peekAll('post');
+
+    assert.deepEqual(
+      loadedPosts.map((post) => post.body),
+      ['hello'],
+      'expected only the unread post to be loaded',
+    );
   });
 
   test('it lists posts, with the unread count in the sidebar, and posts can be marked read and unread', async function (assert) {

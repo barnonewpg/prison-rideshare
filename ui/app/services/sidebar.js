@@ -33,14 +33,17 @@ export default class SidebarService extends Service {
     }
   }
 
+  // Only load unread posts rather than every post
   get postsRequest() {
     if (!this.postsRequestProxy) {
       this.postsRequestProxy = ObjectPromiseProxy.create({
-        promise: this.store.findAll('post').then((posts) => {
-          return {
-            posts,
-          };
-        }),
+        promise: this.store
+          .query('post', { filter: { unread: true } })
+          .then(() => {
+            return {
+              posts: this.store.peekAll('post'),
+            };
+          }),
       });
     }
 

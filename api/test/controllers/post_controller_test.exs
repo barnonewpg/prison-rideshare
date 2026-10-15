@@ -15,6 +15,24 @@ defmodule PrisonRideshareWeb.PostControllerTest do
     {:ok, conn: conn}
   end
 
+  test "lists only unread posts when filtering by unread", %{conn: conn} do
+    logged_in_user = Repo.one(User)
+    user = Repo.insert!(%User{admin: true})
+
+    Repo.insert!(%Post{content: "read", readings: [logged_in_user.id], poster: user})
+
+    unread_post =
+      Repo.insert!(%Post{content: "unread", readings: [user.id], poster: user})
+
+    never_read_post = Repo.insert!(%Post{content: "never read", readings: [], poster: user})
+
+    conn = get(conn, Routes.post_path(conn, :index, filter: %{unread: "true"}))
+
+    ids = json_response(conn, 200)["data"] |> Enum.map(& &1["id"]) |> MapSet.new()
+
+    assert ids == MapSet.new([unread_post.id, never_read_post.id])
+  end
+
   test "lists all posts with unread status", %{conn: conn} do
     logged_in_user = Repo.one(User)
 

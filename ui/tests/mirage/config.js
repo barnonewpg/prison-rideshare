@@ -122,7 +122,13 @@ export default function (config = {}) {
       this.get('/users');
       this.patch('/users/:id');
 
-      this.get('/posts');
+      this.get('/posts', function ({ posts }, { queryParams }) {
+        if (queryParams['filter[unread]']) {
+          return posts.where({ unread: true });
+        }
+
+        return posts.all();
+      });
       this.post('/posts');
       this.patch('/posts/:id');
       this.delete('/posts/:id');
