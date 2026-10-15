@@ -11,6 +11,7 @@ import { Settings } from 'luxon';
 import { winnipegZone } from 'prison-rideshare-ui/utils/dates';
 import '@warp-drive/ember/install';
 import { importSync, isDevelopingApp, macroCondition } from '@embroider/macros';
+import setupInspector from '@embroider/legacy-inspector-support/ember-source-4.12';
 
 if (macroCondition(isDevelopingApp())) {
   importSync('./deprecation-workflow');
@@ -29,6 +30,7 @@ export default class App extends Application {
   modulePrefix = config.modulePrefix;
   podModulePrefix = config.podModulePrefix;
   Resolver = Resolver;
+  inspector = setupInspector(this);
 }
 
 loadInitializers(App, config.modulePrefix);
