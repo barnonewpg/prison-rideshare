@@ -4,7 +4,27 @@ defmodule PrisonRideshareWeb.PostController do
   alias PrisonRideshareWeb.Post
   alias JaSerializer.Params
 
+  import Ecto.Query
+
   plug(:scrub_params, "data" when action in [:create, :update])
+
+  def index(conn, %{"filter" => %{"unread" => "true"}}) do
+    posts =
+      case Guardian.Plug.current_resource(conn) do
+        %PrisonRideshareWeb.User{id: user_id} ->
+          Repo.all(
+            from(p in Post,
+              where: is_nil(p.readings) or type(^user_id, :binary_id) not in p.readings
+            )
+          )
+
+        _ ->
+          Repo.all(Post)
+      end
+      |> Repo.preload(:poster)
+
+    render(conn, "index.json-api", data: posts)
+  end
 
   def index(conn, _params) do
     posts =
