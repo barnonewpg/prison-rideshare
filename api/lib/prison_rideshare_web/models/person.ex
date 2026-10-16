@@ -18,6 +18,9 @@ defmodule PrisonRideshareWeb.Person do
 
     field(:calendar_secret, PrisonRideshare.Secret, autogenerate: true)
 
+    # Only computed for the people index, see PersonView.attributes/2
+    field(:last_ride_start, :any, virtual: true, default: :not_loaded)
+
     has_many(:car_uses, PrisonRideshareWeb.Ride, foreign_key: :car_owner_id)
     has_many(:drivings, PrisonRideshareWeb.Ride, foreign_key: :driver_id)
 

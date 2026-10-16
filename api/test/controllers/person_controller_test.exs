@@ -4,7 +4,7 @@ defmodule PrisonRideshareWeb.PersonControllerTest do
 
   import Mock
 
-  alias PrisonRideshareWeb.Person
+  alias PrisonRideshareWeb.{Institution, Person, Ride}
   alias PrisonRideshare.Repo
 
   @valid_attrs %{
@@ -36,6 +36,47 @@ defmodule PrisonRideshareWeb.PersonControllerTest do
   test "lists all entries on index", %{conn: conn} do
     conn = get(conn, Routes.person_path(conn, :index))
     assert json_response(conn, 200)["data"] == []
+  end
+
+  test "includes the start of each person's latest ride as driver on index", %{conn: conn} do
+    driver = Repo.insert!(%Person{name: "Driver"})
+    car_owner = Repo.insert!(%Person{name: "Car owner"})
+    Repo.insert!(%Person{name: "Never drove"})
+    institution = Repo.insert!(%Institution{})
+
+    Repo.insert!(%Ride{
+      driver_id: driver.id,
+      start: ~N[2017-01-15 18:00:00],
+      institution_id: institution.id
+    })
+
+    Repo.insert!(%Ride{
+      driver_id: driver.id,
+      car_owner_id: car_owner.id,
+      start: ~N[2018-03-01 12:00:00],
+      institution_id: institution.id
+    })
+
+    last_ride_starts =
+      conn
+      |> get(Routes.person_path(conn, :index))
+      |> json_response(200)
+      |> Map.get("data")
+      |> Map.new(&{&1["attributes"]["name"], &1["attributes"]["last-ride-start"]})
+
+    assert last_ride_starts == %{
+             "Driver" => "2018-03-01T12:00:00Z",
+             "Car owner" => nil,
+             "Never drove" => nil
+           }
+  end
+
+  test "omits the latest ride start when not computed", %{conn: conn} do
+    person = Repo.insert!(%Person{name: "a"})
+
+    conn = get(conn, Routes.person_path(conn, :show, person))
+
+    refute Map.has_key?(json_response(conn, 200)["data"]["attributes"], "last-ride-start")
   end
 
   test "shows chosen resource", %{conn: conn} do
@@ -134,7 +175,11 @@ defmodule PrisonRideshareWeb.PersonControllerTest do
       encode_magic: fn person -> {:ok, "token for #{person.name}", "claims"} end do
       person = Repo.insert!(%Person{name: "Chelsea Manning", email: "chelsea@example.com"})
 
-      conn = post(conn, Routes.person_calendar_email_path(conn, :email_calendar_link, person, "2017-12"))
+      conn =
+        post(
+          conn,
+          Routes.person_calendar_email_path(conn, :email_calendar_link, person, "2017-12")
+        )
 
       assert response(conn, 204)
       assert_delivered_email(PrisonRideshare.Email.calendar_link(person, "2017-12"))

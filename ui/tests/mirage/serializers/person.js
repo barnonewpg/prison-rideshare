@@ -1,5 +1,5 @@
 import { JSONAPISerializer } from 'miragejs';
 
 export default JSONAPISerializer.extend({
-  include: Object.freeze(['drivings', 'carOwnings', 'reimbursements']),
+  include: Object.freeze(['reimbursements']),
 });

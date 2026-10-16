@@ -22,7 +22,7 @@ export default class DriversController extends Controller {
   @computed(
     'model',
     'model.[]',
-    'model.@each.{name,lastRide}',
+    'model.@each.{name,lastRideStart}',
     'sortProp',
     'sortDir',
   )
@@ -62,12 +62,8 @@ export default class DriversController extends Controller {
   }
 
   compareByLastRide(a, b) {
-    const aStart = a.lastRide?.start
-      ? new Date(a.lastRide.start).getTime()
-      : null;
-    const bStart = b.lastRide?.start
-      ? new Date(b.lastRide.start).getTime()
-      : null;
+    const aStart = a.lastRideStart ? a.lastRideStart.getTime() : null;
+    const bStart = b.lastRideStart ? b.lastRideStart.getTime() : null;
 
     if (aStart === bStart) {
       return 0;

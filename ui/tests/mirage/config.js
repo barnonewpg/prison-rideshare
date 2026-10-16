@@ -85,7 +85,20 @@ export default function (config = {}) {
 
       this.get('/gas-prices');
 
-      this.get('/people');
+      this.get('/people', function ({ people }) {
+        people.all().models.forEach((person) => {
+          const starts = person.drivings.models
+            .map((ride) => ride.start)
+            .filter(Boolean)
+            .map((start) => new Date(start));
+
+          person.update({
+            lastRideStart: starts.length ? new Date(Math.max(...starts)) : null,
+          });
+        });
+
+        return people.all();
+      });
       this.get('/people/:id');
       this.post('/people');
       this.patch('/people/:id');
