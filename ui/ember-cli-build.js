@@ -19,9 +19,12 @@ module.exports = async function (defaults) {
   }
 
   // Keep class and function names in PR previews so the Ember Inspector
-  // shows real component names instead of minified ones.
+  // shows real component names instead of minified ones. Webpack's own
+  // minification of ember-auto-import chunks ignores these options, so it's
+  // turned off and ember-cli-terser minifies those chunks instead.
   if (process.env.PREVIEW_PR_NUMBER) {
     terser = { terser: { keep_classnames: true, keep_fnames: true } };
+    autoImport.webpack = { optimization: { minimize: false } };
   }
 
   const app = new EmberApp(defaults, {
