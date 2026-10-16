@@ -15,7 +15,7 @@ defmodule PrisonRideshareWeb.RideController do
         %{"filter" => %{} = filter}
         when is_map_key(filter, "complete") or is_map_key(filter, "enabled") ->
           rides =
-            Ride
+            from(r in Ride, where: is_nil(r.combined_with_ride_id))
             |> filter_boolean(:complete, filter["complete"])
             |> filter_boolean(:enabled, filter["enabled"])
             |> Repo.all()

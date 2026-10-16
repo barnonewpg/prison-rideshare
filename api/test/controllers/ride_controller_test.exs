@@ -201,6 +201,15 @@ defmodule PrisonRideshareWeb.RideControllerTest do
     cancelled_ride =
       Repo.insert!(%Ride{name: "Cancelled", enabled: false, institution_id: institution.id})
 
+    # Rides combined into a completed ride are never marked complete themselves,
+    # so they should only appear alongside their parent
+    combined_into_completed_ride =
+      Repo.insert!(%Ride{
+        name: "Orphaned",
+        combined_with_ride_id: completed_ride.id,
+        institution_id: institution.id
+      })
+
     ids_for = fn filter ->
       conn
       |> get(Routes.ride_path(conn, :index, filter: filter))
@@ -214,7 +223,12 @@ defmodule PrisonRideshareWeb.RideControllerTest do
              MapSet.new([pending_ride.id, combined_completed_ride.id])
 
     assert ids_for.(%{enabled: "true"}) ==
-             MapSet.new([pending_ride.id, combined_completed_ride.id, completed_ride.id])
+             MapSet.new([
+               pending_ride.id,
+               combined_completed_ride.id,
+               completed_ride.id,
+               combined_into_completed_ride.id
+             ])
 
     assert ids_for.(%{complete: "false"}) ==
              MapSet.new([pending_ride.id, combined_completed_ride.id, cancelled_ride.id])
