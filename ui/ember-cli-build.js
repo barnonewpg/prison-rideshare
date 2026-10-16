@@ -8,6 +8,7 @@ module.exports = async function (defaults) {
 
   let autoImport = {};
   let fingerprint = {};
+  let terser = {};
 
   if (deployTarget) {
     const s3Bucket = require('./config/deploy')(process.env.DEPLOY_TARGET).s3
@@ -15,6 +16,15 @@ module.exports = async function (defaults) {
 
     autoImport.publicAssetURL = `//${s3Bucket}.s3.amazonaws.com/assets/`;
     fingerprint.prepend = `//${s3Bucket}.s3.amazonaws.com/`;
+  }
+
+  // Keep class and function names in PR previews so the Ember Inspector
+  // shows real component names instead of minified ones. Webpack's own
+  // minification of ember-auto-import chunks ignores these options, so it's
+  // turned off and ember-cli-terser minifies those chunks instead.
+  if (process.env.PREVIEW_PR_NUMBER) {
+    terser = { terser: { keep_classnames: true, keep_fnames: true } };
+    autoImport.webpack = { optimization: { minimize: false } };
   }
 
   const app = new EmberApp(defaults, {
@@ -32,6 +42,7 @@ module.exports = async function (defaults) {
       disableDecoratorTransforms: true,
     },
     fingerprint,
+    'ember-cli-terser': terser,
     minifyCSS: {
       enabled: false,
     },
