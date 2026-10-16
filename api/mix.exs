@@ -60,7 +60,7 @@ defmodule PrisonRideshare.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:phoenix_live_view, "~> 1.2"},
       {:phoenix_view, "~> 2.0"},
-      {:gettext, "~> 0.11"},
+      {:gettext, "~> 0.26"},
       {:plug_cowboy, "~> 2.9"},
       {:bcrypt_elixir, "~> 3.0"},
       {:cors_plug, "~> 3.0"},
