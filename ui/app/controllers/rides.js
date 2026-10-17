@@ -2,7 +2,10 @@ import { action } from '@ember/object';
 import { service } from '@ember/service';
 import Controller from '@ember/controller';
 import BufferedProxy from 'ember-buffered-proxy/proxy';
+import { task, timeout } from 'ember-concurrency';
 import { tracked } from '@glimmer/tracking';
+
+const SEARCH_DEBOUNCE_MS = 250;
 
 export default class RidesController extends Controller {
   queryParams = [
@@ -212,13 +215,20 @@ export default class RidesController extends Controller {
 
   @action
   clearSearch() {
+    this.debouncedUpdateSearch.cancelAll();
     this.search = undefined;
   }
+
+  // Filtering every ride on each keystroke is slow, so wait for a pause
+  debouncedUpdateSearch = task({ restartable: true }, async (value) => {
+    await timeout(SEARCH_DEBOUNCE_MS);
+    this.updateSearch(value);
+  });
 
   @action
   updateSearchInput(event) {
     const value = event?.target?.value ?? '';
-    this.updateSearch(value);
+    this.debouncedUpdateSearch.perform(value);
   }
 
   @action
