@@ -38,6 +38,11 @@ export default class RidesController extends Controller {
   @tracked rideErrorMessage = undefined;
   @tracked cancellationErrorMessage = undefined;
   @tracked rideToCombine;
+  @tracked loadingTransition;
+
+  get isLoadingRides() {
+    return Boolean(this.loadingTransition);
+  }
 
   get people() {
     return this.peopleService.all;
