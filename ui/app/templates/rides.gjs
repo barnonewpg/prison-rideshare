@@ -8,6 +8,7 @@ import {
   HdsFormSectionMultiFieldGroup,
   HdsFormTextInputBase,
   HdsFormToggleField,
+  HdsIcon,
   HdsTable,
 } from '@hashicorp/design-system-components/components';
 import { on } from '@ember/modifier';
@@ -60,9 +61,20 @@ export default RouteTemplate(
           <Field.Label>Cancelled</Field.Label>
         </HdsFormToggleField>
       </Group.Item>
+      <Group.Item>
+        <span class='rides-loading' role='status' data-test-rides-loading>
+          {{#if @controller.isLoadingRides}}
+            <HdsIcon @name='loading' @size='16' />
+            Loading rides…
+          {{/if}}
+        </span>
+      </Group.Item>
     </HdsFormSectionMultiFieldGroup>
 
-    <div class='rides-table'>
+    <div
+      class='rides-table {{if @controller.isLoadingRides "is-loading"}}'
+      aria-busy={{if @controller.isLoadingRides 'true'}}
+    >
       <HdsTable
         class='rides'
         @isSortable={{true}}
