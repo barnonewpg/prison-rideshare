@@ -1,17 +1,18 @@
 /* eslint-disable qunit/require-expect */
 import parseTimespan from 'prison-rideshare-ui/utils/parse-timespan';
 import { module, test } from 'qunit';
+import { reset, travel } from 'chronokinesis';
 
 import { formatDate } from 'prison-rideshare-ui/utils/dates';
 
 module('Unit | Utility | parse timespan', function (hooks) {
   hooks.beforeEach(function () {
     const afterMidnight = new Date(1506490200000);
-    window.chronokinesis.travel(afterMidnight);
+    travel(afterMidnight);
   });
 
   hooks.afterEach(function () {
-    window.chronokinesis.reset();
+    reset();
   });
 
   const formatString = 'yyyy-MM-dd HH:mm';
@@ -75,7 +76,7 @@ module('Unit | Utility | parse timespan', function (hooks) {
   });
 
   test('it assumes future dates unless fully specified', function (assert) {
-    window.chronokinesis.travel(new Date(1570925744254));
+    travel(new Date(1570925744254));
     // Saturday 2019-10-12 19:15
 
     assertParsing(
