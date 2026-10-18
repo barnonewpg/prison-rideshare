@@ -1,5 +1,5 @@
 /* eslint-disable ember/no-classic-classes, ember/no-get*/
-import Model, { attr } from '@ember-data/model';
+import Model, { attr } from '@warp-drive/legacy/model';
 import { service } from '@ember/service';
 import { gt } from '@ember/object/computed';
 

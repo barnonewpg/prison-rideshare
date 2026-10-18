@@ -124,9 +124,21 @@ importers:
       '@warp-drive/build-config':
         specifier: ^5.9.1
         version: 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
+      '@warp-drive/core':
+        specifier: ^5.9.1
+        version: 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
       '@warp-drive/ember':
         specifier: ^5.9.1
         version: 5.9.1(@babel/core@7.29.7)(@ember/test-waiters@4.1.2)(@glint/template@1.6.1)
+      '@warp-drive/json-api':
+        specifier: ^5.9.1
+        version: 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1))
+      '@warp-drive/legacy':
+        specifier: ^5.9.1
+        version: 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1))(@warp-drive/utilities@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)))
+      '@warp-drive/utilities':
+        specifier: ^5.9.1
+        version: 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1))
       babel-plugin-ember-template-compilation:
         specifier: ^3.1.0
         version: 3.1.0
@@ -181,9 +193,6 @@ importers:
       ember-concurrency:
         specifier: ^5.3.0
         version: 5.3.0(@babel/core@7.29.7)(@glint/template@1.6.1)
-      ember-data:
-        specifier: ^5.9.1
-        version: 5.9.1(@babel/core@7.29.7)(@ember/test-helpers@5.7.0(@babel/core@7.29.7))(@ember/test-waiters@4.1.2)(@glint/template@1.6.1)(ember-inflector@7.0.0(@babel/core@7.29.7))(qunit@2.26.0)
       ember-decorators:
         specifier: ^7.0.0
         version: 7.0.0(@babel/core@7.29.7)
@@ -1493,57 +1502,8 @@ packages:
     peerDependencies:
       postcss-selector-parser: ^6.0.13
 
-  '@ember-data/adapter@5.9.1':
-    resolution: {integrity: sha512-dEebjDOuRmthFh2sQZvglRqXfnszbwPw1n/0S8/pJEQ78FULW4B+QOj4zAOSgFhI6RNozU3fjekwfukURssSjA==}
-
-  '@ember-data/debug@5.9.1':
-    resolution: {integrity: sha512-dXU7hkkGa004YEwS/TXp6YrEmT+vxvuzJ06titISQhY8HrlzsEjRWCoIbNGDcyqPlEZbBXZqftdePmqpN/5v0g==}
-
-  '@ember-data/graph@5.9.1':
-    resolution: {integrity: sha512-CDlLASleZFTn7y61PnX4PpZzeVQ/anbsk8wqVT8Wx2nAHkUFcZ9fL1BTZbwjaFpVAznreyZDHsQHHt8mRa5GvA==}
-
-  '@ember-data/json-api@5.9.1':
-    resolution: {integrity: sha512-UzjYMmxJrcn512uy7evwcXcPSTYfA3LLmjIKoZ4QsU6OVSaLEWLvxWGjFwmfp98b1EwIQIb9fCvGHacKeZlepQ==}
-
-  '@ember-data/legacy-compat@5.9.1':
-    resolution: {integrity: sha512-zrfX+4m6sK8vcIyIN2kPBaVcURKLwRfe9+zJQqyHriIErS2N9R4Kjnr5xZcr+4Nk/Jo4Y0mA3ZgKdrr3BiUkyQ==}
-
-  '@ember-data/model@5.9.1':
-    resolution: {integrity: sha512-SbU1zxt1yl+CxYL8edsc2JELEVTi/RbG2tEzXgqXodrTi5oA4+yzo4too9wtrFSggztb5iaxPotsj61R0XDQUQ==}
-
-  '@ember-data/request-utils@5.9.1':
-    resolution: {integrity: sha512-43mV+UhuVWwOqWOKxuC+2WAc3xvhCaNt9oxKbenOLBSpUuiKlNFBqRfxKfR2mbftC6IyEiqJkG9K39WYN2UAKw==}
-    peerDependencies:
-      ember-inflector: ^4.0.2 || ^5.0.0 || ^6.0.0
-    peerDependenciesMeta:
-      ember-inflector:
-        optional: true
-
-  '@ember-data/request@5.9.1':
-    resolution: {integrity: sha512-r96A+Dy9OVvOBhZXD1hNVjmQci6M6p6ezkP2N+i47EGkrrajFRBjlmxaa9aA3kbu8NIDM3mhFQSPeYuCAsBNmw==}
-
   '@ember-data/rfc395-data@0.0.4':
     resolution: {integrity: sha512-tGRdvgC9/QMQSuSuJV45xoyhI0Pzjm7A9o/MVVA3HakXIImJbbzx/k/6dO9CUEQXIyS2y0fW6C1XaYOG7rY0FQ==}
-
-  '@ember-data/serializer@5.9.1':
-    resolution: {integrity: sha512-SheRw52aPw96hTZ/6/k544jW3MKn3tz5DoVc/dC/uGhvkboySO3TrKrJ3ImnLsawl5euUuLEZtCF5Cri2tg8kA==}
-
-  '@ember-data/store@5.9.1':
-    resolution: {integrity: sha512-Q3gkebyvreH/q3WPyXGcyulWh/PGOg7TLZSNdDvt5lkGcRzatyXLmcbs991jJTjgRUAnf7QeiaY8KDHNr9tRpA==}
-    peerDependencies:
-      '@ember-data/tracking': 5.9.1
-      '@ember/test-waiters': ^4.1.1
-    peerDependenciesMeta:
-      '@ember-data/tracking':
-        optional: true
-      '@ember/test-waiters':
-        optional: true
-
-  '@ember-data/tracking@5.9.1':
-    resolution: {integrity: sha512-F7wvBpDChgd/rStNga0HzZ9IDI/CIwseFXObQJq+8brvZ33Ee3rJL/ChC5hMX+IPZVs9l1JfKnmjyZ2L8Ey92Q==}
-    deprecated: Use @warp-drive/ember
-    peerDependencies:
-      '@ember/test-waiters': ^4.1.1
 
   '@ember-decorators/component@7.0.0':
     resolution: {integrity: sha512-V72AoFMy4CdLaaI/8hhrepSt0hCy6t6VX4fzj/MCSi/QM+shuNNwtXTTN2Vi9+sV0YlyiluFzP5mME1IZdZneg==}
@@ -2189,18 +2149,6 @@ packages:
   '@lint-todo/utils@13.1.1':
     resolution: {integrity: sha512-F5z53uvRIF4dYfFfJP3a2Cqg+4P1dgJchJsFnsZE0eZp0LK8X7g2J0CsJHRgns+skpXOlM7n5vFGwkWCWj8qJg==}
     engines: {node: 12.* || >= 14}
-
-  '@manypkg/find-root@3.1.0':
-    resolution: {integrity: sha512-BcSqCyKhBVZ5YkSzOiheMCV41kqAFptW6xGqYSTjkVTl9XQpr+pqHhwgGCOHQtjDCv7Is6EFyA14Sm5GVbVABA==}
-    engines: {node: '>=20.0.0'}
-
-  '@manypkg/get-packages@3.1.0':
-    resolution: {integrity: sha512-0TbBVyvPrP7xGYBI/cP8UP+yl/z+HtbTttAD7FMAJgn/kXOTwh5/60TsqP9ZYY710forNfyV0N8P/IE/ujGZJg==}
-    engines: {node: '>=20.0.0'}
-
-  '@manypkg/tools@2.1.2':
-    resolution: {integrity: sha512-6QEf6yqFbETdwGITKq57aYoPfX/3K8XFNwsAlx0C1M7o8cb79sv1M3w+tWuWvIcSbNqrLF7OD7YpZMVVz335hQ==}
-    engines: {node: '>=20.0.0'}
 
   '@marijn/find-cluster-break@1.0.2':
     resolution: {integrity: sha512-l0h88YhZFyKdXIFNfSWpyjStDjGHwZ/U7iobcK1cQQD8sejsONdQtTVU+1wVN1PBw40PiiHB1vA5S7VTfQiP9g==}
@@ -2853,9 +2801,6 @@ packages:
   '@warp-drive/build-config@5.9.1':
     resolution: {integrity: sha512-atPMCxb1S3jR1IF0v8XNWujiAztnNwubJicQABA2vBL2cdw2Or/xce2KyCvGZh1rJEQy1NkCeIQRCs7O1UO5OA==}
 
-  '@warp-drive/core-types@5.9.1':
-    resolution: {integrity: sha512-8nXkD/27WYMILXrWzXeL6yGDUmGveiT8Lporjr4mvdJiwP+/US2kwyxkQuLm2da5iRyXIcxFI2L7vD+jpa2U3g==}
-
   '@warp-drive/core@5.9.1':
     resolution: {integrity: sha512-7HJ6G4+mmTjya8+qOh31KDWQ2uELuwcOtRGDVE7qTzhOzDiFpAMbK87LlK+5I+tw++NqKfriA1X3DbquCoxMVQ==}
 
@@ -3092,9 +3037,6 @@ packages:
 
   array-equal@1.0.2:
     resolution: {integrity: sha512-gUHx76KtnhEgB3HOuFYiCm3FIdEs6ocM2asHvNTkfu/Y09qQVrrVVaOKENmS2KkSaGoxgXNqC+ZVtR/n0MOkSA==}
-
-  array-timsort@1.0.3:
-    resolution: {integrity: sha512-/+3GRL7dDAGEfM6TseQk/U+mi18TU2Ms9I3UlLdUMhz2hbvGNTKdj9xniwXfUqgYhHxRx0+8UnKkvlNwVU+cWQ==}
 
   array-union@2.1.0:
     resolution: {integrity: sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==}
@@ -3711,10 +3653,6 @@ packages:
   commander@8.3.0:
     resolution: {integrity: sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==}
     engines: {node: '>= 12'}
-
-  comment-json@5.0.0:
-    resolution: {integrity: sha512-uiqLcOiVDJtBP8WGkZHEP+FZIhTzP1dxvn59EfoYUi9gqupjrBWVQkO2atDrbnKPwLeotFYDsuNb26uBMqB+hw==}
-    engines: {node: '>= 6'}
 
   common-ancestor-path@1.0.1:
     resolution: {integrity: sha512-L3sHRo1pXXEqX8VU28kfgUY+YGsk09hPqZiZmLacNib6XNTCM8ubYeT7ryXQw8asB1sKgcU5lkB7ONug08aB8w==}
@@ -4416,18 +4354,6 @@ packages:
     engines: {node: '>= 16.*'}
     peerDependencies:
       ember-source: '>=6.0 || >=4.0'
-
-  ember-data@5.9.1:
-    resolution: {integrity: sha512-RL1K+/H32ym84q2TX5iBdqLoZ/yIVgDMOBy8DZpNUjfVNBSUC1tCuFAtF07vA1EH71CJlqUfVUXQqR17oNpeQQ==}
-    peerDependencies:
-      '@ember/test-helpers': ^3.3.0 || ^4.0.4 || ^5.1.0
-      '@ember/test-waiters': ^4.1.1
-      qunit: ^2.26.0
-    peerDependenciesMeta:
-      '@ember/test-helpers':
-        optional: true
-      qunit:
-        optional: true
 
   ember-decorators@7.0.0:
     resolution: {integrity: sha512-bz5M4xK58+kB86oGN4N68KotZOcvCNeJpvqQqcjrmh8RFAAtSrPGnP/pDxcH9hm95tgK4qfPmnNG2U0DsO+A+Q==}
@@ -5881,9 +5807,6 @@ packages:
   jest-worker@27.5.1:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
-
-  jju@1.4.0:
-    resolution: {integrity: sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==}
 
   jmespath@0.16.0:
     resolution: {integrity: sha512-9FzQjJ7MATs1tSpnco1K6ayiYE3figslrXA72G2HQ/n76RzvYlofyi5QM+iX4YRs/pu3yzxlVQSST23+dMDknw==}
@@ -8341,10 +8264,6 @@ packages:
   walker@1.0.8:
     resolution: {integrity: sha512-ts/8E8l5b7kY0vlWLewOkDXMmPdLcVV4GmOQLyxuSswIJsweeFZtAsMF7k1Nszz+TYBQrlYRmzOnr398y1JemQ==}
 
-  warp-drive@0.2.1:
-    resolution: {integrity: sha512-53UOA9HFdyOm6WvT7nt2OTvVvHRRTKBh+svR4jXOdocErUJ+bvfsWia4994D+hqJVdI/B9m5z4wBDBRPd13SmA==}
-    hasBin: true
-
   watch-detector@1.0.3:
     resolution: {integrity: sha512-c9gP6tfJ8vK+eH84IF4+8r4Z/g2KhRc+XwLGl208tAIHR1mz0o7zy5Hkm+4XpACh8lNp9/EHqXHIQkw2nBbdYA==}
     engines: {node: '>= 8'}
@@ -10083,128 +10002,7 @@ snapshots:
     dependencies:
       postcss-selector-parser: 6.1.2
 
-  '@ember-data/adapter@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)':
-    dependencies:
-      '@embroider/macros': 1.21.3(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@warp-drive/core': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@warp-drive/legacy': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1))(@warp-drive/utilities@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)))
-      '@warp-drive/utilities': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1))
-      warp-drive: 0.2.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@glint/template'
-      - supports-color
-
-  '@ember-data/debug@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)':
-    dependencies:
-      '@ember/edition-utils': 1.2.0
-      '@embroider/macros': 1.21.3(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@warp-drive/core': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@warp-drive/utilities': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1))
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@glint/template'
-      - supports-color
-
-  '@ember-data/graph@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)':
-    dependencies:
-      '@embroider/macros': 1.21.3(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@warp-drive/core': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@glint/template'
-      - supports-color
-
-  '@ember-data/json-api@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)':
-    dependencies:
-      '@embroider/macros': 1.21.3(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@warp-drive/core': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@warp-drive/json-api': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1))
-      '@warp-drive/utilities': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1))
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@glint/template'
-      - supports-color
-
-  '@ember-data/legacy-compat@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)':
-    dependencies:
-      '@embroider/macros': 1.21.3(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@warp-drive/core': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@warp-drive/legacy': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1))(@warp-drive/utilities@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)))
-      '@warp-drive/utilities': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1))
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@glint/template'
-      - supports-color
-
-  '@ember-data/model@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)':
-    dependencies:
-      '@embroider/macros': 1.21.3(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@warp-drive/core': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@warp-drive/legacy': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1))(@warp-drive/utilities@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)))
-      '@warp-drive/utilities': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1))
-      warp-drive: 0.2.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@glint/template'
-      - supports-color
-
-  '@ember-data/request-utils@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(ember-inflector@7.0.0(@babel/core@7.29.7))':
-    dependencies:
-      '@embroider/macros': 1.21.3(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@warp-drive/core': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@warp-drive/utilities': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1))
-    optionalDependencies:
-      ember-inflector: 7.0.0(@babel/core@7.29.7)
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@glint/template'
-      - supports-color
-
-  '@ember-data/request@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)':
-    dependencies:
-      '@embroider/macros': 1.21.3(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@warp-drive/core': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@glint/template'
-      - supports-color
-
   '@ember-data/rfc395-data@0.0.4': {}
-
-  '@ember-data/serializer@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)':
-    dependencies:
-      '@embroider/macros': 1.21.3(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@warp-drive/core': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@warp-drive/legacy': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1))(@warp-drive/utilities@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)))
-      '@warp-drive/utilities': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1))
-      warp-drive: 0.2.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@glint/template'
-      - supports-color
-
-  '@ember-data/store@5.9.1(@babel/core@7.29.7)(@ember-data/tracking@5.9.1(@babel/core@7.29.7)(@ember/test-waiters@4.1.2)(@glint/template@1.6.1))(@ember/test-waiters@4.1.2)(@glint/template@1.6.1)':
-    dependencies:
-      '@embroider/macros': 1.21.3(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@warp-drive/core': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-    optionalDependencies:
-      '@ember-data/tracking': 5.9.1(@babel/core@7.29.7)(@ember/test-waiters@4.1.2)(@glint/template@1.6.1)
-      '@ember/test-waiters': 4.1.2
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@glint/template'
-      - supports-color
-
-  '@ember-data/tracking@5.9.1(@babel/core@7.29.7)(@ember/test-waiters@4.1.2)(@glint/template@1.6.1)':
-    dependencies:
-      '@ember/test-waiters': 4.1.2
-      '@embroider/macros': 1.21.3(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@warp-drive/core': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@glint/template'
-      - supports-color
 
   '@ember-decorators/component@7.0.0(@babel/core@7.29.7)':
     dependencies:
@@ -11204,21 +11002,6 @@ snapshots:
       tslib: 2.8.1
       upath: 2.0.1
 
-  '@manypkg/find-root@3.1.0':
-    dependencies:
-      '@manypkg/tools': 2.1.2
-
-  '@manypkg/get-packages@3.1.0':
-    dependencies:
-      '@manypkg/find-root': 3.1.0
-      '@manypkg/tools': 2.1.2
-
-  '@manypkg/tools@2.1.2':
-    dependencies:
-      jju: 1.4.0
-      tinyglobby: 0.2.17
-      yaml: 2.9.1
-
   '@marijn/find-cluster-break@1.0.2': {}
 
   '@miragejs/pretender-node-polyfill@0.1.2': {}
@@ -11390,21 +11173,15 @@ snapshots:
       '@percy/cli-command': 1.32.11(typescript@5.9.2)
       '@percy/cli-exec': 1.32.11(typescript@5.9.2)
     transitivePeerDependencies:
-      - bufferutil
       - supports-color
       - typescript
-      - utf-8-validate
-      - worker-loader
 
   '@percy/cli-build@1.32.11(typescript@5.9.2)':
     dependencies:
       '@percy/cli-command': 1.32.11(typescript@5.9.2)
     transitivePeerDependencies:
-      - bufferutil
       - supports-color
       - typescript
-      - utf-8-validate
-      - worker-loader
 
   '@percy/cli-command@1.32.11(typescript@5.9.2)':
     dependencies:
@@ -11425,11 +11202,8 @@ snapshots:
     dependencies:
       '@percy/cli-command': 1.32.11(typescript@5.9.2)
     transitivePeerDependencies:
-      - bufferutil
       - supports-color
       - typescript
-      - utf-8-validate
-      - worker-loader
 
   '@percy/cli-doctor@1.32.11(typescript@5.9.2)':
     dependencies:
@@ -11456,11 +11230,8 @@ snapshots:
       cross-spawn: 7.0.6
       which: 2.0.2
     transitivePeerDependencies:
-      - bufferutil
       - supports-color
       - typescript
-      - utf-8-validate
-      - worker-loader
 
   '@percy/cli-pdf@1.32.11':
     dependencies:
@@ -11475,11 +11246,8 @@ snapshots:
       '@percy/cli-command': 1.32.11(typescript@5.9.2)
       yaml: 2.9.1
     transitivePeerDependencies:
-      - bufferutil
       - supports-color
       - typescript
-      - utf-8-validate
-      - worker-loader
 
   '@percy/cli-upload@1.32.11(typescript@5.9.2)':
     dependencies:
@@ -11487,11 +11255,8 @@ snapshots:
       fast-glob: 3.3.3
       probe-image-size: 7.4.0
     transitivePeerDependencies:
-      - bufferutil
       - supports-color
       - typescript
-      - utf-8-validate
-      - worker-loader
 
   '@percy/cli@1.32.11(typescript@5.9.2)':
     dependencies:
@@ -11903,15 +11668,6 @@ snapshots:
       - '@glint/template'
       - supports-color
 
-  '@warp-drive/core-types@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)':
-    dependencies:
-      '@embroider/macros': 1.21.3(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@warp-drive/core': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@glint/template'
-      - supports-color
-
   '@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)':
     dependencies:
       '@embroider/macros': 1.21.3(@babel/core@7.29.7)(@glint/template@1.6.1)
@@ -12177,8 +11933,6 @@ snapshots:
       is-array-buffer: 3.0.5
 
   array-equal@1.0.2: {}
-
-  array-timsort@1.0.3: {}
 
   array-union@2.1.0: {}
 
@@ -13008,11 +12762,6 @@ snapshots:
   commander@7.2.0: {}
 
   commander@8.3.0: {}
-
-  comment-json@5.0.0:
-    dependencies:
-      array-timsort: 1.0.3
-      esprima: 4.0.1
 
   common-ancestor-path@1.0.1: {}
 
@@ -13940,38 +13689,6 @@ snapshots:
       '@embroider/addon-shim': 1.10.3
       ember-source: 7.3.1(@glimmer/component@2.1.1)
     transitivePeerDependencies:
-      - supports-color
-
-  ember-data@5.9.1(@babel/core@7.29.7)(@ember/test-helpers@5.7.0(@babel/core@7.29.7))(@ember/test-waiters@4.1.2)(@glint/template@1.6.1)(ember-inflector@7.0.0(@babel/core@7.29.7))(qunit@2.26.0):
-    dependencies:
-      '@ember-data/adapter': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@ember-data/debug': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@ember-data/graph': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@ember-data/json-api': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@ember-data/legacy-compat': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@ember-data/model': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@ember-data/request': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@ember-data/request-utils': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(ember-inflector@7.0.0(@babel/core@7.29.7))
-      '@ember-data/serializer': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@ember-data/store': 5.9.1(@babel/core@7.29.7)(@ember-data/tracking@5.9.1(@babel/core@7.29.7)(@ember/test-waiters@4.1.2)(@glint/template@1.6.1))(@ember/test-waiters@4.1.2)(@glint/template@1.6.1)
-      '@ember-data/tracking': 5.9.1(@babel/core@7.29.7)(@ember/test-waiters@4.1.2)(@glint/template@1.6.1)
-      '@ember/edition-utils': 1.2.0
-      '@ember/test-waiters': 4.1.2
-      '@embroider/macros': 1.21.3(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@warp-drive/core': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@warp-drive/core-types': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@warp-drive/ember': 5.9.1(@babel/core@7.29.7)(@ember/test-waiters@4.1.2)(@glint/template@1.6.1)
-      '@warp-drive/json-api': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1))
-      '@warp-drive/legacy': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1))(@warp-drive/utilities@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)))
-      '@warp-drive/utilities': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)(@warp-drive/core@5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1))
-    optionalDependencies:
-      '@ember/test-helpers': 5.7.0(@babel/core@7.29.7)
-      qunit: 2.26.0
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@glint/template'
-      - ember-inflector
-      - ember-provide-consume-context
       - supports-color
 
   ember-decorators@7.0.0(@babel/core@7.29.7):
@@ -15857,8 +15574,6 @@ snapshots:
       '@types/node': 24.5.2
       merge-stream: 2.0.0
       supports-color: 8.1.1
-
-  jju@1.4.0: {}
 
   jmespath@0.16.0: {}
 
@@ -18556,20 +18271,6 @@ snapshots:
   walker@1.0.8:
     dependencies:
       makeerror: 1.0.12
-
-  warp-drive@0.2.1(@babel/core@7.29.7)(@glint/template@1.6.1):
-    dependencies:
-      '@embroider/macros': 1.21.3(@babel/core@7.29.7)(@glint/template@1.6.1)
-      '@manypkg/get-packages': 3.1.0
-      '@warp-drive/core': 5.9.1(@babel/core@7.29.7)(@glint/template@1.6.1)
-      comment-json: 5.0.0
-      debug: 4.4.3
-      inflection: 3.0.2
-      semver: 7.8.5
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@glint/template'
-      - supports-color
 
   watch-detector@1.0.3:
     dependencies:

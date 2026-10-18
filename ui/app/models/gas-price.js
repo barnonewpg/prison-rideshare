@@ -1,5 +1,5 @@
 /* eslint-disable ember/no-classic-classes*/
-import Model, { attr } from '@ember-data/model';
+import Model, { attr } from '@warp-drive/legacy/model';
 
 export default Model.extend({
   price: attr(),

@@ -1,5 +1,5 @@
 /* eslint-disable ember/no-classic-classes, ember/no-get*/
-import Model, { attr, belongsTo, hasMany } from '@ember-data/model';
+import Model, { attr, belongsTo, hasMany } from '@warp-drive/legacy/model';
 import { gt } from '@ember/object/computed';
 import { computed } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
