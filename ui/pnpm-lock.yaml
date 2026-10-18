@@ -59,6 +59,9 @@ importers:
       '@hashicorp/flight-icons':
         specifier: ^5.3.0
         version: 5.3.0
+      '@html-next/vertical-collection':
+        specifier: ^5.0.5
+        version: 5.0.5(supports-color@8.1.1)
       '@lexical/code':
         specifier: ^0.52.0
         version: 0.52.0(typescript@5.9.2)
@@ -1806,6 +1809,10 @@ packages:
 
   '@hashicorp/flight-icons@5.3.0':
     resolution: {integrity: sha512-D9wCaXJNjBCN5pwr7kqLdYlmhMMioxItE8Nu7bx8k7ngr3K74m4NfKeU+r2mRYkybySxk2qtvXR5qIuWH8QXjA==}
+
+  '@html-next/vertical-collection@5.0.5':
+    resolution: {integrity: sha512-LEed/9M50OsyZKS0y/gg03KumAq5QX/KHRI8dQKS7MfVejEXlO2tPTjhzjVPRjBfepQ8K7+b8YK6cUBwgQJbaw==}
+    engines: {node: '>= 18'}
 
   '@humanwhocodes/config-array@0.13.0':
     resolution: {integrity: sha512-DZLEEqFWQFiyK6h5YIeynKx7JlvCYWL0cImfSRXZ9l4Sg2efkFGTuFf6vzXjK1cq6IYkU+Eg/JizXw+TD2vRNw==}
@@ -4477,6 +4484,9 @@ packages:
     peerDependencies:
       '@ember/test-helpers': '>=3.0.3'
       qunit: ^2.13.0 || ^3.0.0
+
+  ember-raf-scheduler@0.5.2:
+    resolution: {integrity: sha512-KG4HCo60NNUQ/H3nQBJU1CbdqkwjKN2mfJG/LDKwQjn3OEt4xUPiJ5OP3+gAWjPgA8Lp+uWNEog20jtnD3unYw==}
 
   ember-resolver@13.2.0:
     resolution: {integrity: sha512-A+BffoSKC0ngiczbgaz/IOY66ovZVRRHHIDDi+d7so5i0By8xuB4nXgZZ6Dv3u/3WwoUyixgUvb0xTUO+MtupA==}
@@ -10453,6 +10463,13 @@ snapshots:
 
   '@hashicorp/flight-icons@5.3.0': {}
 
+  '@html-next/vertical-collection@5.0.5(supports-color@8.1.1)':
+    dependencies:
+      '@embroider/addon-shim': 1.10.3(supports-color@8.1.1)
+      ember-raf-scheduler: 0.5.2(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - supports-color
+
   '@humanwhocodes/config-array@0.13.0(supports-color@8.1.1)':
     dependencies:
       '@humanwhocodes/object-schema': 2.0.3
@@ -13941,6 +13958,13 @@ snapshots:
       '@embroider/addon-shim': 1.10.3(supports-color@8.1.1)
       qunit: 2.26.0
       qunit-theme-ember: 1.0.0
+    transitivePeerDependencies:
+      - supports-color
+
+  ember-raf-scheduler@0.5.2(supports-color@8.1.1):
+    dependencies:
+      '@ember/test-waiters': 4.1.2(supports-color@8.1.1)
+      '@embroider/addon-shim': 1.10.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 

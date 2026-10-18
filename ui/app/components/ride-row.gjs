@@ -6,7 +6,6 @@ import { tagName } from '@ember-decorators/component';
 import reasonToIcon from 'prison-rideshare-ui/utils/reason-to-icon';
 import fetch from 'prison-rideshare-ui/utils/fetch';
 import { formatDate } from 'prison-rideshare-ui/utils/dates';
-import ScrollTo from 'prison-rideshare-ui/components/scroll-to';
 import LinkedContact from 'prison-rideshare-ui/components/linked-contact';
 import RidePerson from 'prison-rideshare-ui/components/ride-person';
 import ReimbursementUnit from 'prison-rideshare-ui/components/reimbursement-unit';
@@ -39,9 +38,6 @@ export default class RideRow extends Component {
         data-test-ride-date-cell
         {{on 'click' this.toggleCreation}}
       >
-        {{#if this.ride.isDivider}}
-          <ScrollTo />
-        {{/if}}
         <span class='date' data-test-ride-date>
           {{this.ride.rideTimes}}
         </span>
