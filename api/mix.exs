@@ -73,7 +73,7 @@ defmodule PrisonRideshare.Mixfile do
       {:timex, "~> 3.7.9"},
       {:bamboo, "~> 2.0"},
       {:bamboo_phoenix, "~> 1.0"},
-      {:icalendar, "~> 0.5.0"},
+      {:icalendar, "~> 1.1.3"},
       {:jason, "~> 1.0"},
       {:httpoison, "~> 1.0"},
       {:paper_trail, "~> 0.14"},
