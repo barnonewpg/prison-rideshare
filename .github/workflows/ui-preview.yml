@@ -88,7 +88,7 @@ jobs:
             echo "::error::API_HOST is not set in the preview-${{ matrix.variant }} environment"
             exit 1
           fi
-          pnpm exec ember build --environment=production
+          pnpm build
       - name: Deploy to Cloudflare Pages
         id: deploy
         uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0 # v4.1.3
