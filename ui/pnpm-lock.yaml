@@ -125,9 +125,6 @@ importers:
       ember-basic-dropdown:
         specifier: ^8.9.0
         version: 8.11.1(@babel/core@7.28.4)(@ember/string@4.0.1)(@ember/test-helpers@5.7.0(@babel/core@7.28.4))(@glimmer/component@2.1.1)(@glint/template@1.6.1)(ember-source@6.12.0(@glimmer/component@2.1.1)(rsvp@4.8.5))
-      ember-buffered-proxy:
-        specifier: ^2.1.1
-        version: 2.1.1(@babel/core@7.28.4)
       ember-cli:
         specifier: ~6.12.0
         version: 6.12.0(@babel/core@7.28.4)(@types/node@24.5.2)(ejs@3.1.10)(handlebars@4.7.8)(underscore@1.13.7)
@@ -4194,10 +4191,6 @@ packages:
     peerDependencies:
       '@ember/test-helpers': ^2.9.4 || ^3.2.1 || ^4.0.2 || ^5.0.0
       '@glimmer/component': ^1.1.2 || ^2.0.0
-
-  ember-buffered-proxy@2.1.1:
-    resolution: {integrity: sha512-eF9m36dm+rYegmND3lTSg4HJVH67oQXmcHLZmWUIxZC9zKK+/tO8QEgXjbquixBCNyUFw+fTNeyCG2PGApjXDA==}
-    engines: {node: 12.* || 14.* || >= 16}
 
   ember-cli-app-version@6.0.1:
     resolution: {integrity: sha512-XA1FwkWA5QytmWF0jcJqEr3jcZoiCl9Fb33TZgOVfClL7Voxe+/RwzISEprBRQgbf7j8z1xf8/RJCKfclUy3rQ==}
@@ -13246,14 +13239,6 @@ snapshots:
       - '@glint/environment-ember-loose'
       - '@glint/template'
       - ember-source
-      - supports-color
-
-  ember-buffered-proxy@2.1.1(@babel/core@7.28.4):
-    dependencies:
-      ember-cli-babel: 7.26.11
-      ember-compatibility-helpers: 1.2.7(@babel/core@7.28.4)
-    transitivePeerDependencies:
-      - '@babel/core'
       - supports-color
 
   ember-cli-app-version@6.0.1(ember-source@6.12.0(@glimmer/component@2.1.1)(rsvp@4.8.5)):
