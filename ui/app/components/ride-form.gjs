@@ -46,6 +46,7 @@ export default class RideForm extends Component {
   @tracked pendingUnmatchedVisitorName = '';
   @tracked visitorSelection = null;
   @tracked visitorNotesDraft = null;
+  createdVisitor = null;
 
   // Reads through the buffered proxy, so the model's visitorName cannot be used here
   @computed('ride.{visitor.name,name}', 'visitorSelection')
@@ -337,7 +338,7 @@ export default class RideForm extends Component {
               </HdsFormSuperSelectSingleField>
             </div>
 
-            {{#if this.hasVisitorRecord}}
+            {{#if this.showVisitorNotes}}
               <HdsFormTextareaField
                 data-test-visitor-notes-field
                 @value={{this.visitorNotes}}
@@ -677,9 +678,10 @@ export default class RideForm extends Component {
     }
   }
 
-  @computed('ride.visitor.id')
-  get hasVisitorRecord() {
-    return Boolean(this.get('ride.visitor.id'));
+  // A new visitor only gets a record when the ride is saved
+  @computed('ride.{visitor.id,name}')
+  get showVisitorNotes() {
+    return Boolean(this.get('ride.visitor.id') || this.get('ride.name'));
   }
 
   @computed('ride.visitor.notes', 'visitorNotesDraft')
@@ -786,7 +788,16 @@ export default class RideForm extends Component {
     event?.preventDefault?.();
 
     if (this.visitorNotesDraft !== null) {
-      const visitor = await this.get('ride.visitor');
+      let visitor = await this.get('ride.visitor');
+
+      // Created here rather than by the API so the notes can come with it
+      if (!visitor && this.visitorNotesDraft.trim()) {
+        visitor = this.createdVisitor ?? this.store.createRecord('person');
+        visitor.set('name', this.get('ride.name'));
+        this.createdVisitor = visitor;
+        this.set('ride.visitor', visitor);
+      }
+
       visitor?.set('notes', this.visitorNotesDraft);
     }
 
@@ -796,6 +807,17 @@ export default class RideForm extends Component {
   @action
   handleCancel(event) {
     event?.preventDefault?.();
+
+    // A visitor created for a ride that then failed to save would be orphaned
+    const visitor = this.createdVisitor;
+    this.createdVisitor = null;
+
+    if (visitor?.isNew) {
+      visitor.unloadRecord();
+    } else if (visitor) {
+      visitor.destroyRecord();
+    }
+
     return this.cancel?.();
   }
 }

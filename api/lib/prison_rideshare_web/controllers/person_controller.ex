@@ -32,8 +32,15 @@ defmodule PrisonRideshareWeb.PersonController do
     render(conn, "index.json-api", data: people)
   end
 
-  def create(conn, %{"data" => data = %{"type" => "people", "attributes" => _person_params}}) do
-    changeset = Person.changeset(%Person{}, Params.to_attributes(data))
+  def create(
+        conn,
+        %{"data" => data = %{"type" => "people", "attributes" => _person_params}} = params
+      ) do
+    changeset =
+      case params do
+        %{"role" => "visitor"} -> Person.visitor_changeset(%Person{}, Params.to_attributes(data))
+        _ -> Person.changeset(%Person{}, Params.to_attributes(data))
+      end
 
     case PaperTrail.insert(changeset, version_information(conn)) do
       {:ok, %{model: person}} ->

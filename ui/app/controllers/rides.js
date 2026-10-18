@@ -116,7 +116,9 @@ export default class RidesController extends Controller {
 
     try {
       if (visitor?.hasDirtyAttributes) {
-        await visitor.save();
+        await visitor.save(
+          visitor.isNew ? { adapterOptions: { visitor: true } } : undefined,
+        );
       }
 
       await proxy.content.save();
@@ -126,7 +128,9 @@ export default class RidesController extends Controller {
 
       await this.overlapsService.fetch();
     } catch {
-      visitor?.rollbackAttributes();
+      if (visitor && !visitor.isNew) {
+        visitor.rollbackAttributes();
+      }
       this.rideErrorMessage = 'There was an error saving this ride';
       proxy.setProperties(buffer);
     }

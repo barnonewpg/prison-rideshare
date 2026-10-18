@@ -284,6 +284,20 @@ defmodule PrisonRideshareWeb.PersonControllerTest do
     assert version.meta["ip"] == "127.0.0.1"
   end
 
+  test "creates a visitor without requiring an email", %{conn: conn} do
+    conn =
+      post(conn, Routes.person_path(conn, :create, role: "visitor"), %{
+        "meta" => %{},
+        "data" => %{
+          "type" => "people",
+          "attributes" => %{"name" => "Frida", "notes" => "Uses a wheelchair"}
+        }
+      })
+
+    assert json_response(conn, 201)["data"]["attributes"]["notes"] == "Uses a wheelchair"
+    assert [%Person{name: "Frida", email: nil}] = Repo.all(Person)
+  end
+
   test "updates a visitor's notes without requiring an email", %{conn: conn} do
     institution = Repo.insert!(%Institution{})
     visitor = Repo.insert!(%Person{name: "Frida"})

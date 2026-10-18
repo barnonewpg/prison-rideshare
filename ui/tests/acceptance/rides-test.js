@@ -478,11 +478,32 @@ module('Acceptance | rides', function (hooks) {
     assert.dom('[data-test-visitor-notes]').hasText('Uses a walker');
   });
 
-  test('visitor notes cannot be added before a visitor exists', async function (assert) {
+  test('visitor notes can be added for a new visitor before the ride is saved', async function (assert) {
+    this.server.create('institution', { name: 'Rockwood' });
+
     await page.visit();
     await page.newRide();
 
-    assert.dom('[data-test-visitor-notes-field]').doesNotExist();
+    assert
+      .dom('[data-test-visitor-notes-field]')
+      .doesNotExist('expected no notes field until there is a visitor');
+
+    await page.form.timespan.fillIn('Dec 26 2016 from 9a to 11:30');
+    await page.form.name.fillIn('Edward');
+    await page.form.address.fillIn('114 Spence');
+    await page.form.contact.fillIn('jants@example.com');
+    await page.form.institution.choose('Rockwood');
+
+    await fillIn('[data-test-visitor-notes-field]', 'Uses a walker');
+    await page.form.submit();
+
+    const [visitor] = this.server.db.people;
+    const [ride] = this.server.db.rides;
+
+    assert.strictEqual(visitor.name, 'Edward');
+    assert.strictEqual(visitor.notes, 'Uses a walker');
+    assert.strictEqual(ride.visitorId, visitor.id);
+    assert.dom('[data-test-visitor-notes]').hasText('Uses a walker');
   });
 
   test('completed rides can be shown and cleared', async function (assert) {
