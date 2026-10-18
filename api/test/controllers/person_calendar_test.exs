@@ -104,37 +104,38 @@ defmodule PrisonRideshare.PersonCalendarTest do
            BEGIN:VCALENDAR
            CALSCALE:GREGORIAN
            VERSION:2.0
+           PRODID:-//Elixir ICalendar//Elixir ICalendar//EN
            BEGIN:VEVENT
            DESCRIPTION:Tom\\n421 Osborne\\n2877433\\n\\n\\nTina\\n414 Osborne\\n287878\\n
-           DTEND;TZID=Etc/UTC:20170115T200000
-           DTSTART;TZID=Etc/UTC:20170115T180000
+           DTEND:20170115T200000Z
+           DTSTART:20170115T180000Z
            LOCATION:421 Osborne\\, 414 Osborne
            SUMMARY:Visit to Stony Mountain
            END:VEVENT
            BEGIN:VEVENT
            DESCRIPTION:Tom\\n421 Osborne\\n2877433\\n\\n\\nTina\\n414 Osborne\\n287878\\n
-           DTEND;TZID=Etc/UTC:20170116T131500
-           DTSTART;TZID=Etc/UTC:20170116T110000
+           DTEND:20170116T131500Z
+           DTSTART:20170116T110000Z
            LOCATION:421 Osborne\\, 414 Osborne
            SUMMARY:Visit to Stony Mountain
            END:VEVENT
            BEGIN:VEVENT
            DESCRIPTION:\\n\\n\\n
-           DTEND;TZID=Etc/UTC:20170116T200000
-           DTSTART;TZID=Etc/UTC:20170116T180000
+           DTEND:20170116T200000Z
+           DTSTART:20170116T180000Z
            LOCATION:
            SUMMARY:CANCELLED Visit to Stony Mountain
            END:VEVENT
            BEGIN:VEVENT
            DESCRIPTION:\\n421 Osborne\\n\\n
-           DTEND;TZID=Etc/UTC:20170117T200000
-           DTSTART;TZID=Etc/UTC:20170117T180000
+           DTEND:20170117T200000Z
+           DTSTART:20170117T180000Z
            LOCATION:421 Osborne
            SUMMARY:Visit to Stony Mountain
            END:VEVENT
            BEGIN:VEVENT
-           DTEND;TZID=Etc/UTC:20171208T170000
-           DTSTART;TZID=Etc/UTC:20171208T130000
+           DTEND:20171208T170000Z
+           DTSTART:20171208T130000Z
            SUMMARY:Prison rideshare slot commitment
            END:VEVENT
            END:VCALENDAR

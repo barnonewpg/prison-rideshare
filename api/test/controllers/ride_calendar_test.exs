@@ -101,22 +101,23 @@ defmodule PrisonRideshare.RideCalendarTest do
            BEGIN:VCALENDAR
            CALSCALE:GREGORIAN
            VERSION:2.0
+           PRODID:-//Elixir ICalendar//Elixir ICalendar//EN
            BEGIN:VEVENT
            DESCRIPTION:Please email barnone.coordinator@gmail.com to get assigned to this ride.
-           DTEND;TZID=Etc/UTC:20170114T200000
-           DTSTART;TZID=Etc/UTC:20170114T180000
+           DTEND:20170114T200000Z
+           DTSTART:20170114T180000Z
            SUMMARY:Stony Mountain: 1 request
            END:VEVENT
            BEGIN:VEVENT
            DESCRIPTION:Please email barnone.coordinator@gmail.com to get assigned to this ride.
-           DTEND;TZID=Etc/UTC:20170115T200000
-           DTSTART;TZID=Etc/UTC:20170115T180000
+           DTEND:20170115T200000Z
+           DTSTART:20170115T180000Z
            SUMMARY:Stony Mountain: 2 requests, 3 passengers
            END:VEVENT
            BEGIN:VEVENT
            DESCRIPTION:Please email barnone.coordinator@gmail.com to get assigned to this ride.
-           DTEND;TZID=Etc/UTC:20170116T200000
-           DTSTART;TZID=Etc/UTC:20170116T180000
+           DTEND:20170116T200000Z
+           DTSTART:20170116T180000Z
            SUMMARY:Stony Mountain: 1 request
            END:VEVENT
            END:VCALENDAR
