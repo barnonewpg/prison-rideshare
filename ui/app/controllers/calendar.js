@@ -52,7 +52,7 @@ export default class CalendarController extends Controller {
       this.toasts.show('Saved your details');
       this.showPerson = false;
       this.error = undefined;
-    } catch (e) {
+    } catch {
       this.error = 'Couldn’t save your details';
     }
   });

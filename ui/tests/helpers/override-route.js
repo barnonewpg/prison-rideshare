@@ -22,7 +22,7 @@ export function overrideRoute(server, method, path, handler, timing) {
         params: {},
       },
     );
-  } catch (_error) {
+  } catch {
     originalMatch = undefined;
   }
 
