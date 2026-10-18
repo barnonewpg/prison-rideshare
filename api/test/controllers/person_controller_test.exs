@@ -4,7 +4,7 @@ defmodule PrisonRideshareWeb.PersonControllerTest do
 
   import Mock
 
-  alias PrisonRideshareWeb.{Institution, Person, Ride}
+  alias PrisonRideshareWeb.{Commitment, Institution, Person, Reimbursement, Ride, Slot}
   alias PrisonRideshare.Repo
 
   @valid_attrs %{
@@ -36,6 +36,68 @@ defmodule PrisonRideshareWeb.PersonControllerTest do
   test "lists all entries on index", %{conn: conn} do
     conn = get(conn, Routes.person_path(conn, :index))
     assert json_response(conn, 200)["data"] == []
+  end
+
+  test "filters out people who are only visitors", %{conn: conn} do
+    institution = Repo.insert!(%Institution{name: "Stony Mountain"})
+
+    new_driver = Repo.insert!(%Person{name: "New driver"})
+    driver = Repo.insert!(%Person{name: "Driver"})
+    car_owner = Repo.insert!(%Person{name: "Car owner"})
+    reimbursed = Repo.insert!(%Person{name: "Reimbursed"})
+    committed = Repo.insert!(%Person{name: "Committed"})
+    visitor = Repo.insert!(%Person{name: "Visitor"})
+    visitor_and_driver = Repo.insert!(%Person{name: "Visitor and driver"})
+
+    ride = fn attrs ->
+      Repo.insert!(
+        struct(
+          Ride,
+          Map.merge(
+            %{
+              institution_id: institution.id,
+              start: NaiveDateTime.from_erl!({{2017, 1, 15}, {18, 0, 0}}),
+              end: NaiveDateTime.from_erl!({{2017, 1, 15}, {20, 0, 0}})
+            },
+            attrs
+          )
+        )
+      )
+    end
+
+    visited = ride.(%{visitor_id: visitor.id, driver_id: driver.id, car_owner_id: car_owner.id})
+    ride.(%{visitor_id: visitor_and_driver.id})
+    ride.(%{driver_id: visitor_and_driver.id})
+
+    Repo.insert!(%Reimbursement{person_id: reimbursed.id, ride_id: visited.id, car_expenses: 100})
+
+    slot =
+      Repo.insert!(%Slot{
+        start: NaiveDateTime.from_erl!({{2117, 12, 8}, {13, 0, 0}}),
+        end: NaiveDateTime.from_erl!({{2117, 12, 8}, {17, 0, 0}})
+      })
+
+    Repo.insert!(%Commitment{slot_id: slot.id, person_id: committed.id})
+
+    conn = get(conn, Routes.person_path(conn, :index), %{"filter" => %{"role" => "driver"}})
+
+    names =
+      json_response(conn, 200)["data"]
+      |> Enum.map(& &1["attributes"]["name"])
+      |> Enum.sort()
+
+    assert names ==
+             Enum.sort([
+               new_driver.name,
+               driver.name,
+               car_owner.name,
+               reimbursed.name,
+               committed.name,
+               visitor_and_driver.name
+             ])
+
+    conn = get(conn, Routes.person_path(conn, :index))
+    assert length(json_response(conn, 200)["data"]) == 7
   end
 
   test "includes the start of each person's latest ride as driver on index", %{conn: conn} do
@@ -220,6 +282,55 @@ defmodule PrisonRideshareWeb.PersonControllerTest do
     assert version.event == "update"
     assert version.item_changes["name"] == "some content"
     assert version.meta["ip"] == "127.0.0.1"
+  end
+
+  test "creates a visitor without requiring an email", %{conn: conn} do
+    conn =
+      post(conn, Routes.person_path(conn, :create, role: "visitor"), %{
+        "meta" => %{},
+        "data" => %{
+          "type" => "people",
+          "attributes" => %{"name" => "Frida", "notes" => "Uses a wheelchair"}
+        }
+      })
+
+    assert json_response(conn, 201)["data"]["attributes"]["notes"] == "Uses a wheelchair"
+    assert [%Person{name: "Frida", email: nil}] = Repo.all(Person)
+  end
+
+  test "updates a visitor's notes without requiring an email", %{conn: conn} do
+    institution = Repo.insert!(%Institution{})
+    visitor = Repo.insert!(%Person{name: "Frida"})
+    Repo.insert!(%Ride{institution_id: institution.id, visitor_id: visitor.id})
+
+    conn =
+      put(conn, Routes.person_path(conn, :update, visitor), %{
+        "meta" => %{},
+        "data" => %{
+          "type" => "people",
+          "id" => visitor.id,
+          "attributes" => %{"name" => "Frida", "email" => nil, "notes" => "Uses a wheelchair"}
+        }
+      })
+
+    assert json_response(conn, 200)["data"]["attributes"]["notes"] == "Uses a wheelchair"
+    assert Repo.get!(Person, visitor.id).notes == "Uses a wheelchair"
+  end
+
+  test "still requires an email for drivers", %{conn: conn} do
+    driver = Repo.insert!(%Person{name: "Driver", email: "driver@example.com"})
+
+    conn =
+      put(conn, Routes.person_path(conn, :update, driver), %{
+        "meta" => %{},
+        "data" => %{
+          "type" => "people",
+          "id" => driver.id,
+          "attributes" => %{"email" => nil}
+        }
+      })
+
+    assert json_response(conn, 422)
   end
 
   test "deletes chosen resource", %{conn: conn} do

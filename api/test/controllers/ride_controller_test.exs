@@ -5,6 +5,7 @@ defmodule PrisonRideshareWeb.RideControllerTest do
   alias PrisonRideshareWeb.{Commitment, Institution, Person, Reimbursement, Ride, Slot}
   alias PrisonRideshare.Repo
 
+  import Ecto.Query
   import Money.Sigils
 
   @valid_attrs %{
@@ -41,6 +42,7 @@ defmodule PrisonRideshareWeb.RideControllerTest do
     combined_with_ride = Repo.insert!(%Ride{institution: institution, request_notes: "Combined"})
     driver = Repo.insert!(%Person{name: "Driver Name"})
     car_owner = Repo.insert!(%Person{name: "Car Owner"})
+    visitor = Repo.insert!(%Person{name: "Visitor"})
     reimbursement = Repo.insert!(%Reimbursement{food_expenses: 2010, car_expenses: 2017})
 
     %{
@@ -68,6 +70,12 @@ defmodule PrisonRideshareWeb.RideControllerTest do
           "id" => car_owner.id
         }
       },
+      "visitor" => %{
+        "data" => %{
+          "type" => "person",
+          "id" => visitor.id
+        }
+      },
       "reimbursements" => %{
         "data" => [
           %{
@@ -83,6 +91,7 @@ defmodule PrisonRideshareWeb.RideControllerTest do
     institution = Repo.insert!(%Institution{name: "Stony Mountain"})
     driver = Repo.insert!(%Person{name: "Driver Name"})
     car_owner = Repo.insert!(%Person{name: "Car Owner"})
+    visitor = Repo.insert!(%Person{name: "Visitor"})
     reimbursement = Repo.insert!(%Reimbursement{})
 
     ride =
@@ -109,6 +118,7 @@ defmodule PrisonRideshareWeb.RideControllerTest do
         overridable: true,
         driver: driver,
         car_owner: car_owner,
+        visitor: visitor,
         reimbursements: [reimbursement]
       })
 
@@ -161,6 +171,12 @@ defmodule PrisonRideshareWeb.RideControllerTest do
                    "data" => %{
                      "type" => "people",
                      "id" => car_owner.id
+                   }
+                 },
+                 "visitor" => %{
+                   "data" => %{
+                     "type" => "people",
+                     "id" => visitor.id
                    }
                  },
                  "combined-with" => %{
@@ -237,44 +253,69 @@ defmodule PrisonRideshareWeb.RideControllerTest do
   test "returns descending-by-start rides that match the visitor search", %{conn: conn} do
     institution = Repo.insert!(%Institution{})
 
+    francine = Repo.insert!(%Person{name: "Francine"})
+
     francine_ride =
       Repo.insert!(%Ride{
-        name: "Francine",
+        visitor: francine,
         start: NaiveDateTime.from_erl!({{2015, 1, 15}, {18, 0, 0}}),
         institution_id: institution.id
       })
 
+    pascal = Repo.insert!(%Person{name: "Pascal"})
+
     Repo.insert!(%Ride{
-      name: "Pascal",
+      visitor: pascal,
       institution_id: institution.id
     })
 
+    frank = Repo.insert!(%Person{name: "Frank"})
+
     frank_ride =
       Repo.insert!(%Ride{
-        name: "frank",
+        visitor: frank,
         start: NaiveDateTime.from_erl!({{2017, 1, 15}, {18, 0, 0}}),
         institution_id: institution.id
       })
 
+    safran = Repo.insert!(%Person{name: "Safran"})
+
     Repo.insert!(%Ride{
-      name: "Safran",
+      visitor: safran,
       institution_id: institution.id
     })
 
+    francesca = Repo.insert!(%Person{name: "francesca"})
+
     francesca_ride =
       Repo.insert!(%Ride{
-        name: "francesca",
+        visitor: francesca,
         start: NaiveDateTime.from_erl!({{2016, 1, 15}, {18, 0, 0}}),
         institution_id: institution.id
       })
 
-    conn = get(conn, Routes.ride_path(conn, :index, "filter[name]": "fran"))
+    legacy_ride =
+      Repo.insert!(%Ride{
+        name: "franny",
+        start: NaiveDateTime.from_erl!({{2014, 1, 15}, {18, 0, 0}}),
+        institution_id: institution.id
+      })
 
-    [ride1, ride2, ride3] = json_response(conn, 200)["data"]
+    Repo.insert!(%Ride{
+      name: "Legacy Other",
+      institution_id: institution.id
+    })
+
+    conn = get(conn, Routes.ride_path(conn, :index, "filter[visitor]": "fran"))
+
+    [ride1, ride2, ride3, ride4] = json_response(conn, 200)["data"]
 
     assert ride1["id"] == frank_ride.id
     assert ride2["id"] == francesca_ride.id
     assert ride3["id"] == francine_ride.id
+
+    assert ride4["id"] == legacy_ride.id,
+           "expected the search to fall back to the name of rides without visitors"
   end
 
   test "returns only future enabled unconfirmed rides when filtering by requiring confirmation",
@@ -524,11 +565,111 @@ defmodule PrisonRideshareWeb.RideControllerTest do
         }
       })
 
-    ride = Repo.get_by(Ride, @valid_attrs)
+    ride = Repo.get_by(Ride, Map.put(@valid_attrs, :name, "Visitor"))
     assert json_response(conn, 201)["data"]["id"] == ride.id
     assert json_response(conn, 201)["data"]["attributes"]["address"] == "some content"
     assert json_response(conn, 201)["data"]["attributes"]["medium"] == "email"
     assert json_response(conn, 201)["data"]["attributes"]["overridable"]
+
+    assert json_response(conn, 201)["data"]["attributes"]["name"] == "Visitor",
+           "expected the name to be derived from the visitor, not the submitted attribute"
+  end
+
+  test "creates a ride with no name when a visitor supplies one", %{conn: conn} do
+    institution = Repo.insert!(%Institution{})
+    visitor = Repo.insert!(%Person{name: "Frida"})
+
+    conn =
+      post(conn, Routes.ride_path(conn, :create), %{
+        "meta" => %{},
+        "data" => %{
+          "type" => "rides",
+          "attributes" => Map.delete(@valid_attrs, :name),
+          "relationships" => %{
+            "institution" => %{
+              "data" => %{"type" => "institution", "id" => institution.id}
+            },
+            "visitor" => %{
+              "data" => %{"type" => "person", "id" => visitor.id}
+            }
+          }
+        }
+      })
+
+    assert json_response(conn, 201)["data"]["attributes"]["name"] == "Frida"
+
+    ride = Repo.get!(Ride, json_response(conn, 201)["data"]["id"])
+    assert ride.visitor_id == visitor.id
+    assert ride.name == "Frida"
+  end
+
+  test "creates a visitor for a ride requested by someone new", %{conn: conn} do
+    institution = Repo.insert!(%Institution{})
+
+    conn =
+      post(conn, Routes.ride_path(conn, :create), %{
+        "meta" => %{},
+        "data" => %{
+          "type" => "rides",
+          "attributes" => Map.put(@valid_attrs, :name, " Frida "),
+          "relationships" => %{
+            "institution" => %{
+              "data" => %{"type" => "institution", "id" => institution.id}
+            }
+          }
+        }
+      })
+
+    data = json_response(conn, 201)["data"]
+    [visitor] = Repo.all(Person)
+
+    assert visitor.name == "Frida"
+    assert data["relationships"]["visitor"]["data"]["id"] == visitor.id
+    assert Repo.get!(Ride, data["id"]).visitor_id == visitor.id
+
+    assert [%{event: "insert", item_type: "Person"}, %{event: "insert", item_type: "Ride"}] =
+             Repo.all(from(v in PaperTrail.Version, order_by: v.id))
+  end
+
+  test "creates no visitor when the ride is invalid", %{conn: conn} do
+    conn =
+      post(conn, Routes.ride_path(conn, :create), %{
+        "meta" => %{},
+        "data" => %{
+          "type" => "rides",
+          "attributes" => %{name: "Frida"},
+          "relationships" => %{}
+        }
+      })
+
+    assert json_response(conn, 422)
+    assert Repo.all(Person) == []
+    assert Repo.all(PaperTrail.Version) == []
+  end
+
+  test "the name cannot skew away from an associated visitor", %{conn: conn} do
+    institution = Repo.insert!(%Institution{})
+    visitor = Repo.insert!(%Person{name: "Frida"})
+
+    ride =
+      Repo.insert!(%Ride{
+        institution: institution,
+        visitor: visitor,
+        name: "Frida"
+      })
+
+    conn =
+      put(conn, Routes.ride_path(conn, :update, ride), %{
+        "meta" => %{},
+        "data" => %{
+          "type" => "rides",
+          "id" => ride.id,
+          "attributes" => Map.put(@valid_attrs, :name, "Someone Else")
+        }
+      })
+
+    assert json_response(conn, 200)["data"]["attributes"]["name"] == "Frida"
+    assert Repo.get!(Ride, ride.id).name == "Frida"
   end
 
   test "does not create resource and renders errors when data is invalid", %{conn: conn} do
@@ -595,6 +736,7 @@ defmodule PrisonRideshareWeb.RideControllerTest do
 
     driver = Repo.get_by(Person, name: "Driver Name")
     car_owner = Repo.get_by(Person, name: "Car Owner")
+    visitor = Repo.get_by(Person, name: "Visitor")
 
     [_reimbursement] = Repo.all(Reimbursement)
 
@@ -632,6 +774,12 @@ defmodule PrisonRideshareWeb.RideControllerTest do
                "data" => %{
                  "type" => "people",
                  "id" => car_owner.id
+               }
+             },
+             "visitor" => %{
+               "data" => %{
+                 "type" => "people",
+                 "id" => visitor.id
                }
              },
              "combined-with" => %{

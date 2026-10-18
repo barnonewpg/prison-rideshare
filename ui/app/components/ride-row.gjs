@@ -3,6 +3,7 @@ import { action, computed } from '@ember/object';
 import { service } from '@ember/service';
 import Component from '@ember/component';
 import { tagName } from '@ember-decorators/component';
+import { tracked } from '@glimmer/tracking';
 import reasonToIcon from 'prison-rideshare-ui/utils/reason-to-icon';
 import fetch from 'prison-rideshare-ui/utils/fetch';
 import { formatDate } from 'prison-rideshare-ui/utils/dates';
@@ -61,6 +62,19 @@ export default class RideRow extends Component {
             @title='First-time rider'
             data-test-ride-first-time
           />
+        {{/if}}
+        {{#if this.visitorNotes}}
+          <button
+            type='button'
+            class='visitor-notes {{if this.visitorNotesExpanded "expanded"}}'
+            title={{this.visitorNotes}}
+            aria-expanded={{if this.visitorNotesExpanded 'true' 'false'}}
+            data-test-visitor-notes
+            {{on 'click' this.toggleVisitorNotes}}
+          >
+            <HdsIcon @name='info' @size='16' @isInline={{true}} />
+            {{this.visitorNotes}}
+          </button>
         {{/if}}
         <div data-test-ride-medium data-medium={{this.ride.medium}}>
           {{#if this.mediumIcon}}
@@ -380,6 +394,19 @@ export default class RideRow extends Component {
           new Date(this.ride.start).getTime(),
       ) > sixHours
     );
+  }
+
+  @tracked visitorNotesExpanded = false;
+
+  // Kept with the visitor rather than the ride, so they show on every ride
+  @computed('ride.visitor.notes')
+  get visitorNotes() {
+    return this.get('ride.visitor.notes');
+  }
+
+  @action
+  toggleVisitorNotes() {
+    this.visitorNotesExpanded = !this.visitorNotesExpanded;
   }
 
   @computed('ride.medium')

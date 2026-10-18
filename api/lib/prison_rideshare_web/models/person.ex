@@ -24,6 +24,8 @@ defmodule PrisonRideshareWeb.Person do
     has_many(:car_uses, PrisonRideshareWeb.Ride, foreign_key: :car_owner_id)
     has_many(:drivings, PrisonRideshareWeb.Ride, foreign_key: :driver_id)
 
+    has_many(:visitings, PrisonRideshareWeb.Ride, foreign_key: :visitor_id)
+
     has_many(:reimbursements, PrisonRideshareWeb.Reimbursement)
 
     has_many(:commitments, PrisonRideshareWeb.Commitment)
@@ -53,6 +55,13 @@ defmodule PrisonRideshareWeb.Person do
   def self_changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:name, :mobile, :landline, :address, :medium, :active, :self_notes])
+    |> validate_required([:name])
+  end
+
+  # Visitors have no account, so only the name is needed
+  def visitor_changeset(struct, params \\ %{}) do
+    struct
+    |> cast(params, [:name, :mobile, :landline, :address, :notes])
     |> validate_required([:name])
   end
 
