@@ -3,7 +3,7 @@ import { service } from '@ember/service';
 import Controller from '@ember/controller';
 import BufferedProxy from 'ember-buffered-proxy/proxy';
 import { task, timeout } from 'ember-concurrency';
-import { tracked } from '@glimmer/tracking';
+import { cached, tracked } from '@glimmer/tracking';
 
 const SEARCH_DEBOUNCE_MS = 250;
 
@@ -46,6 +46,7 @@ export default class RidesController extends Controller {
     return this.peopleService.all;
   }
 
+  @cached
   get filteredRides() {
     const showCompleted = this.showCompleted,
       showCancelled = this.showCancelled;
@@ -93,6 +94,11 @@ export default class RidesController extends Controller {
     }
 
     return sorted;
+  }
+
+  // The table starts scrolled to the first upcoming (or most recent past) ride
+  get dividerRideId() {
+    return this.filteredRides.find((ride) => ride.isDivider)?.id;
   }
 
   @action

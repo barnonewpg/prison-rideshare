@@ -1138,6 +1138,18 @@ module('Acceptance | rides', function (hooks) {
     );
   });
 
+  test('only rides near the viewport are rendered', async function (assert) {
+    this.server.createList('ride', 200);
+
+    await page.visit();
+
+    assert.ok(page.rides.length > 0, 'expected some rides to be rendered');
+    assert.ok(
+      page.rides.length < 200,
+      `expected fewer than all 200 rides to be rendered, got ${page.rides.length}`,
+    );
+  });
+
   test('a divider highlights past from present/future rides', async function (assert) {
     const week = 7 * 24 * 60 * 60 * 1000;
     const nowMilliseconds = new Date().getTime();

@@ -13,6 +13,7 @@ import {
 import { on } from '@ember/modifier';
 import { fn } from '@ember/helper';
 import eq from 'ember-truth-helpers/helpers/eq';
+import { VerticalCollection } from '@html-next/vertical-collection';
 
 export default RouteTemplate(
   <template>
@@ -94,22 +95,20 @@ export default RouteTemplate(
         </:head>
 
         <:body as |Body|>
-          {{#each @controller.filteredRides as |ride|}}
-            <RideRow
-              @ride={{ride}}
-              @showCreation={{@controller.showCreation}}
-              @editCancellation={{@controller.editCancellation}}
-              @editRide={{@controller.editRide}}
-              @combineRide={{@controller.combineRide}}
-              @uncombineRide={{@controller.uncombineRide}}
-              @people={{@controller.people}}
-              @rideToCombine={{@controller.rideToCombine}}
-              @table={{Body}}
-            />
-            {{#each ride.children as |child|}}
+          {{! Only rides near the viewport are rendered, as rendering thousands freezes the page }}
+          <VerticalCollection
+            @items={{@controller.filteredRides}}
+            @key='id'
+            @idForFirstItem={{@controller.dividerRideId}}
+            @estimateHeight={{100}}
+            @bufferSize={{10}}
+            @containerSelector='body'
+            @occlusionTagName='tr'
+            @shouldRecycle={{false}}
+          >
+            <:default as |ride|>
               <RideRow
-                @ride={{child}}
-                @combined={{true}}
+                @ride={{ride}}
                 @showCreation={{@controller.showCreation}}
                 @editCancellation={{@controller.editCancellation}}
                 @editRide={{@controller.editRide}}
@@ -119,14 +118,29 @@ export default RouteTemplate(
                 @rideToCombine={{@controller.rideToCombine}}
                 @table={{Body}}
               />
-            {{/each}}
-          {{else}}
-            <Body.Tr data-test-no-matches>
-              <Body.Td colspan={{if @controller.showCreation '7' '6'}}>
-                No rides matched your criteria.
-              </Body.Td>
-            </Body.Tr>
-          {{/each}}
+              {{#each ride.children as |child|}}
+                <RideRow
+                  @ride={{child}}
+                  @combined={{true}}
+                  @showCreation={{@controller.showCreation}}
+                  @editCancellation={{@controller.editCancellation}}
+                  @editRide={{@controller.editRide}}
+                  @combineRide={{@controller.combineRide}}
+                  @uncombineRide={{@controller.uncombineRide}}
+                  @people={{@controller.people}}
+                  @rideToCombine={{@controller.rideToCombine}}
+                  @table={{Body}}
+                />
+              {{/each}}
+            </:default>
+            <:inverse>
+              <Body.Tr data-test-no-matches>
+                <Body.Td colspan={{if @controller.showCreation '7' '6'}}>
+                  No rides matched your criteria.
+                </Body.Td>
+              </Body.Tr>
+            </:inverse>
+          </VerticalCollection>
         </:body>
       </HdsTable>
     </div>
