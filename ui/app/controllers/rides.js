@@ -1,7 +1,7 @@
 import { action } from '@ember/object';
 import { service } from '@ember/service';
 import Controller from '@ember/controller';
-import BufferedProxy from 'ember-buffered-proxy/proxy';
+import BufferedProxy from 'prison-rideshare-ui/utils/buffered-proxy';
 import { task, timeout } from 'ember-concurrency';
 import { tracked } from '@glimmer/tracking';
 

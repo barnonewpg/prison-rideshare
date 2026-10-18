@@ -3,7 +3,6 @@ import { sort, alias } from '@ember/object/computed';
 import EmberObject, { action, computed } from '@ember/object';
 import Controller from '@ember/controller';
 import ReimbursementCollection from 'prison-rideshare-ui/utils/reimbursement-collection';
-// import BufferedProxy from 'ember-buffered-proxy/proxy';
 
 import { formatDate } from 'prison-rideshare-ui/utils/dates';
 
