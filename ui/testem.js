@@ -44,4 +44,6 @@ if (process.env.CI) {
   config.reporter = multiReporter;
 }
 
-module.exports = config;
+if (typeof module !== 'undefined') {
+  module.exports = config;
+}
