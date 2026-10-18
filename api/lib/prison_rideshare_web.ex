@@ -33,7 +33,7 @@ defmodule PrisonRideshareWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: PrisonRideshareWeb
+      use Phoenix.Controller, formats: [json: "View", "json-api": "View"]
 
       alias PrisonRideshare.Repo
       import Ecto

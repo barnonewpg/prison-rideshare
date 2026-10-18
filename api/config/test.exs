@@ -7,7 +7,7 @@ config :prison_rideshare, PrisonRideshareWeb.Endpoint,
   server: true
 
 # Print only warnings and errors during test
-config :logger, level: :warn
+config :logger, level: :warning
 
 # Configure your database
 config :prison_rideshare, PrisonRideshare.Repo,
