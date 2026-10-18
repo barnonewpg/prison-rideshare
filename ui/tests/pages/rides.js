@@ -12,6 +12,8 @@ import {
   visitable,
 } from 'ember-cli-page-object';
 import { getter } from 'ember-cli-page-object/macros';
+import { findOne } from 'ember-cli-page-object/extend';
+import { click } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support';
 
 export default create({
@@ -96,7 +98,9 @@ export default create({
       reveal: clickable('[data-test-person-badge-toggle]'),
       clear: clickable('[data-test-person-badge-clear]'),
       async choose(option) {
-        await selectChoose('[data-test-ride-person-select="driver"]', option);
+        // A placeholder stands in for the select until it's clicked
+        await click(findOne(this));
+        await selectChoose(findOne(this), option);
       },
 
       email: text('[data-test-person-badge-email]'),

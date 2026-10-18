@@ -491,6 +491,15 @@ table.rides tr {
   padding: 16px;
 }
 
+// Stands in for a super select trigger, so it resets button styles to match
+.ride-person-placeholder {
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
 .ride-person {
   display: inline-block;
   background-color: #e0e0e0;
