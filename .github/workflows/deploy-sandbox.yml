@@ -6,6 +6,10 @@ on:
     paths:
       - 'api/**'
 
+concurrency:
+  group: deploy-sandbox
+  cancel-in-progress: true
+
 jobs:
   deploy-sandbox:
     runs-on: ubuntu-latest
