@@ -5,6 +5,7 @@ defmodule PrisonRideshareWeb.RideControllerTest do
   alias PrisonRideshareWeb.{Commitment, Institution, Person, Reimbursement, Ride, Slot}
   alias PrisonRideshare.Repo
 
+  import Ecto.Query
   import Money.Sigils
 
   @valid_attrs %{
@@ -269,6 +270,7 @@ defmodule PrisonRideshareWeb.RideControllerTest do
     })
 
     frank = Repo.insert!(%Person{name: "Frank"})
+
     frank_ride =
       Repo.insert!(%Ride{
         visitor: frank,
@@ -284,6 +286,7 @@ defmodule PrisonRideshareWeb.RideControllerTest do
     })
 
     francesca = Repo.insert!(%Person{name: "francesca"})
+
     francesca_ride =
       Repo.insert!(%Ride{
         visitor: francesca,
@@ -600,6 +603,50 @@ defmodule PrisonRideshareWeb.RideControllerTest do
     assert ride.name == "Frida"
   end
 
+  test "creates a visitor for a ride requested by someone new", %{conn: conn} do
+    institution = Repo.insert!(%Institution{})
+
+    conn =
+      post(conn, Routes.ride_path(conn, :create), %{
+        "meta" => %{},
+        "data" => %{
+          "type" => "rides",
+          "attributes" => Map.put(@valid_attrs, :name, " Frida "),
+          "relationships" => %{
+            "institution" => %{
+              "data" => %{"type" => "institution", "id" => institution.id}
+            }
+          }
+        }
+      })
+
+    data = json_response(conn, 201)["data"]
+    [visitor] = Repo.all(Person)
+
+    assert visitor.name == "Frida"
+    assert data["relationships"]["visitor"]["data"]["id"] == visitor.id
+    assert Repo.get!(Ride, data["id"]).visitor_id == visitor.id
+
+    assert [%{event: "insert", item_type: "Person"}, %{event: "insert", item_type: "Ride"}] =
+             Repo.all(from(v in PaperTrail.Version, order_by: v.id))
+  end
+
+  test "creates no visitor when the ride is invalid", %{conn: conn} do
+    conn =
+      post(conn, Routes.ride_path(conn, :create), %{
+        "meta" => %{},
+        "data" => %{
+          "type" => "rides",
+          "attributes" => %{name: "Frida"},
+          "relationships" => %{}
+        }
+      })
+
+    assert json_response(conn, 422)
+    assert Repo.all(Person) == []
+    assert Repo.all(PaperTrail.Version) == []
+  end
+
   test "the name cannot skew away from an associated visitor", %{conn: conn} do
     institution = Repo.insert!(%Institution{})
     visitor = Repo.insert!(%Person{name: "Frida"})
@@ -734,8 +781,8 @@ defmodule PrisonRideshareWeb.RideControllerTest do
                  "type" => "people",
                  "id" => visitor.id
                }
-            },
-            "combined-with" => %{
+             },
+             "combined-with" => %{
                "data" => %{
                  "type" => "ride",
                  "id" => combined_with_ride.id
