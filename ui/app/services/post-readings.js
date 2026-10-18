@@ -60,7 +60,7 @@ export default class PostReadingsService extends Service {
 
     try {
       return JSON.parse(text);
-    } catch (error) {
+    } catch {
       return null;
     }
   }
