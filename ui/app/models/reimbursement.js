@@ -1,5 +1,5 @@
 /* eslint-disable ember/no-classic-classes*/
-import Model, { attr, belongsTo } from '@ember-data/model';
+import Model, { attr, belongsTo } from '@warp-drive/legacy/model';
 import dollars from 'prison-rideshare-ui/utils/dollars';
 
 export default Model.extend({

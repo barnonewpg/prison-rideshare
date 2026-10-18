@@ -1,5 +1,5 @@
 /* eslint-disable ember/no-classic-classes*/
-import Model, { attr, belongsTo } from '@ember-data/model';
+import Model, { attr, belongsTo } from '@warp-drive/legacy/model';
 import { computed } from '@ember/object';
 
 export default Model.extend({

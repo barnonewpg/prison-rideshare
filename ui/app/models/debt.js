@@ -1,5 +1,5 @@
 /* eslint-disable ember/no-classic-classes, ember/no-get*/
-import Model, { belongsTo, hasMany } from '@ember-data/model';
+import Model, { belongsTo, hasMany } from '@warp-drive/legacy/model';
 import { computed } from '@ember/object';
 
 import dollars from 'prison-rideshare-ui/utils/dollars';
