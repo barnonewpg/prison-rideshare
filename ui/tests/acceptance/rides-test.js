@@ -1,5 +1,11 @@
 /* eslint-disable qunit/assert-args, qunit/require-expect */
-import { click, currentURL, findAll, waitUntil } from '@ember/test-helpers';
+import {
+  click,
+  currentURL,
+  fillIn,
+  findAll,
+  waitUntil,
+} from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from '../helpers/application-tests';
 import percySnapshot from '@percy/ember';
@@ -434,6 +440,49 @@ module('Acceptance | rides', function (hooks) {
       'Octavia Butler',
       'expected the legacy name to still be written during the transition',
     );
+  });
+
+  test('visitor notes are shown on rides and edited with them', async function (assert) {
+    const octavia = this.server.create('person', {
+      name: 'Octavia Butler',
+      notes: 'Needs a car with room for a walker, and prefers a quiet ride',
+    });
+
+    this.server.create('ride', { visitor: octavia });
+
+    await page.visit();
+
+    assert
+      .dom('[data-test-visitor-notes]')
+      .hasText('Needs a car with room for a walker, and prefers a quiet ride')
+      .hasAttribute('aria-expanded', 'false');
+
+    await click('[data-test-visitor-notes]');
+    assert
+      .dom('[data-test-visitor-notes]')
+      .hasAttribute('aria-expanded', 'true');
+
+    await page.rides[0].edit();
+
+    assert
+      .dom('[data-test-visitor-notes-field]')
+      .hasValue('Needs a car with room for a walker, and prefers a quiet ride');
+
+    await fillIn('[data-test-visitor-notes-field]', 'Uses a walker');
+    await page.form.submit();
+
+    assert.strictEqual(
+      this.server.db.people.find(octavia.id).notes,
+      'Uses a walker',
+    );
+    assert.dom('[data-test-visitor-notes]').hasText('Uses a walker');
+  });
+
+  test('visitor notes cannot be added before a visitor exists', async function (assert) {
+    await page.visit();
+    await page.newRide();
+
+    assert.dom('[data-test-visitor-notes-field]').doesNotExist();
   });
 
   test('completed rides can be shown and cleared', async function (assert) {

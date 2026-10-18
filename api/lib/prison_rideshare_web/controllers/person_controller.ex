@@ -163,7 +163,11 @@ defmodule PrisonRideshareWeb.PersonController do
         "data" => data = %{"type" => "people", "attributes" => _person_params}
       }) do
     person = Repo.get!(Person, id)
-    changeset = Person.changeset(person, Params.to_attributes(data))
+
+    changeset =
+      if Repo.exists?(from(p in drivers(), where: p.id == ^person.id)),
+        do: Person.changeset(person, Params.to_attributes(data)),
+        else: Person.visitor_changeset(person, Params.to_attributes(data))
 
     case PaperTrail.update(changeset, version_information(conn)) do
       {:ok, %{model: person}} ->

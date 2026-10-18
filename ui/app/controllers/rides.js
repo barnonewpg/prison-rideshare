@@ -111,7 +111,14 @@ export default class RidesController extends Controller {
     let buffer = proxy.buffer;
     proxy.applyBufferedChanges();
 
+    // Visitor notes are edited alongside the ride but belong to the visitor
+    const visitor = proxy.content.belongsTo('visitor').value();
+
     try {
+      if (visitor?.hasDirtyAttributes) {
+        await visitor.save();
+      }
+
       await proxy.content.save();
 
       this.editingRide = undefined;
@@ -119,6 +126,7 @@ export default class RidesController extends Controller {
 
       await this.overlapsService.fetch();
     } catch {
+      visitor?.rollbackAttributes();
       this.rideErrorMessage = 'There was an error saving this ride';
       proxy.setProperties(buffer);
     }

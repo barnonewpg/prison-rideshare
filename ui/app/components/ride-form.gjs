@@ -45,6 +45,7 @@ export default class RideForm extends Component {
 
   @tracked pendingUnmatchedVisitorName = '';
   @tracked visitorSelection = null;
+  @tracked visitorNotesDraft = null;
 
   // Reads through the buffered proxy, so the model's visitorName cannot be used here
   @computed('ride.{visitor.name,name}', 'visitorSelection')
@@ -335,6 +336,21 @@ export default class RideForm extends Component {
                 {{/if}}
               </HdsFormSuperSelectSingleField>
             </div>
+
+            {{#if this.hasVisitorRecord}}
+              <HdsFormTextareaField
+                data-test-visitor-notes-field
+                @value={{this.visitorNotes}}
+                @isInvalid={{false}}
+                {{on 'input' this.updateVisitorNotes}}
+                as |Field|
+              >
+                <Field.Label>Visitor notes</Field.Label>
+                <Field.HelperText>
+                  Shown on all of this visitor’s rides, such as needs they have.
+                </Field.HelperText>
+              </HdsFormTextareaField>
+            {{/if}}
 
             <div>
               <div>
@@ -633,6 +649,8 @@ export default class RideForm extends Component {
 
   @action
   async visitorSelected(ride) {
+    this.visitorNotesDraft = null;
+
     if (ride?.customVisitor) {
       this.visitorSelection = null;
       this.set('ride.name', ride.name);
@@ -657,6 +675,25 @@ export default class RideForm extends Component {
       this.set('ride.address', '');
       this.set('ride.contact', '');
     }
+  }
+
+  @computed('ride.visitor.id')
+  get hasVisitorRecord() {
+    return Boolean(this.get('ride.visitor.id'));
+  }
+
+  @computed('ride.visitor.notes', 'visitorNotesDraft')
+  get visitorNotes() {
+    return this.visitorNotesDraft ?? this.get('ride.visitor.notes') ?? '';
+  }
+
+  // The textarea binds its value back here
+  set visitorNotes(value) {
+    this.visitorNotesDraft = value;
+  }
+
+  @action updateVisitorNotes(event) {
+    this.visitorNotesDraft = event.target.value;
   }
 
   @action storeVisitorName(enteredText) {
@@ -745,8 +782,14 @@ export default class RideForm extends Component {
   }
 
   @action
-  handleSubmit(event) {
+  async handleSubmit(event) {
     event?.preventDefault?.();
+
+    if (this.visitorNotesDraft !== null) {
+      const visitor = await this.get('ride.visitor');
+      visitor?.set('notes', this.visitorNotesDraft);
+    }
+
     return this.save?.();
   }
 

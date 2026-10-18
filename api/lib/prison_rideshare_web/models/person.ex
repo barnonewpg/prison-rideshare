@@ -61,7 +61,7 @@ defmodule PrisonRideshareWeb.Person do
   # Visitors have no account, so only the name is needed
   def visitor_changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name])
+    |> cast(params, [:name, :mobile, :landline, :address, :notes])
     |> validate_required([:name])
   end
 

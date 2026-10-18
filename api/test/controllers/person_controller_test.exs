@@ -284,6 +284,41 @@ defmodule PrisonRideshareWeb.PersonControllerTest do
     assert version.meta["ip"] == "127.0.0.1"
   end
 
+  test "updates a visitor's notes without requiring an email", %{conn: conn} do
+    institution = Repo.insert!(%Institution{})
+    visitor = Repo.insert!(%Person{name: "Frida"})
+    Repo.insert!(%Ride{institution_id: institution.id, visitor_id: visitor.id})
+
+    conn =
+      put(conn, Routes.person_path(conn, :update, visitor), %{
+        "meta" => %{},
+        "data" => %{
+          "type" => "people",
+          "id" => visitor.id,
+          "attributes" => %{"name" => "Frida", "email" => nil, "notes" => "Uses a wheelchair"}
+        }
+      })
+
+    assert json_response(conn, 200)["data"]["attributes"]["notes"] == "Uses a wheelchair"
+    assert Repo.get!(Person, visitor.id).notes == "Uses a wheelchair"
+  end
+
+  test "still requires an email for drivers", %{conn: conn} do
+    driver = Repo.insert!(%Person{name: "Driver", email: "driver@example.com"})
+
+    conn =
+      put(conn, Routes.person_path(conn, :update, driver), %{
+        "meta" => %{},
+        "data" => %{
+          "type" => "people",
+          "id" => driver.id,
+          "attributes" => %{"email" => nil}
+        }
+      })
+
+    assert json_response(conn, 422)
+  end
+
   test "deletes chosen resource", %{conn: conn} do
     person = Repo.insert!(%Person{name: "deletedname"})
     conn = delete(conn, Routes.person_path(conn, :delete, person))
