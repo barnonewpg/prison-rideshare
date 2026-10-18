@@ -86,6 +86,11 @@ module.exports = function (environment) {
     if (process.env.PREVIEW_PR_NUMBER) {
       ENV.APP.previewPullRequest = process.env.PREVIEW_PR_NUMBER;
     }
+
+    // Set by workflows that deploy a long-running branch, like visitors.
+    if (process.env.PREVIEW_BRANCH) {
+      ENV.APP.previewBranch = process.env.PREVIEW_BRANCH;
+    }
   }
 
   return ENV;

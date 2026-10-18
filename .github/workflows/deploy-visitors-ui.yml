@@ -54,6 +54,7 @@ jobs:
         env:
           API_HOST: ${{ vars.API_HOST }}
           SOCKET_HOST: ${{ vars.SOCKET_HOST }}
+          PREVIEW_BRANCH: ${{ github.ref_name }}
         # Without API_HOST the production build enables Mirage.
         run: |
           if [ -z "$API_HOST" ]; then
