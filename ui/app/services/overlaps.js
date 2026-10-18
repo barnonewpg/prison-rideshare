@@ -1,7 +1,7 @@
 /* eslint-disable ember/no-side-effects */
 import { set } from '@ember/object';
 import Service, { service } from '@ember/service';
-import { tracked } from '@glimmer/tracking';
+import { cached, tracked } from '@glimmer/tracking';
 
 import fetch from 'prison-rideshare-ui/utils/fetch';
 import { task } from 'ember-concurrency';
@@ -38,6 +38,8 @@ export default class OverlapsService extends Service {
     return this.overlaps?.data?.length || 0;
   }
 
+  // Every ride row looks up its commitments here, so this is only rebuilt when overlaps change
+  @cached
   get rideIdsToCommitments() {
     let response = this.overlaps;
 

@@ -1138,6 +1138,47 @@ module('Acceptance | rides', function (hooks) {
     );
   });
 
+  test('driver and car owner selects are only rendered once used', async function (assert) {
+    this.server.create('person', { name: 'Sun' });
+    this.server.create('ride', { name: 'Unassigned' });
+
+    let peopleRequested = false;
+    this.server.pretender.handledRequest = (verb, path) => {
+      if (verb === 'GET' && path === '/api/people') {
+        peopleRequested = true;
+      }
+    };
+
+    await page.visit();
+
+    assert.notOk(
+      this.element.querySelector('[data-test-ride-person-select]'),
+      'expected placeholders instead of selects',
+    );
+    assert.ok(
+      peopleRequested,
+      'expected people to be loaded before a select is used',
+    );
+
+    await click('[data-test-ride-person-placeholder="driver"]');
+
+    const select = this.element.querySelector(
+      '[data-test-ride-person-select="driver"]',
+    );
+
+    assert.ok(select, 'expected the driver select to replace its placeholder');
+    assert.strictEqual(
+      document.activeElement,
+      select,
+      'expected the select to be focused',
+    );
+    assert.strictEqual(
+      select.getAttribute('aria-expanded'),
+      'true',
+      'expected the select to be open',
+    );
+  });
+
   test('a divider highlights past from present/future rides', async function (assert) {
     const week = 7 * 24 * 60 * 60 * 1000;
     const nowMilliseconds = new Date().getTime();

@@ -4,12 +4,20 @@ import AuthenticatedRoute from 'prison-rideshare-ui/mixins/authenticated-route';
 
 export default class RidesRoute extends AuthenticatedRoute {
   @service institutions;
+  @service people;
   @service store;
 
   queryParams = {
     showCompleted: { refreshModel: true },
     showCancelled: { refreshModel: true },
   };
+
+  activate() {
+    super.activate(...arguments);
+
+    // Driver and car owner selects only render when used, so the people they list are loaded ahead
+    this.people.load();
+  }
 
   async model({ showCompleted, showCancelled }) {
     const filter = {};
