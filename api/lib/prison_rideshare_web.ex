@@ -40,7 +40,7 @@ defmodule PrisonRideshareWeb do
       import Ecto.Query
 
       alias PrisonRideshareWeb.Router.Helpers, as: Routes
-      import PrisonRideshareWeb.Gettext
+      use Gettext, backend: PrisonRideshareWeb.Gettext
 
       import PrisonRideshare.VersionInformation
 
@@ -62,7 +62,7 @@ defmodule PrisonRideshareWeb do
 
       import PrisonRideshareWeb.Router.Helpers
       import PrisonRideshareWeb.ErrorHelpers
-      import PrisonRideshareWeb.Gettext
+      use Gettext, backend: PrisonRideshareWeb.Gettext
 
       import PrisonRideshareWeb.MoneyHelper
 
@@ -92,7 +92,7 @@ defmodule PrisonRideshareWeb do
       alias PrisonRideshare.Repo
       import Ecto
       import Ecto.Query
-      import PrisonRideshareWeb.Gettext
+      use Gettext, backend: PrisonRideshareWeb.Gettext
     end
   end
 
