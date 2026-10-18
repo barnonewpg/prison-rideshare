@@ -1,8 +1,7 @@
-/* eslint-disable ember/classic-decorator-no-classic-methods, ember/no-classic-components, ember/no-computed-properties-in-native-classes, ember/no-get */
-import { action, computed } from '@ember/object';
+import { action } from '@ember/object';
 import { service } from '@ember/service';
-import Component from '@ember/component';
-import { tagName } from '@ember-decorators/component';
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 import reasonToIcon from 'prison-rideshare-ui/utils/reason-to-icon';
 import fetch from 'prison-rideshare-ui/utils/fetch';
 import { formatDate } from 'prison-rideshare-ui/utils/dates';
@@ -21,13 +20,12 @@ import not from 'ember-truth-helpers/helpers/not';
 import and from 'ember-truth-helpers/helpers/and';
 import eq from 'ember-truth-helpers/helpers/eq';
 
-@tagName('')
 export default class RideRow extends Component {
   <template>
     <@table.Tr
       class={{this.rowClass}}
       data-test-ride-row
-      data-ride-id={{this.ride.id}}
+      data-ride-id={{@ride.id}}
     >
       {{#if this.showCreation}}
         <@table.Td data-test-ride-creation>
@@ -39,21 +37,21 @@ export default class RideRow extends Component {
         data-test-ride-date-cell
         {{on 'click' this.toggleCreation}}
       >
-        {{#if this.ride.isDivider}}
+        {{#if @ride.isDivider}}
           <ScrollTo />
         {{/if}}
         <span class='date' data-test-ride-date>
-          {{this.ride.rideTimes}}
+          {{@ride.rideTimes}}
         </span>
       </@table.Td>
       <@table.Td class='institution' data-test-ride-institution>
-        {{this.ride.institution.name}}
+        {{@ride.institution.name}}
       </@table.Td>
       <@table.Td>
         <span class='name' data-test-ride-name>
-          {{this.ride.namePlusPassengers}}
+          {{@ride.namePlusPassengers}}
         </span>
-        {{#if this.ride.firstTime}}
+        {{#if @ride.firstTime}}
           <HdsIcon
             @name='alert-triangle'
             @size='16'
@@ -62,22 +60,22 @@ export default class RideRow extends Component {
             data-test-ride-first-time
           />
         {{/if}}
-        <div data-test-ride-medium data-medium={{this.ride.medium}}>
+        <div data-test-ride-medium data-medium={{@ride.medium}}>
           {{#if this.mediumIcon}}
             <HdsIcon @name={{this.mediumIcon}} @size='16' @isInline={{true}} />
           {{/if}}
           <span data-test-ride-contact>
-            <LinkedContact @contact={{this.ride.contact}} />
+            <LinkedContact @contact={{@ride.contact}} />
           </span>
         </div>
       </@table.Td>
       <@table.Td data-test-ride-address>
-        {{this.ride.address}}
+        {{@ride.address}}
       </@table.Td>
       <@table.Td data-test-ride-assignments>
         <div class='assignments'>
           {{#if @combined}}
-            {{#unless this.rideToCombine}}
+            {{#unless @rideToCombine}}
               <HdsButton
                 data-test-combine-button
                 @text='Uncombine this ride'
@@ -87,30 +85,30 @@ export default class RideRow extends Component {
                 @isIconOnly={{true}}
                 @isInline={{true}}
                 @icon='split'
-                {{on 'click' (fn this.uncombineRide this.ride)}}
+                {{on 'click' (fn @uncombineRide @ride)}}
               />
             {{/unless}}
           {{else}}
             <RidePerson
               data-test-driver
-              @ride={{this.ride}}
+              @ride={{@ride}}
               @property='driver'
               @onChange={{this.setDriver}}
             />
             <RidePerson
               data-test-car-owner
-              @ride={{this.ride}}
+              @ride={{@ride}}
               @property='carOwner'
               @onChange={{this.setCarOwner}}
             />
-            {{#if this.ride.overridable}}
+            {{#if @ride.overridable}}
               <span data-test-overridable-indicator>
                 <HdsIcon @name='car' @size='16' @isInline={{true}} />
               </span>
             {{/if}}
-            {{#if (or (not this.rideChildrenArray) this.rideToCombine)}}
+            {{#if (or (not this.rideChildrenArray) @rideToCombine)}}
               {{#let
-                (and this.rideToCombine (eq this.ride.id this.rideToCombine.id))
+                (and @rideToCombine (eq @ride.id @rideToCombine.id))
                 as |maybeCombining|
               }}
                 <HdsButton
@@ -122,7 +120,7 @@ export default class RideRow extends Component {
                   @isIconOnly={{not maybeCombining}}
                   @isInline={{true}}
                   @icon='merge'
-                  {{on 'click' (fn this.combineRide this.ride)}}
+                  {{on 'click' (fn @combineRide @ride)}}
                   data-active={{if maybeCombining 'true' 'false'}}
                 />
               {{/let}}
@@ -139,8 +137,8 @@ export default class RideRow extends Component {
           @color='tertiary'
           @isIconOnly={{true}}
           @isInline={{true}}
-          @icon={{if this.ride.enabled 'x-circle' this.cancellationIcon}}
-          {{on 'click' (fn this.editCancellation this.ride)}}
+          @icon={{if @ride.enabled 'x-circle' this.cancellationIcon}}
+          {{on 'click' (fn @editCancellation @ride)}}
         />
         <HdsButton
           data-test-edit-ride
@@ -149,7 +147,7 @@ export default class RideRow extends Component {
           @isIconOnly={{true}}
           @isInline={{true}}
           @icon='edit'
-          {{on 'click' (fn this.editRide this.ride)}}
+          {{on 'click' (fn @editRide @ride)}}
         />
       </@table.Td>
     </@table.Tr>
@@ -189,7 +187,7 @@ export default class RideRow extends Component {
       </@table.Tr>
     {{/each}}
 
-    {{#if this.ride.requiresConfirmation}}
+    {{#if @ride.requiresConfirmation}}
       <@table.Tr class='highlighted no-top-border' data-test-confirmation-row>
         {{#if this.showCreation}}
           <@table.Td />
@@ -214,22 +212,22 @@ export default class RideRow extends Component {
       </@table.Tr>
     {{/if}}
 
-    {{#if this.ride.requestNotes}}
+    {{#if @ride.requestNotes}}
       <@table.Tr
         class='notes no-top-border
-          {{if this.ride.requiresConfirmation "highlighted"}}'
+          {{if @ride.requiresConfirmation "highlighted"}}'
         data-test-notes-row
       >
         {{#if this.showCreation}}
           <@table.Td />
         {{/if}}
         <@table.Td data-test-notes colspan='6'>
-          {{this.ride.requestNotes}}
+          {{@ride.requestNotes}}
         </@table.Td>
       </@table.Tr>
     {{/if}}
 
-    {{#if this.ride.complete}}
+    {{#if @ride.complete}}
       <@table.Tr class='report no-top-border' data-test-report-row>
         {{#if this.showCreation}}
           <@table.Td />
@@ -238,29 +236,29 @@ export default class RideRow extends Component {
           <HdsIcon @name='map' @size='16' @isInline={{true}} />
 
           <span class='distance' data-test-report-distance>
-            {{this.ride.distance}}
+            {{@ride.distance}}
           </span>
-          {{#if this.ride.carExpenses}}
+          {{#if @ride.carExpenses}}
             <HdsIcon @name='fuel' @size='16' @isInline={{true}} />
 
             <span data-test-report-car-expenses>
-              {{this.ride.carExpensesDollars}}
+              {{@ride.carExpensesDollars}}
             </span>
-            {{#if (and this.ride.rate (not this.ride.overridable))}}
-              (<span data-test-report-rate>{{this.ride.rate}}<ReimbursementUnit
+            {{#if (and @ride.rate (not @ride.overridable))}}
+              (<span data-test-report-rate>{{@ride.rate}}<ReimbursementUnit
                 /></span>)
             {{/if}}
           {{/if}}
-          {{#if this.ride.foodExpenses}}
+          {{#if @ride.foodExpenses}}
             <HdsIcon @name='coffee' @size='16' @isInline={{true}} />
 
             <span data-test-report-food>
-              {{this.ride.foodExpensesDollars}}
+              {{@ride.foodExpensesDollars}}
             </span>
           {{/if}}
-          {{#if this.ride.reportNotes}}
+          {{#if @ride.reportNotes}}
             <span class='notes' data-test-report-notes>
-              {{this.ride.reportNotes}}
+              {{@ride.reportNotes}}
             </span>
           {{/if}}
           {{#if this.clearing}}
@@ -302,73 +300,67 @@ export default class RideRow extends Component {
   @service
   store;
 
-  clearing = false;
+  @tracked clearing = false;
+  @tracked showCreationOverride;
 
-  @computed(
-    'uncombinable',
-    'ride.{isCombined,isDivider,enabled,requiresConfirmation}',
-    'commitments.length',
-  )
+  get showCreation() {
+    return this.showCreationOverride ?? this.args.showCreation;
+  }
+
   get rowClass() {
-    return `ride ${this.ride.enabled ? 'enabled' : ''} ${
+    const ride = this.args.ride;
+
+    return `ride ${ride.enabled ? 'enabled' : ''} ${
       this.uncombinable ? 'uncombinable' : ''
-    } ${this.ride.isCombined ? 'combined' : ''} ${
-      this.ride.isDivider ? 'divider' : ''
-    } ${
-      this.ride.requiresConfirmation || this.commitments.length
-        ? 'highlighted'
-        : ''
+    } ${ride.isCombined ? 'combined' : ''} ${ride.isDivider ? 'divider' : ''} ${
+      ride.requiresConfirmation || this.commitments.length ? 'highlighted' : ''
     }`;
   }
 
-  @computed('overlaps.overlaps.data.@each.id', 'ride')
   get commitments() {
-    return this.overlaps.commitmentsForRide(this.ride);
+    return this.overlaps.commitmentsForRide(this.args.ride);
   }
 
-  @computed('ride.insertedAt')
   get creation() {
-    const insertedAt = this.ride.insertedAt;
-    return formatDate(insertedAt, 'EEE LLL d yyyy h:mma');
+    return formatDate(this.args.ride.insertedAt, 'EEE LLL d yyyy h:mma');
   }
 
-  @computed('ride.{enabled,cancellationReason}')
   get cancellationIcon() {
-    if (this.ride.enabled) {
+    const ride = this.args.ride;
+
+    if (ride.enabled) {
       return 'slash';
     }
 
-    const reason = this.ride.cancellationReason;
-    return reasonToIcon[reason] ?? 'alert-circle';
+    return reasonToIcon[ride.cancellationReason] ?? 'alert-circle';
   }
 
-  @computed('ride.{enabled,cancellationReason}')
   get cancellationButtonLabel() {
-    if (this.get('ride.enabled')) {
+    const ride = this.args.ride;
+
+    if (ride.enabled) {
       return 'Cancel ride';
     } else {
-      return `Edit cancellation: ${this.get('ride.cancellationReason')}`;
+      return `Edit cancellation: ${ride.cancellationReason}`;
     }
   }
 
-  @computed('ride.{enabled,cancellationReason}')
   get cancellationState() {
-    return this.ride.enabled ? 'not-cancelled' : this.ride.cancellationReason;
+    const ride = this.args.ride;
+    return ride.enabled ? 'not-cancelled' : ride.cancellationReason;
   }
 
-  @computed('ride.id', 'rideToCombine.id')
   get combineButtonTitle() {
-    if (this.ride.id === this.rideToCombine?.id) {
+    if (this.args.ride.id === this.args.rideToCombine?.id) {
       return 'Cancel combining';
     }
 
     return 'Combine with another ride';
   }
 
-  @computed('rideToCombine.{id,start}', 'ride.start')
   get uncombinable() {
     const sixHours = 1000 * 60 * 60 * 6;
-    const rideToCombineStart = this.rideToCombine?.start;
+    const rideToCombineStart = this.args.rideToCombine?.start;
 
     if (!rideToCombineStart) {
       return false;
@@ -377,14 +369,13 @@ export default class RideRow extends Component {
     return (
       Math.abs(
         new Date(rideToCombineStart).getTime() -
-          new Date(this.ride.start).getTime(),
+          new Date(this.args.ride.start).getTime(),
       ) > sixHours
     );
   }
 
-  @computed('ride.medium')
   get mediumIcon() {
-    switch (this.ride.medium) {
+    switch (this.args.ride.medium) {
       case 'txt':
         return 'message-circle';
       case 'email':
@@ -396,14 +387,13 @@ export default class RideRow extends Component {
     }
   }
 
-  @computed('ride.children.length')
   get rideChildrenArray() {
-    return this.ride.children.slice() || [];
+    return this.args.ride.children.slice();
   }
 
   @action
   setDriver(driver) {
-    const ride = this.ride;
+    const ride = this.args.ride;
 
     ride.set('driver', driver);
 
@@ -421,7 +411,7 @@ export default class RideRow extends Component {
 
   @action
   setCarOwner(carOwner) {
-    const ride = this.ride;
+    const ride = this.args.ride;
 
     ride.set('carOwner', carOwner);
     return ride.save();
@@ -439,7 +429,7 @@ export default class RideRow extends Component {
 
   @action
   ignoreCommitment(commitmentJson) {
-    let ride = this.ride;
+    let ride = this.args.ride;
     let url = `${ride.store
       .adapterFor('ride')
       .buildURL('ride', ride.id)}/ignore/${commitmentJson.id}`;
@@ -455,35 +445,39 @@ export default class RideRow extends Component {
 
   @action
   markConfirmed() {
-    let ride = this.ride;
+    let ride = this.args.ride;
     ride.set('requestConfirmed', true);
     return ride.save();
   }
 
   @action
   toggleCreation() {
-    this.toggleProperty('showCreation');
+    this.showCreationOverride = !this.showCreation;
   }
 
   @action
   proposeClear() {
-    this.set('clearing', true);
+    this.clearing = true;
   }
 
   @action
   unproposeClear() {
-    this.set('clearing', false);
+    this.clearing = false;
   }
 
   @action
   clearReport() {
-    this.set('ride.donation', null);
-    this.set('ride.distance', null);
-    this.set('ride.reportNotes', null);
-    this.set('ride.foodExpenses', 0);
-    this.set('ride.carExpenses', 0);
-    this.set('ride.complete', false);
+    const ride = this.args.ride;
 
-    this.ride.save();
+    ride.setProperties({
+      donation: null,
+      distance: null,
+      reportNotes: null,
+      foodExpenses: 0,
+      carExpenses: 0,
+      complete: false,
+    });
+
+    ride.save();
   }
 }
