@@ -75,7 +75,7 @@
     "ember-cli-app-version": "^7.0.0",
     "ember-cli-babel": "^8.3.2",
     "ember-cli-deploy": "^2.0.0",
-    "ember-cli-deploy-lightning-pack": "^6.0.0",
+    "ember-cli-deploy-lightning-pack": "^7.0.0",
     "ember-cli-deprecation-workflow": "^4.0.1",
     "ember-cli-htmlbars": "^7.0.1",
     "ember-cli-page-object": "^2.1.1",
