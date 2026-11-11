@@ -14,6 +14,7 @@ module('Acceptance | preview', function (hooks) {
 
   hooks.afterEach(function () {
     delete config.APP.previewPullRequest;
+    delete config.APP.previewBranch;
   });
 
   test('a preview shows its pull request in the title and header', async function (assert) {
@@ -26,6 +27,18 @@ module('Acceptance | preview', function (hooks) {
       '#12 production · Institutions · Prison Rideshare',
     );
     assert.dom('[data-test-preview-tag]').hasText('PR #12 · production data');
+  });
+
+  test('a branch preview shows its branch in the title and header', async function (assert) {
+    config.APP.previewBranch = 'visitors';
+
+    await visit('/institutions');
+
+    assert.strictEqual(
+      getPageTitle(),
+      'visitors production · Institutions · Prison Rideshare',
+    );
+    assert.dom('[data-test-preview-tag]').hasText('visitors · production data');
   });
 
   test('other builds have no preview label', async function (assert) {

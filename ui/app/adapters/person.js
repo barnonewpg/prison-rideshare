@@ -30,6 +30,13 @@ export default class Person extends ApplicationAdapter {
     return {};
   }
 
+  urlForCreateRecord(modelName, snapshot) {
+    const url = super.urlForCreateRecord(...arguments);
+
+    // Visitors are people without an account, so they need no email
+    return snapshot.adapterOptions?.visitor ? `${url}?role=visitor` : url;
+  }
+
   urlForUpdateRecord(id, modelName, snapshot) {
     if (this.onCalendar) {
       return super.urlForUpdateRecord('me', modelName, snapshot);

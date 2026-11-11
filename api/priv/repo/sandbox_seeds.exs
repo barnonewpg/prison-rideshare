@@ -26,10 +26,15 @@ defmodule SandboxSeeds do
         end: Timex.shift(Timex.shift(today, params.relative_start), params.relative_end),
         address: Faker.Address.street_address(),
         contact: Faker.Phone.EnUs.phone(),
-        name: Faker.Name.first_name(),
         institution_id: params.institution.id,
         request_confirmed: true,
       })
+
+    merged =
+      case Map.has_key?(merged, :visitor) do
+        true -> Map.merge(merged, %{visitor_id: params.visitor.id})
+        false -> Map.merge(merged, %{visitor_id: SandboxSeeds.create_person(Faker.Person.first_name()).id})
+      end
 
     merged =
       case Map.has_key?(merged, :driver) do
@@ -127,11 +132,14 @@ sara = SandboxSeeds.create_person("Sara Ahmed")
 chelsea = SandboxSeeds.create_person("Chelsea Manning")
 brian = SandboxSeeds.create_person("Brian Pallister")
 
+visitor = SandboxSeeds.create_person("Regular visitor")
+
 _tomorrow_ride =
   SandboxSeeds.create_ride(%{
     relative_start: [days: 1, hours: 13, minutes: 30],
     relative_end: [hours: 1, minutes: 30],
     institution: headingley,
+    visitor: visitor,
     driver: cnuth,
     car_owner: sara,
     request_notes: "This ride is in the future!",
@@ -143,6 +151,7 @@ next_week_ride =
     relative_start: [days: 7, hours: 15],
     relative_end: [hours: 3],
     institution: milner_ridge,
+    visitor: visitor,
     first_time: true,
     medium: "phone"
   })
@@ -169,6 +178,7 @@ _last_week_ride =
     relative_start: [days: -7, hours: 12],
     relative_end: [hours: 2],
     institution: headingley,
+    visitor: visitor,
     passengers: 3,
     distance: 25,
     complete: true,
@@ -252,6 +262,7 @@ _older_ride =
     relative_start: [days: -3, hours: 16],
     relative_end: [hours: 2],
     institution: stony_mountain,
+    visitor: visitor,
     driver: cnuth,
     car_owner: brian,
     medium: "phone"
@@ -304,6 +315,7 @@ processed_ride =
     relative_start: [days: -50, hours: 8],
     relative_end: [hours: 2, minutes: 15],
     institution: headingley,
+    visitor: visitor,
     distance: 25,
     complete: true,
     food_expenses: ~M[500],
@@ -400,6 +412,7 @@ overlap_ride =
     relative_start: [days: 6, hours: 13],
     relative_end: [hours: 2, minutes: 30],
     institution: john_henderson,
+    visitor: visitor,
     medium: "phone"
   })
 

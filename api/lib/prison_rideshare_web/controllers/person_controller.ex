@@ -1,14 +1,20 @@
 defmodule PrisonRideshareWeb.PersonController do
   use PrisonRideshareWeb, :controller
 
-  alias PrisonRideshareWeb.{Person, Ride}
+  alias PrisonRideshareWeb.{Commitment, Person, Reimbursement, Ride}
   alias JaSerializer.Params
 
   import Ecto.Query
 
   plug(:scrub_params, "data" when action in [:create, :update])
 
-  def index(conn, _params) do
+  def index(conn, params) do
+    query =
+      case params do
+        %{"filter" => %{"role" => "driver"}} -> drivers()
+        _ -> Person
+      end
+
     last_ride_starts =
       Repo.all(
         from(r in Ride,
@@ -20,14 +26,21 @@ defmodule PrisonRideshareWeb.PersonController do
       |> Map.new()
 
     people =
-      Repo.all(Person)
+      Repo.all(query)
       |> Enum.map(&%{&1 | last_ride_start: Map.get(last_ride_starts, &1.id)})
 
     render(conn, "index.json-api", data: people)
   end
 
-  def create(conn, %{"data" => data = %{"type" => "people", "attributes" => _person_params}}) do
-    changeset = Person.changeset(%Person{}, Params.to_attributes(data))
+  def create(
+        conn,
+        %{"data" => data = %{"type" => "people", "attributes" => _person_params}} = params
+      ) do
+    changeset =
+      case params do
+        %{"role" => "visitor"} -> Person.visitor_changeset(%Person{}, Params.to_attributes(data))
+        _ -> Person.changeset(%Person{}, Params.to_attributes(data))
+      end
 
     case PaperTrail.insert(changeset, version_information(conn)) do
       {:ok, %{model: person}} ->
@@ -157,7 +170,11 @@ defmodule PrisonRideshareWeb.PersonController do
         "data" => data = %{"type" => "people", "attributes" => _person_params}
       }) do
     person = Repo.get!(Person, id)
-    changeset = Person.changeset(person, Params.to_attributes(data))
+
+    changeset =
+      if Repo.exists?(from(p in drivers(), where: p.id == ^person.id)),
+        do: Person.changeset(person, Params.to_attributes(data)),
+        else: Person.visitor_changeset(person, Params.to_attributes(data))
 
     case PaperTrail.update(changeset, version_information(conn)) do
       {:ok, %{model: person}} ->
@@ -178,5 +195,25 @@ defmodule PrisonRideshareWeb.PersonController do
     PaperTrail.delete!(person, version_information(conn))
 
     send_resp(conn, :no_content, "")
+  end
+
+  # People and visitors share a table: a visitor is anyone with a visiting,
+  # and only visitors with no driving-side history are excluded. People with
+  # no rides at all count as drivers so newly-added ones appear.
+  defp drivers do
+    from(p in Person,
+      as: :person,
+      where:
+        not exists(from(r in Ride, where: r.visitor_id == parent_as(:person).id)) or
+          exists(
+            from(r in Ride,
+              where:
+                r.driver_id == parent_as(:person).id or
+                  r.car_owner_id == parent_as(:person).id
+            )
+          ) or
+          exists(from(r in Reimbursement, where: r.person_id == parent_as(:person).id)) or
+          exists(from(c in Commitment, where: c.person_id == parent_as(:person).id))
+    )
   end
 end

@@ -34,7 +34,9 @@ import Alert from 'prison-rideshare-ui/components/alert';
 
 const DATETIME_LOCAL_FORMAT = "yyyy-MM-dd'T'HH:mm";
 
-const SelectedRideVisitor = <template>{{@option.name}}</template>;
+const SelectedRideVisitor = <template>
+  {{if @option.visitorName @option.visitorName @option.name}}
+</template>;
 
 export default class RideForm extends Component {
   lastSearchTerm = null;
@@ -43,14 +45,17 @@ export default class RideForm extends Component {
 
   @tracked pendingUnmatchedVisitorName = '';
   @tracked visitorSelection = null;
+  @tracked visitorNotesDraft = null;
+  createdVisitor = null;
 
-  @computed('ride.name', 'visitorSelection')
+  // Reads through the buffered proxy, so the model's visitorName cannot be used here
+  @computed('ride.{visitor.name,name}', 'visitorSelection')
   get nameOrVisitorSelection() {
     if (this.visitorSelection) {
       return this.visitorSelection;
     }
 
-    const name = this.get('ride.name');
+    const name = this.get('ride.visitor.name') || this.get('ride.name');
 
     return name ? { name } : null;
   }
@@ -316,7 +321,7 @@ export default class RideForm extends Component {
                       </div>
                     {{else}}
                       <div data-test-visitor-suggestion>
-                        <span class='name'>{{option.name}}</span>
+                        <span class='name'>{{option.visitorName}}</span>
                         <address>{{option.address}}</address>
                         <span class='contact'>{{option.contact}}</span>
                       </div>
@@ -332,6 +337,21 @@ export default class RideForm extends Component {
                 {{/if}}
               </HdsFormSuperSelectSingleField>
             </div>
+
+            {{#if this.showVisitorNotes}}
+              <HdsFormTextareaField
+                data-test-visitor-notes-field
+                @value={{this.visitorNotes}}
+                @isInvalid={{false}}
+                {{on 'input' this.updateVisitorNotes}}
+                as |Field|
+              >
+                <Field.Label>Visitor notes</Field.Label>
+                <Field.HelperText>
+                  Shown on all of this visitor’s rides, such as needs they have.
+                </Field.HelperText>
+              </HdsFormTextareaField>
+            {{/if}}
 
             <div>
               <div>
@@ -616,7 +636,7 @@ export default class RideForm extends Component {
     }
 
     const promise = this.store
-      .query('ride', { 'filter[name]': term })
+      .query('ride', { 'filter[visitor]': term })
       .then((rides) => {
         const suggestions = deduplicateVisitorSuggestions(rides);
         return this.buildVisitorOptions(trimmedTerm, suggestions);
@@ -629,10 +649,13 @@ export default class RideForm extends Component {
   }
 
   @action
-  visitorSelected(ride) {
+  async visitorSelected(ride) {
+    this.visitorNotesDraft = null;
+
     if (ride?.customVisitor) {
       this.visitorSelection = null;
       this.set('ride.name', ride.name);
+      this.set('ride.visitor', null);
       this.pendingUnmatchedVisitorName = '';
       return;
     }
@@ -641,14 +664,38 @@ export default class RideForm extends Component {
     this.pendingUnmatchedVisitorName = '';
 
     if (ride) {
-      this.set('ride.name', ride.get('name'));
+      // Legacy rides have no visitor record, so the name attribute remains the fallback
+      const visitor = await ride.get('visitor');
+      this.set('ride.visitor', visitor ?? null);
+      this.set('ride.name', ride.get('visitorName'));
       this.set('ride.address', ride.get('address'));
       this.set('ride.contact', ride.get('contact'));
     } else {
+      this.set('ride.visitor', null);
       this.set('ride.name', '');
       this.set('ride.address', '');
       this.set('ride.contact', '');
     }
+  }
+
+  // A new visitor only gets a record when the ride is saved
+  @computed('ride.{visitor.id,name}')
+  get showVisitorNotes() {
+    return Boolean(this.get('ride.visitor.id') || this.get('ride.name'));
+  }
+
+  @computed('ride.visitor.notes', 'visitorNotesDraft')
+  get visitorNotes() {
+    return this.visitorNotesDraft ?? this.get('ride.visitor.notes') ?? '';
+  }
+
+  // The textarea binds its value back here
+  set visitorNotes(value) {
+    this.visitorNotesDraft = value;
+  }
+
+  @action updateVisitorNotes(event) {
+    this.visitorNotesDraft = event.target.value;
   }
 
   @action storeVisitorName(enteredText) {
@@ -737,14 +784,40 @@ export default class RideForm extends Component {
   }
 
   @action
-  handleSubmit(event) {
+  async handleSubmit(event) {
     event?.preventDefault?.();
+
+    if (this.visitorNotesDraft !== null) {
+      let visitor = await this.get('ride.visitor');
+
+      // Created here rather than by the API so the notes can come with it
+      if (!visitor && this.visitorNotesDraft.trim()) {
+        visitor = this.createdVisitor ?? this.store.createRecord('person');
+        visitor.set('name', this.get('ride.name'));
+        this.createdVisitor = visitor;
+        this.set('ride.visitor', visitor);
+      }
+
+      visitor?.set('notes', this.visitorNotesDraft);
+    }
+
     return this.save?.();
   }
 
   @action
   handleCancel(event) {
     event?.preventDefault?.();
+
+    // A visitor created for a ride that then failed to save would be orphaned
+    const visitor = this.createdVisitor;
+    this.createdVisitor = null;
+
+    if (visitor?.isNew) {
+      visitor.unloadRecord();
+    } else if (visitor) {
+      visitor.destroyRecord();
+    }
+
     return this.cancel?.();
   }
 }

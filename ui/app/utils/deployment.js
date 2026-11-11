@@ -8,12 +8,17 @@ export function previewPullRequest() {
   return config.APP.previewPullRequest;
 }
 
+export function previewBranch() {
+  return config.APP.previewBranch;
+}
+
 export function previewLabel() {
   const number = previewPullRequest();
+  const name = number ? `#${number}` : previewBranch();
 
-  if (!number) {
+  if (!name) {
     return undefined;
   }
 
-  return `#${number} ${isSandbox() ? 'sandbox' : 'production'}`;
+  return `${name} ${isSandbox() ? 'sandbox' : 'production'}`;
 }

@@ -1,7 +1,7 @@
 defmodule PrisonRideshareWeb.RideController do
   use PrisonRideshareWeb, :controller
 
-  alias PrisonRideshareWeb.{Commitment, Ride}
+  alias PrisonRideshareWeb.{Commitment, Person, Ride}
   alias JaSerializer.Params
 
   import Ecto.Query
@@ -26,8 +26,16 @@ defmodule PrisonRideshareWeb.RideController do
 
           Enum.uniq_by(rides ++ children, & &1.id)
 
-        %{"filter" => %{"name" => name}} ->
-          Repo.all(from(r in Ride, where: ilike(r.name, ^"#{name}%"), order_by: [desc: r.start]))
+        %{"filter" => %{"visitor" => name}} ->
+          # Falls back to the legacy name column for rides that predate
+          # visitor records, so search keeps working until the backfill runs
+          Repo.all(
+            from r in Ride,
+              left_join: v in Person,
+              on: v.id == r.visitor_id,
+              where: ilike(coalesce(v.name, r.name), ^"#{name}%"),
+              order_by: [desc: r.start]
+          )
 
         %{"filter" => %{"requires_confirmation" => "true"}} ->
           now = NaiveDateTime.utc_now()
@@ -199,10 +207,21 @@ defmodule PrisonRideshareWeb.RideController do
   end
 
   def create(conn, %{"data" => data = %{"type" => "rides", "attributes" => _ride_params}}) do
-    changeset = Ride.changeset(%Ride{}, Params.to_attributes(data))
+    attributes = Params.to_attributes(data)
 
-    case PaperTrail.insert(changeset, version_information(conn)) do
-      {:ok, %{model: ride}} ->
+    result =
+      Repo.transaction(fn ->
+        attributes = with_visitor(attributes, version_information(conn))
+        changeset = Ride.changeset(%Ride{}, attributes)
+
+        case PaperTrail.insert(changeset, version_information(conn)) do
+          {:ok, %{model: ride}} -> ride
+          {:error, changeset} -> Repo.rollback(changeset)
+        end
+      end)
+
+    case result do
+      {:ok, ride} ->
         conn
         |> put_status(:created)
         |> put_resp_header("location", Routes.ride_path(conn, :show, ride))
@@ -277,10 +296,41 @@ defmodule PrisonRideshareWeb.RideController do
     where(query, [r], field(r, ^field) == ^(value == "true"))
   end
 
+  # A ride requested for a new visitor gets a visitor record of its own, so
+  # rides stop accumulating that only have the legacy name column
+  defp with_visitor(%{"visitor_id" => visitor_id} = attributes, _) when not is_nil(visitor_id),
+    do: attributes
+
+  defp with_visitor(%{"name" => name} = attributes, version_information)
+       when is_binary(name) do
+    case String.trim(name) do
+      "" ->
+        attributes
+
+      trimmed ->
+        visitor =
+          PaperTrail.insert!(
+            Person.visitor_changeset(%Person{}, %{name: trimmed}),
+            version_information
+          )
+
+        Map.put(attributes, "visitor_id", visitor.id)
+    end
+  end
+
+  defp with_visitor(attributes, _), do: attributes
+
   defp preload(model) do
     model
     |> Repo.preload(
-      [:institution, :driver, :car_owner, :children, [reimbursements: [:person, :ride]]],
+      [
+        :institution,
+        :visitor,
+        :driver,
+        :car_owner,
+        :children,
+        [reimbursements: [:person, :ride]]
+      ],
       force: true
     )
   end

@@ -12,6 +12,7 @@ import { inject as controller } from '@ember/controller';
 import { runTask } from 'ember-lifeline';
 import {
   isSandbox,
+  previewBranch,
   previewPullRequest,
 } from 'prison-rideshare-ui/utils/deployment';
 
@@ -25,6 +26,10 @@ export default class ToolbarHeader extends Component {
 
   get previewPullRequest() {
     return previewPullRequest();
+  }
+
+  get previewBranch() {
+    return previewBranch();
   }
 
   get toggleLabel() {
@@ -109,6 +114,20 @@ export default class ToolbarHeader extends Component {
                 <HdsTag
                   @text='PR #{{this.previewPullRequest}} · production data'
                   title='This is a preview of pull request #{{this.previewPullRequest}}, running against the production API. Changes here affect real data.'
+                  data-test-preview-tag
+                />
+              {{/if}}
+            {{else if this.previewBranch}}
+              {{#if this.isSandbox}}
+                <HdsTag
+                  @text='{{this.previewBranch}}'
+                  title='This is a preview of the {{this.previewBranch}} branch.'
+                  data-test-preview-tag
+                />
+              {{else}}
+                <HdsTag
+                  @text='{{this.previewBranch}} · production data'
+                  title='This is a preview of the {{this.previewBranch}} branch, running against a copy of production data. Changes here do not affect the live site.'
                   data-test-preview-tag
                 />
               {{/if}}
