@@ -1,17 +1,15 @@
 /* eslint-disable ember/no-mixins */
 import { service } from '@ember/service';
-import { all } from 'rsvp';
 import AuthenticatedRoute from 'prison-rideshare-ui/mixins/authenticated-route';
 
 export default class ReimbursementsRoute extends AuthenticatedRoute {
   @service store;
 
   model() {
-    return this.store.findAll('reimbursement');
-  }
-
-  afterModel(reimbursements) {
-    // TODO coalesceFindRequests?
-    return all(reimbursements.map((r) => r.ride));
+    // Rides are included so they don't each need a separate request
+    return this.store.findAll('reimbursement', {
+      include: 'person,ride,ride.institution',
+      reload: true,
+    });
   }
 }

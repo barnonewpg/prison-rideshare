@@ -34,6 +34,52 @@ defmodule PrisonRideshareWeb.ReimbursementControllerTest do
     assert json_response(conn, 200)["data"] == []
   end
 
+  test "includes rides on index when requested", %{conn: conn} do
+    driver = Repo.insert!(%PrisonRideshareWeb.Person{name: "Driver"})
+
+    ride =
+      Repo.insert!(%PrisonRideshareWeb.Ride{
+        driver: driver,
+        name: "Visitor",
+        institution: %PrisonRideshareWeb.Institution{name: "Stony Mountain"}
+      })
+
+    reimbursement = Repo.insert!(%Reimbursement{person: driver, ride: ride, car_expenses: 100})
+
+    response =
+      get(conn, Routes.reimbursement_path(conn, :index, include: "person,ride,ride.institution"))
+
+    body = json_response(response, 200)
+
+    [data] = body["data"]
+    assert data["id"] == reimbursement.id
+    assert data["relationships"]["ride"]["data"]["id"] == ride.id
+
+    included_ride = Enum.find(body["included"], &(&1["type"] == "ride"))
+    assert included_ride["id"] == ride.id
+    assert included_ride["attributes"]["name"] == "Visitor"
+
+    assert Enum.any?(body["included"], &(&1["type"] == "people" && &1["id"] == driver.id))
+
+    assert Enum.any?(
+             body["included"],
+             &(&1["type"] == "institution" && &1["attributes"]["name"] == "Stony Mountain")
+           )
+  end
+
+  test "does not include rides on index by default", %{conn: conn} do
+    person = Repo.insert!(%PrisonRideshareWeb.Person{})
+
+    ride =
+      Repo.insert!(%PrisonRideshareWeb.Ride{institution: %PrisonRideshareWeb.Institution{}})
+
+    Repo.insert!(%Reimbursement{person: person, ride: ride})
+
+    body = json_response(get(conn, Routes.reimbursement_path(conn, :index)), 200)
+
+    refute Enum.any?(body["included"] || [], &(&1["type"] == "ride"))
+  end
+
   test "shows chosen resource", %{conn: conn} do
     reimbursement =
       Repo.insert!(%Reimbursement{car_expenses: 1919, donation: true, processed: true})

@@ -10,7 +10,12 @@ defmodule PrisonRideshareWeb.ReimbursementView do
     serializer: PrisonRideshareWeb.PersonView
   )
 
-  has_one(:ride, type: "ride", identifiers: :always)
+  has_one(
+    :ride,
+    type: "ride",
+    identifiers: :always,
+    serializer: PrisonRideshareWeb.RideView
+  )
 
   money_amount(:car_expenses)
   money_amount(:food_expenses)

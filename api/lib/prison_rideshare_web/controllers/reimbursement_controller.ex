@@ -6,12 +6,34 @@ defmodule PrisonRideshareWeb.ReimbursementController do
 
   plug(:scrub_params, "data" when action in [:create, :update])
 
+  def index(conn, %{"include" => include}) do
+    if "ride" in String.split(include, ",") do
+      index_with_rides(conn)
+    else
+      index(conn, %{})
+    end
+  end
+
   def index(conn, _params) do
     reimbursements =
       Repo.all(Reimbursement)
       |> Repo.preload([:person, :ride])
 
     render(conn, "index.json-api", data: reimbursements)
+  end
+
+  defp index_with_rides(conn) do
+    reimbursements =
+      Repo.all(Reimbursement)
+      |> Repo.preload([
+        :person,
+        ride: [:institution, :driver, :car_owner, :children, reimbursements: [:person]]
+      ])
+
+    render(conn, "index.json-api",
+      data: reimbursements,
+      opts: [include: "person,ride,ride.institution"]
+    )
   end
 
   def create(conn, %{
